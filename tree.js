@@ -88,10 +88,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
            anode = anode.parent ; // move up the chain                   
        } 
 
-
      } // end propagate
-
-     
 
 bestPath () {  // Show the best path so far             
            
@@ -109,3 +106,5 @@ bestPath () {  // Show the best path so far
        }
          anode.board.show();
     } // end  bestPath
+    
+} // end of game tree
