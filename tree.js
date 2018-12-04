@@ -11,7 +11,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
          this.simPlayer = undefined; // Player with last move 
          
          this.Nsim = 0;     // Total number of simulations
-         this.NodeCount = 0 ;  // We dont count rootNode
+         this.NodeSet = [] ;   // All discovered nodes of the tree
     } // end constructor
 
 
@@ -19,10 +19,8 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
                  //  the node with unexplored moves
            
        var anode = this.root ;
-       var count = 0;
        
        while (anode.isExpanded () && !anode.isTerminal()) { // It has all of the potential children
-           count = count + 1 ;
            
                 //travel down the tree until you hit a node with unexplored moves 
                 // Selecting the best node based on win ratio as you go
@@ -31,12 +29,11 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
                                        wratio.push (e.wins / e.trials) ;
                                     });
           let i = wratio.indexOf (Math.max(...wratio)) ;
-          console.log("Best Child = ", i, wratio[i]);
+
           anode = anode.children[i] ;  // Latch on to the best and repeat
        }
           this.selNode = anode ;
-          console.log("Selection Count: ", count);
-
+          
     } // end selenew childction
 
     simulate () {  // We play from the given node randomly until result
@@ -45,23 +42,18 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
             return ;
         } else {
             this.simNode = this.selNode.addNode();
-            if ( isEmpty(this.simNode) ) return ;
+            if ( isEmpty(this.simNode) ) { return ; }
+               else  { this.NodeSet.push(this.simNode); }
         }
-
 
         var ab = this.simNode.board.clone() ; // A temporary board we can play with 
   
-        var count = 0 ;
-        while (ab.result == "NONE" && count < 150) { // Keep the play until conclusion     
+        while (ab.result == "NONE") { // Keep the play until conclusion     
             var rnum = Math.floor (Math.random() * ab.moves.size) ;
             var move  = Array.from (ab.moves)[rnum]; 
-            ab.play (move) ; 
-
-            console.log ("Random Walk " + count );  ab.show();                   
-            count = count + 1 ;
+            ab.play (move) ;                 
         }
-        console.log ("Simulation Count = ", count);
-
+   
         this.Nsim = this.Nsim + 1   ;  // simulation count 
         this.simResult = ab.result ;
         this.simPlayer = ab.player ;
@@ -80,31 +72,44 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
 
            // update the wins based on end result
            if ((this.simResult == "WIN") && 
-               (this.simPlayer == anode.player)) {
+               (this.simPlayer == anode.board.player)) {
                  anode.wins = anode.wins + 1 ;
            } else if (this.simResult == "DRAW") { 
                       anode.wins = anode.wins + 0.5} ;
-           console.log ("Propagating:", anode.trials, anode.wins) ;
+         
            anode = anode.parent ; // move up the chain                   
        } 
 
      } // end propagate
 
-bestPath () {  // Show the best path so far             
+     bestPath () {  // Show the best path so far             
            
        var anode = this.root ;
-       
+     
        while (!anode.isTerminal()) { 
           let wratio = [] ; 
           anode.children.forEach ( function (e) {
                                        wratio.push (e.wins / e.trials) ;
-                                    });
+                                   });
           let i = wratio.indexOf (Math.max(...wratio)) ;
-          console.log("Best Child = ", i, "  %Win = ", wratio[i] * 100);
-          anode.board.show();
+          console.log("Best Child = ", i, "  %Win = ", wratio[i] * 100, 
+                      "Depth = ", anode.children[i].depth) ;
+
           anode = anode.children[i] ;  // Latch on to the best and repeat
+                    anode.board.show();
        }
-         anode.board.show();
+         // anode.board.show();
     } // end  bestPath
     
+
+   info () {  // A bit more information of the state of the tree
+
+     console.log("Nodes Discovered: ", this.NodeSet.length);
+     //for (let i=0 ; i<this.NodeSet.length ; i++) {
+              //               let e = this.NodeSet[i] ;
+                        //     console.log(i, "  Depth = ", e.depth, "Index = ", e.index);
+                      //     };
+   } // end info
+
+
 } // end of game tree

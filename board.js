@@ -30,9 +30,7 @@ class board {
         var x       = this.cells ;
         var win     = false      ;          
         var pattern = this.player ? "ooo":"xxx" ; // last player
-
-       if (this.result == "NONE") // If game is not over then
-       {
+    
             [0, 3, 6].forEach ( function (i) {
                                  i = parseInt (i);
                                  let s = x[0+i] + x[1+i] + x[2+i] ;   
@@ -44,19 +42,19 @@ class board {
                                   let s = x[0+i] + x[3+i] + x[6+i] ;    
                                   win = win || (s == pattern) ;
             });
-          
-               
+                      
                win = win || ((x[0]+x[4]+x[8]) == pattern ) 
                          || ((x[2]+x[4]+x[6]) == pattern) ;
-  
+
              if (win) {
                     this.result = "WIN" ; 
-                    this.moves.clear(); // no more moves possible
+                    this.moves.clear(); // make sure no more moves possible
              }
              else if ( (this.moves.size) == 0 )  
                     this.result = "DRAW" ;   
-       } // Result evaluated
-                         
+             else
+                     this.result = "NONE" ;
+                           
     } // end getResult
    
     clone() {  // A clone of myself

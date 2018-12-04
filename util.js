@@ -1,4 +1,4 @@
-onst TIC = true  ;
+const TIC = true  ;
 const TOC  = false ;
 
 // Adding clone methods for a vector and set objects

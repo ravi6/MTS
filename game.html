@@ -65,14 +65,16 @@ var game = new tree();
 
   console.log("Root Node: \n", game.root);
   
-  for (let i=0 ; i<1400 ; i++){
-   console.log ("Main Loop Count = " + i);
-   game.select() ;   console.log("Selected", game);   
-   game.simulate() ;   console.log("Simulated:", game);  
-   game.propagate() ;   console.log("Propagated:", game);
-  };
+  for (let i=0 ; i<340 ; i++){
+   // console.log ("Main Loop Count = " + i);
+   game.select() ;   //console.log("Selected", game);
+   for(let j=0 ; j<10 ; j++){   
+   game.simulate() ;   //console.log("Simulated:", game);  
+   game.propagate() ;   //console.log("Propagated:", game);
+  }};
 
   game.bestPath() ;
+  game.info() ;
 
    // (game.root.children).forEach (function (ch) {alert(ch.children.length);});
 </script>
