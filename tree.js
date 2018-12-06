@@ -29,7 +29,6 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
                                        wratio.push (e.wins / e.trials) ;
                                     });
           let i = wratio.indexOf (Math.max(...wratio)) ;
-
           anode = anode.children[i] ;  // Latch on to the best and repeat
        }
           this.selNode = anode ;
@@ -67,7 +66,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
 
        var anode = this.simNode ;
 
-       while (!(anode.isRoot)) {  // Move up the chain and update
+        do  {  // Move up the chain and update
            anode.trials = anode.trials + 1 ; // bump each nodes trial count
 
            // update the wins based on end result
@@ -78,7 +77,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
                       anode.wins = anode.wins + 0.5} ;
          
            anode = anode.parent ; // move up the chain                   
-       } 
+       } while (!(anode.isRoot)) ;
 
      } // end propagate
 
@@ -86,19 +85,24 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
            
        var anode = this.root ;
      
-       while (!anode.isTerminal()) { 
+       var ds = "" ;
+       while (!anode.isTerminal() && anode.hasChildren()) { 
           let wratio = [] ; 
           anode.children.forEach ( function (e) {
                                        wratio.push (e.wins / e.trials) ;
                                    });
           let i = wratio.indexOf (Math.max(...wratio)) ;
-          console.log("Best Child = ", i, "  %Win = ", wratio[i] * 100, 
-                      "Depth = ", anode.children[i].depth) ;
+          console.log("Children = ", anode.children.length, "  Best Child = ", i, "  %Win = ", wratio[i] * 100, 
+                      "  Depth = ", anode.children[i].depth) ;
 
           anode = anode.children[i] ;  // Latch on to the best and repeat
-                    anode.board.show();
+
+          ds = ds + i ;
+
+          anode.board.show();
        }
-         // anode.board.show();
+       console.log("NodeSetString: ", ds, " Nodes Discovered: ", this.NodeSet.length);
+         
     } // end  bestPath
     
 
