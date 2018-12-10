@@ -64,4 +64,25 @@ class node {  // A genertic node for Montecarlo Tree Search
 
     } // end addNode
      
+    wratio () { // get win ratio
+      return ( this.wins / this.trials ) ;
+    }
+
+    wexp () { // exploration weight 
+      let x =  Math.log (this.parent.trials) / this.trials;
+      return ( Math.sqrt (x) ) ;
+    } 
+
+    bestChild (fUTC) { // based on some measure return best child node index
+
+          let measure = [] ;
+
+          this.children.forEach ( function (e) {
+                                  let x = e.wratio () + fUTC * e.wexp () ;
+			                      measure.push (x) ;
+                                    });
+          let i = measure.indexOf (Math.max(...measure)) ;
+          return (i) ;  
+
+    } // end bestChild
 } // end node

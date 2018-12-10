@@ -12,6 +12,8 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
          
          this.Nsim = 0;     // Total number of simulations
          this.NodeSet = [] ;   // All discovered nodes of the tree
+
+	     this.UTCF = 0.2     ; // Normally 1.414
     } // end constructor
 
 
@@ -19,21 +21,15 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
                  //  the node with unexplored moves
            
        var anode = this.root ;
-       
-       while (anode.isExpanded () && !anode.isTerminal()) { // It has all of the potential children
-           
-                //travel down the tree until you hit a node with unexplored moves 
-                // Selecting the best node based on win ratio as you go
-          let wratio = [] ; 
-          anode.children.forEach ( function (e) {
-                                       wratio.push (e.wins / e.trials) ;
-                                    });
-          let i = wratio.indexOf (Math.max(...wratio)) ;
+       anode.trials = 1 ;
+       while (anode.isExpanded () && !anode.isTerminal()) {
+            // It has all of the potential children          
+           //travel down the tree until you hit a node with unexplored moves 
+          let i = anode.bestChild (this.UTCF) ;
           anode = anode.children[i] ;  // Latch on to the best and repeat
        }
-          this.selNode = anode ;
-          
-    } // end selenew childction
+          this.selNode = anode ;         
+    } // end select
 
     simulate () {  // We play from the given node randomly until result
 
@@ -84,21 +80,18 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
      bestPath () {  // Show the best path so far             
            
        var anode = this.root ;
-     
+       anode.trials = 1 ;
+       
        var ds = "" ;
        while (!anode.isTerminal() && anode.hasChildren()) { 
-          let wratio = [] ; 
-          anode.children.forEach ( function (e) {
-                                       wratio.push (e.wins / e.trials) ;
-                                   });
-          let i = wratio.indexOf (Math.max(...wratio)) ;
-          console.log("Children = ", anode.children.length, "  Best Child = ", i, "  %Win = ", wratio[i] * 100, 
+          let i = anode.bestChild (this.UTCF) ;
+
+          console.log("Children = ", anode.children.length, 
+	              "  Best Child = ", i, "  %Win = ", anode.children[i].wratio() * 100, 
                       "  Depth = ", anode.children[i].depth) ;
 
           anode = anode.children[i] ;  // Latch on to the best and repeat
-
           ds = ds + i ;
-
           anode.board.show();
        }
        console.log("NodeSetString: ", ds, " Nodes Discovered: ", this.NodeSet.length);
