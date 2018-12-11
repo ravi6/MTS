@@ -42,10 +42,11 @@ in UAV applicaitons.  This is a test bed with the simple Tic Toc Toe game </p>
          <label class="col-sm-8">Exploration Factor:</label>
          <input class="col-sm-4 margin-bottom" type="number"  id="utcf">
 
-         <button id="simbtn" type="button" class=" btn btn-primary">simulate</button>
+         <button id="simbtn" type="button" 
+             class=" btn btn-primary col-sm-6">simulate</button>
     </div>
    <div class="col-md-9 margin-bottom"  >
-      <h3>Decision Tree</h3>
+      <h3>Tic Toc Toe</h3>
       <canvas id="canvas"> 
       </canvas>
    </div>
@@ -109,38 +110,12 @@ status("Are you awake");
 <script>
    
  var canvas = new fabric.Canvas("canvas", {backgroundColor: 'lightyellow',
-                                              width: 800, height: 400});
+                                              width: 400, height: 400});
+var gb = new guiBoard (canvas) ;
 
   // var my = new myTbox ("Ravi Sankar", 150, 100);
   //my.group.top = 100 ;  my.group.left = 100 ;  my.flashtxt(true);
 
-  var gcells = [] ;
-  [0, 1, 2].forEach ( function(x) {
-                         let b = new myTbox ("X", 100, 100) ;
-                             b.group.top = 100;
-                             b.group.left = x * (100 + 2) ;
-                             gcells.push (b) ;
-                             });
-  [3, 4, 5].forEach ( function(x) {
-                         let b = new myTbox ("X", 100, 100) ;
-                             b.group.top = 200 + 2;
-                             b.group.left = (x - 3) * (100 + 2) ;
-                             gcells.push (b) ;
-                             });
-  [6, 7, 8].forEach ( function(x) {
-                         let b = new myTbox ("X", 100, 100) ;
-                             b.group.top = 300 + 4;
-                             b.group.left = (x - 6) * (100 + 2) ;
-                             gcells.push (b) ;
-                             }); 
-                            // console.log(gcells.size, gcells);
-
-  var gboard = new fabric.Group(gcells[0], gcells[1], gcells[2],
-                                gcells[3], gcells[4], gcells[5],
-                                gcells[6], gcells[7], gcells[8] );                           
-  gboard.top = 30 ;
-  gboard.left = 30 ; console.log(gboard);
-  canvas.add(gboard); canvas.renderAll();
 </script>
 
 <script>
@@ -181,6 +156,53 @@ function status(msg) { // Add messages to status
     var content = document.createTextNode(msg) ; 
     $("#status").append(br, content) ;
 }
+
+
+class guiBoard {
+
+    constructor (canvas) {
+       this.canvas = canvas ;
+       this.gcells = [] ;
+
+       
+        [0, 1, 2].forEach ( function(x) {
+                        // x = parseInt(x);
+                         let b = new myTbox ("", 100, 100) ;
+                             b.group.top = 100;
+                             b.group.left = x * (100 + 2) ;
+                             this.gcells.push (b) ;
+                             });
+         [3, 4, 5].forEach ( function(x) {
+                         let b = new myTbox ("", 100, 100) ;
+                             b.group.top = 200 + 2;
+                             b.group.left = (x - 3) * (100 + 2) ;
+                             this.gcells.push (b) ;
+                             });
+          [6, 7, 8].forEach ( function(x) {
+                         let b = new myTbox ("", 100, 100) ;
+                             b.group.top = 300 + 4;
+                             b.group.left = (x - 6) * (100 + 2) ;
+                             this.gcells.push (b) ;
+                             }); 
+
+        let gs = [] ;
+        gcells.forEach (function(e) { gs.push (e.group;)}) ;
+        let gboard = new fabric.Group(gs);
+
+        gboard.top = 50 ; 
+        gboard.left = 30 ; // canvas.renderAll();
+
+} // emd constructor
+
+     setState (node) { //  Display given nodes state
+       this.gcells.forEach (function (e, i){
+                   let txt = node.board.cells[i] ;
+                   e.tbox.set('text', txt);
+                    });
+     }
+
+} // end guiBoard
+
 </script>
 
 </html>

@@ -12,6 +12,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
          
          this.Nsim = 0;        // Total number of simulations
          this.NodeSet = [] ;   // All discovered nodes of the tree
+         this.bestChildren = [] ;
 
 	     this.UTCF = 1.414     ; // Normally 1.414
     } // end constructor
@@ -75,7 +76,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
 
      } // end propagate
 
-     bestPath () {  // Show the best path so far             
+     bestPath () {  // Show the best path so far & get the node list             
            
        var anode = this.root ;
        anode.trials = 1 ;
@@ -83,12 +84,13 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
        var ds = "" ;
        while (!anode.isTerminal() && anode.hasChildren()) { 
           let i = anode.bestChild (this.UTCF) ;
-
+           
           console.log("Children = ", anode.children.length, 
 	              "  Best Child = ", i, "  %Win = ", anode.children[i].wratio() * 100, 
                       "  Depth = ", anode.children[i].depth) ;
 
           anode = anode.children[i] ;  // Latch on to the best and repeat
+          this.bestChildren.push (anode) ;
           ds = ds + i ;
           anode.board.show();
        }

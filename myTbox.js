@@ -27,7 +27,7 @@ class myTbox {  // A customised text box with some bells and whistles
     this.rect.width = this.tbox.width ;      
     this.rect.height = this.tbox.height;
     this.group = new fabric.Group([this.rect, this.tbox]) ;
-   // canvas.add (this.group);
+    canvas.add (this.group);
 
   } // end constructor
 
