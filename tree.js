@@ -10,20 +10,18 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
          this.simResult = undefined; // Result of the latest simulation
          this.simPlayer = undefined; // Player with last move 
          
-         this.Nsim = 0;     // Total number of simulations
+         this.Nsim = 0;        // Total number of simulations
          this.NodeSet = [] ;   // All discovered nodes of the tree
 
-	     this.UTCF = 0.2     ; // Normally 1.414
+	     this.UTCF = 1.414     ; // Normally 1.414
     } // end constructor
 
 
     select () {  // Select best path in the node tree and return 
                  //  the node with unexplored moves
            
-       var anode = this.root ;
-       anode.trials = 1 ;
-       while (anode.isExpanded () && !anode.isTerminal()) {
-            // It has all of the potential children          
+       var anode = this.root ;       anode.trials = 1 ;
+       while (anode.isExpanded () && !anode.isTerminal()) { // It has all of the potential children         
            //travel down the tree until you hit a node with unexplored moves 
           let i = anode.bestChild (this.UTCF) ;
           anode = anode.children[i] ;  // Latch on to the best and repeat
@@ -102,10 +100,11 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
    info () {  // A bit more information of the state of the tree
 
      console.log("Nodes Discovered: ", this.NodeSet.length);
-     //for (let i=0 ; i<this.NodeSet.length ; i++) {
-              //               let e = this.NodeSet[i] ;
-                        //     console.log(i, "  Depth = ", e.depth, "Index = ", e.index);
-                      //     };
+     for (let i=0 ; i<this.NodeSet.length ; i++) {
+           let e = this.NodeSet[i] ;
+           console.log(i, "  Depth = ", e.depth, "Index = ", e.index);
+     };
+     
    } // end info
 
 

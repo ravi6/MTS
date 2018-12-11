@@ -1,4 +1,18 @@
-<html>
+<!doctype html>
+<html lang="en">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+  .margin-bottom {
+      margin-bottom: 15px ;
+  }
+
+  .nav{
+    max-height: 30px;
+    overflow-y: scroll;
+}
+</style>
 
 <script src="fabric.js"></script>
 <script src="util.js"></script>
@@ -7,11 +21,49 @@
 <script src="board.js"></script>
 <script src="myTbox.js"></script>
 
+    
+<div class="jumbotron text-center ">
+<h1>Learning Monte Carlo Tree Search Algorithm </h>
+    <h2> 26th November 2018 </h2>
+    <p> Started this project to enable application of this techncique 
+in UAV applicaitons.  This is a test bed with the simple Tic Toc Toe game </p>
+</div>
+
+<div class="container">
+  <div class="row">
+   <div class="col-md-3">
+      <h3>Parameters</h3>
+         <label class="col-sm-8">No. of Expolorations:</label>
+         <input class="col-sm-4 margin-bottom" type="number"  id="nexp">
+
+         <label class="col-sm-8"> No. of Simulations:</label>
+         <input class="col-sm-4 margin-bottom" type="number"  id="nsim">
+
+         <label class="col-sm-8">Exploration Factor:</label>
+         <input class="col-sm-4 margin-bottom" type="number"  id="utcf">
+
+         <button id="simbtn" type="button" class=" btn btn-primary">simulate</button>
+    </div>
+   <div class="col-md-9 margin-bottom"  >
+      <h3>Decision Tree</h3>
+      <canvas id="canvas"> 
+      </canvas>
+   </div>
+  </div>
+
+  <div class=row>
+      <h3>Status</h3>
+    <div id="status" class=well rounded style="height:60px; overflow: scroll">
+    </div>
+  </div>
+</div>
+                   
 <script>
 /* Tic Tac Toe Cells
    Author: Ravi Sankar Saripalli
    Date: 26th November
    Version: 0.1
+status("Are you awake");
    Last Modified  28th Nov.
 
  Change Log:
@@ -51,59 +103,85 @@
 
 */
 
-/*
- var mb = new board(); 
-mb.play(2); console.log("o played 2"); mb.show(); 
-mb.play(0); console.log("x played 0"); mb.show();
-mb.play(4); console.log("o played 4");mb.show();
- mb.play(1);console.log("x played 1");  mb.show();
-mb.play(6); console.log("o played 6"); mb.show();
- mb.play(3);console.log("x played 3"); mb.show();
- mb.getResult();
-*/        
-                   
-var game = new tree();
 
-
-  console.log("Root Node: \n", game.root);
-  
-  for (let i=0 ; i<100 ; i++){
-   // console.log ("Main Loop Count = " + i);
-   game.select() ;   //console.log("Selected", game);
-   for(let j=0 ; j<100 ; j++){   
-   game.simulate() ;   //console.log("Simulated:", game);  
-   game.propagate() ;   //console.log("Propagated:", game);
-  }};
-
-  game.bestPath() ;
-  game.info() ;
-
-   // (game.root.children).forEach (function (ch) {alert(ch.children.length);});
 </script>
-
-<body>
-<h1>Learning Monte Carlo Tree Search Algorithm </h>
-    <h2> 26th November 2018 </h2>
-    <p>
-Started this project to enable application of this techncique 
-in UAV applicaitons.
-    </p>
-
-<canvas id="canvas"> 
-</canvas>
 
 <script>
    
  var canvas = new fabric.Canvas("canvas", {backgroundColor: 'lightyellow',
-                                              width: 500, height: 400});
+                                              width: 800, height: 400});
 
-  var my = new myTbox ("Ravi Sankar", 150, 100);
-  my.group.top = 100 ;
-  my.group.left = 100 ;
-  my.flashtxt(true);
-    
+  // var my = new myTbox ("Ravi Sankar", 150, 100);
+  //my.group.top = 100 ;  my.group.left = 100 ;  my.flashtxt(true);
+
+  var gcells = [] ;
+  [0, 1, 2].forEach ( function(x) {
+                         let b = new myTbox ("X", 100, 100) ;
+                             b.group.top = 100;
+                             b.group.left = x * (100 + 2) ;
+                             gcells.push (b) ;
+                             });
+  [3, 4, 5].forEach ( function(x) {
+                         let b = new myTbox ("X", 100, 100) ;
+                             b.group.top = 200 + 2;
+                             b.group.left = (x - 3) * (100 + 2) ;
+                             gcells.push (b) ;
+                             });
+  [6, 7, 8].forEach ( function(x) {
+                         let b = new myTbox ("X", 100, 100) ;
+                             b.group.top = 300 + 4;
+                             b.group.left = (x - 6) * (100 + 2) ;
+                             gcells.push (b) ;
+                             }); 
+                            // console.log(gcells.size, gcells);
+
+  var gboard = new fabric.Group(gcells[0], gcells[1], gcells[2],
+                                gcells[3], gcells[4], gcells[5],
+                                gcells[6], gcells[7], gcells[8] );                           
+  gboard.top = 30 ;
+  gboard.left = 30 ; console.log(gboard);
+  canvas.add(gboard); canvas.renderAll();
 </script>
 
-<body>
+<script>
+
+    $(document).ready(function() {
+
+      $("#nsim").val(100) ;
+      $("#nexp").val(100) ;
+      $("#utcf").val(0.2) ;
+
+    }); // end of Initial Set up
+
+
+$("#simbtn").click(function() {
+   
+  status ("Started Tree Search") ;
+   var game = new tree(); game.UTCF =  $("#utcf").val() ;
+
+   console.log("Root Node: \n", game.root);
+  
+  for (let i=0 ; i < $("#nexp").val() ; i++) {  
+     game.select() ;  
+     for(let j=0 ; j < $("#nsim").val() ; j++) {   
+        game.simulate() ;   
+        game.propagate() ;   
+  }};
+
+  status ("Final Best Path") ;
+  game.bestPath() ;
+  
+}); // Simulation button click 
+
+// Script that provides the user interface
+function status(msg) { // Add messages to status
+    // an easier way is to use innerHTML but that is not safe!!!
+    var br = document.createElement("br") ;
+    // var d = new Date();    var n = d.toLocaleString();
+    var content = document.createTextNode(msg) ; 
+    $("#status").append(br, content) ;
+}
+</script>
+
 </html>
 
