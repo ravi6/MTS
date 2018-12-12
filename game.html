@@ -19,14 +19,15 @@
 <script src="node.js"></script>
 <script src="tree.js"></script>
 <script src="board.js"></script>
+<script src="guiBoard.js"></script>
 <script src="myTbox.js"></script>
 
     
 <div class="jumbotron text-center ">
-<h1>Learning Monte Carlo Tree Search Algorithm </h>
-    <h2> 26th November 2018 </h2>
-    <p> Started this project to enable application of this techncique 
-in UAV applicaitons.  This is a test bed with the simple Tic Toc Toe game </p>
+<h1>Monte Carlo Tree Search Algorithm </h>
+    <h3> Ravi Saripalli </h3> <h4> 26th November 2018 </h4>
+    <p> 
+A test bed with the simple Tic Toc Toe game </p>
 </div>
 
 <div class="container">
@@ -101,6 +102,12 @@ status("Are you awake");
          .... reward calculations are yet to be properly implemented
          ....  Expansion of tree heuristics yet to be understood   
 
+   12 Dec.  Overall algorithm implemented. Few tests with random light play
+            were made. UTC component that allows tree exploration based on 
+            some ratio of total visits to the parent node to the child node 
+            is now in place. f*sqrt(ln(Np) / Nc) is added to the (Nwins/Nc)
+            If both players choose to play random, the best path
+
 
 */
 
@@ -111,7 +118,7 @@ status("Are you awake");
    
  var canvas = new fabric.Canvas("canvas", {backgroundColor: 'lightyellow',
                                               width: 400, height: 400});
-var gb = new guiBoard (canvas) ;
+ var gb = new guiBoard (canvas) ;
 
   // var my = new myTbox ("Ravi Sankar", 150, 100);
   //my.group.top = 100 ;  my.group.left = 100 ;  my.flashtxt(true);
@@ -143,65 +150,26 @@ $("#simbtn").click(function() {
         game.propagate() ;   
   }};
 
-  status ("Final Best Path") ;
-  game.bestPath() ;
+  status ("Tree Search Completed") ;
   
+  // Display the play sequence of best path
+  game.bestPath() ;
+  gb.showSeq (game.bestChildren) ;
+
+
+
+
+
 }); // Simulation button click 
 
 // Script that provides the user interface
 function status(msg) { // Add messages to status
     // an easier way is to use innerHTML but that is not safe!!!
     var br = document.createElement("br") ;
-    // var d = new Date();    var n = d.toLocaleString();
-    var content = document.createTextNode(msg) ; 
+    var d = new Date();    var n = d.toLocaleString();
+    var content = document.createTextNode(n + ": " + msg) ; 
     $("#status").append(br, content) ;
 }
-
-
-class guiBoard {
-
-    constructor (canvas) {
-       this.canvas = canvas ;
-       this.gcells = [] ;
-
-       
-        [0, 1, 2].forEach ( function(x) {
-                        // x = parseInt(x);
-                         let b = new myTbox ("", 100, 100) ;
-                             b.group.top = 100;
-                             b.group.left = x * (100 + 2) ;
-                             this.gcells.push (b) ;
-                             });
-         [3, 4, 5].forEach ( function(x) {
-                         let b = new myTbox ("", 100, 100) ;
-                             b.group.top = 200 + 2;
-                             b.group.left = (x - 3) * (100 + 2) ;
-                             this.gcells.push (b) ;
-                             });
-          [6, 7, 8].forEach ( function(x) {
-                         let b = new myTbox ("", 100, 100) ;
-                             b.group.top = 300 + 4;
-                             b.group.left = (x - 6) * (100 + 2) ;
-                             this.gcells.push (b) ;
-                             }); 
-
-        let gs = [] ;
-        gcells.forEach (function(e) { gs.push (e.group;)}) ;
-        let gboard = new fabric.Group(gs);
-
-        gboard.top = 50 ; 
-        gboard.left = 30 ; // canvas.renderAll();
-
-} // emd constructor
-
-     setState (node) { //  Display given nodes state
-       this.gcells.forEach (function (e, i){
-                   let txt = node.board.cells[i] ;
-                   e.tbox.set('text', txt);
-                    });
-     }
-
-} // end guiBoard
 
 </script>
 
