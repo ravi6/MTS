@@ -80,6 +80,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
            
        var anode = this.root ;
        anode.trials = 1 ;
+       this.bestChildren = [] ;
        
        var ds = "" ;
        while (!anode.isTerminal() && anode.hasChildren()) { 

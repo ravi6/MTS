@@ -3,9 +3,7 @@ class guiBoard { // TicToc board graphics
     constructor (canvas) {
        this.canvas = canvas ;
        this.gcells = [] ;
-       this.counter = 0 ;
-
-       
+             
         [0, 1, 2].forEach ( function(x) {
                         // x = parseInt(x);
                          let b = new myTbox ("", 100, 100) ;
@@ -33,7 +31,7 @@ class guiBoard { // TicToc board graphics
         gboard.top = 50 ; 
         gboard.left = 30 ; // canvas.renderAll();
 
-} // end constructor
+     } // end constructor
 
      setState (node) { //  Display given nodes state
        this.gcells.forEach (function (e, i){
@@ -43,16 +41,28 @@ class guiBoard { // TicToc board graphics
      }
 
 
-
      showSeq (nodes) { // Given some nodes display them
-     
-      var seq = setInterval(()=>{
-                               this.counter = this.counter +1 ;
-                               console.log(this.counter);
-                               if (this.counter >10)
-                                   clearInnterval(seq);
+   
+      var count = 0 ;     
+      var seq = setInterval( ()=> { // Arrow function has no "this"
+
+                               if (count == nodes.length) {                        
+                                 clearInterval (seq);
+                                  let b = nodes[count-1].board ;
+                                  let msg = "Player: " + (b.player ? "o":"x") 
+                                                + "  " + b.result ;
+                                 document.getElementById("outcome").innerHTML = msg;
+                               } else {
+                                  this.setState (nodes[count]) ;
+                                  this.canvas.renderAll();
+                                  count = count + 1 ;
+                               }
                              }, 1000) ;
+ 
       
      } // end showSeq
+
+
+
 
 } // end guiBoard

@@ -4,6 +4,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <style>
+
   .margin-bottom {
       margin-bottom: 15px ;
   }
@@ -11,7 +12,20 @@
   .nav{
     max-height: 30px;
     overflow-y: scroll;
-}
+  }
+
+  .blinking{
+	animation:blinkingText 0.5s infinite;
+  }
+  
+  @keyframes blinkingText{
+	0%  {   color: #000;	    }
+	49% {	color: transparent;	}
+	50% {	color: transparent;	}
+	99% {	color: transparent;	}
+	100%{	color: #000;	    }
+  }
+
 </style>
 
 <script src="fabric.js"></script>
@@ -24,96 +38,61 @@
 
     
 <div class="jumbotron text-center ">
-<h1>Monte Carlo Tree Search Algorithm </h>
-    <h3> Ravi Saripalli </h3> <h4> 26th November 2018 </h4>
-    <p> 
-A test bed with the simple Tic Toc Toe game </p>
+	<h1>Monte Carlo Tree Search Algorithm </h>
+		<h3> Ravi Saripalli </h3> <h4> 26th November 2018 </h4>
+		<p>	A test bed with the simple Tic Toc Toe game </p>
 </div>
 
 <div class="container">
   <div class="row">
-   <div class="col-md-3">
-      <h3>Parameters</h3>
-         <label class="col-sm-8">No. of Expolorations:</label>
-         <input class="col-sm-4 margin-bottom" type="number"  id="nexp">
 
-         <label class="col-sm-8"> No. of Simulations:</label>
-         <input class="col-sm-4 margin-bottom" type="number"  id="nsim">
+	   <div class="col-md-3">
+	   <div class="row">
+		  <h3>Parameters</h3>
+			 <label class="col-sm-8">No. of Expolorations:</label>
+			 <input class="col-sm-4 margin-bottom" type="number" min=0 step=10  id="nexp">
 
-         <label class="col-sm-8">Exploration Factor:</label>
-         <input class="col-sm-4 margin-bottom" type="number"  id="utcf">
+			 <label class="col-sm-8"> No. of Simulations:</label>
+			 <input class="col-sm-4 margin-bottom" type="number" min=0 step=10 id="nsim">
 
-         <button id="simbtn" type="button" 
-             class=" btn btn-primary col-sm-6">simulate</button>
-    </div>
-   <div class="col-md-9 margin-bottom"  >
-      <h3>Tic Toc Toe</h3>
-      <canvas id="canvas"> 
-      </canvas>
-   </div>
-  </div>
+			 <label class="col-sm-8">Exploration Factor:</label>
+			 <input class="col-sm-4 margin-bottom" type="number" min=0 max=2 step=0.1 id="utcf">
+
+			 <button id="simbtn" type="button" 
+				 class="btn btn-primary col-sm-6">simulate</button>
+         </div>
+
+           <div class="row">
+		     <h3>Output</h3>
+		     
+		     <label class="col-sm-8">Total Nodes in the Tree:</label>
+		     <label class="col-sm-4" id="lblnodes"></label>
+
+		     <label class="col-sm-8">Percent Wins :</label>
+		     <label class="col-sm-4" id="lblWins"></label>
+		     
+		     <button id="btnplay" type="button" 
+				 class="btn btn-primary col-sm-6" >play</button>
+		   </div>
+		</div>
+
+
+	   <div class="col-md-9 margin-bottom" >
+		  <h3>Tic Toc Toe</h3>
+		  <canvas id="canvas">  </canvas>	
+		   <div class="col-md-12 margin-bottome" id="outcome" >
+		   </div> 
+	  </div>
+
+  </div> 
 
   <div class=row>
       <h3>Status</h3>
     <div id="status" class=well rounded style="height:60px; overflow: scroll">
     </div>
   </div>
+
 </div>
-                   
-<script>
-/* Tic Tac Toe Cells
-   Author: Ravi Sankar Saripalli
-   Date: 26th November
-   Version: 0.1
-status("Are you awake");
-   Last Modified  28th Nov.
-
- Change Log:
-  28th Nov. Completed node class structure and node exploration function "addNode"
-  29th Nov. Added method to board class to enable game evaluation (WIN/DRAW)
-  03 Dec.   Totally revamped the code to enable state tracking of nodes with board class
-            Got stuck with issue related to deep cloning of objects (the board object)
-            Deep cloning of generic object is not trivial, but simple vectors or sets whose members
-            are of simple type (eg. numbers, or strings) can be easily cloned.
-            
-            The MonteCarlo Tree Search in my own words
-             
-             Selection
-            - Starting from root node, look for fully expanded node whose all possible children have
-              been spawned and initialized. Choose the best of the children based on win/trials ratio
-              With the best child continue the process until you hit unexpanded or partially expanded node.
-
-            - Epansion 
-               First spawn off a new child node from the previously found partiallly expanded node. 
-               If it is not terminal node (node that can't have children).  
-             
-             - Simulation
-               play a random game from the freshly spawned child state
-               until game is drawn or over. (Note:) During this phase no new nodes are created but
-               visited in a volatile space.
-
-             - Propagation
-               With the end result of the game at hand, propagate the information up the tree till we reach the root
-               re-enforcing the desired behaviour.
-
-         
-         Repeat enough times until some convergence ...
-
-         .... reward calculations are yet to be properly implemented
-         ....  Expansion of tree heuristics yet to be understood   
-
-   12 Dec.  Overall algorithm implemented. Few tests with random light play
-            were made. UTC component that allows tree exploration based on 
-            some ratio of total visits to the parent node to the child node 
-            is now in place. f*sqrt(ln(Np) / Nc) is added to the (Nwins/Nc)
-            If both players choose to play random, the best path
-
-
-*/
-
-
-</script>
-
 <script>
    
  var canvas = new fabric.Canvas("canvas", {backgroundColor: 'lightyellow',
@@ -123,24 +102,29 @@ status("Are you awake");
   // var my = new myTbox ("Ravi Sankar", 150, 100);
   //my.group.top = 100 ;  my.group.left = 100 ;  my.flashtxt(true);
 
-</script>
 
-<script>
+var game = {} ;
 
     $(document).ready(function() {
 
       $("#nsim").val(100) ;
       $("#nexp").val(100) ;
       $("#utcf").val(0.2) ;
-
     }); // end of Initial Set up
 
 
-$("#simbtn").click(function() {
-   
-  status ("Started Tree Search") ;
-   var game = new tree(); game.UTCF =  $("#utcf").val() ;
+$("#btnplay").click(function(){
+	 // Display the play sequence of best path
+  $("#outcome").empty();
+  game.bestPath() ;
+  gb.showSeq (game.bestChildren) ;
+});
 
+
+$("#simbtn").click(function() {
+  
+  status ("Started Tree Search") ;
+    game = new tree(); game.UTCF =  $("#utcf").val() ;
    console.log("Root Node: \n", game.root);
   
   for (let i=0 ; i < $("#nexp").val() ; i++) {  
@@ -151,16 +135,18 @@ $("#simbtn").click(function() {
   }};
 
   status ("Tree Search Completed") ;
-  
-  // Display the play sequence of best path
-  game.bestPath() ;
-  gb.showSeq (game.bestChildren) ;
+  console.log(game.NodeSet.length);
+  $("#lblnodes").html(game.NodeSet.length) ;
 
-
-
-
+  // Get percet wins with 100 plays with best path
+  let count = 0 ;
+  for (let i=0 ; i < 100 ; i++){
+  	game.bestPath();
+  }
 
 }); // Simulation button click 
+
+
 
 // Script that provides the user interface
 function status(msg) { // Add messages to status
