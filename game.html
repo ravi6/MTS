@@ -114,10 +114,8 @@ var game = {} ;
 
 
 $("#btnplay").click(function(){
-	 // Display the play sequence of best path
-  $("#outcome").empty();
-  game.bestPath() ;
-  gb.showSeq (game.bestChildren) ;
+ let win = game.learntPlay();
+ if (win) $("#outcome").html("I Win");
 });
 
 
@@ -135,14 +133,7 @@ $("#simbtn").click(function() {
   }};
 
   status ("Tree Search Completed") ;
-  console.log(game.NodeSet.length);
   $("#lblnodes").html(game.NodeSet.length) ;
-
-  // Get percet wins with 100 plays with best path
-  let count = 0 ;
-  for (let i=0 ; i < 100 ; i++){
-  	game.bestPath();
-  }
 
 }); // Simulation button click 
 

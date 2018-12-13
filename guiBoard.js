@@ -41,28 +41,4 @@ class guiBoard { // TicToc board graphics
      }
 
 
-     showSeq (nodes) { // Given some nodes display them
-   
-      var count = 0 ;     
-      var seq = setInterval( ()=> { // Arrow function has no "this"
-
-                               if (count == nodes.length) {                        
-                                 clearInterval (seq);
-                                  let b = nodes[count-1].board ;
-                                  let msg = "Player: " + (b.player ? "o":"x") 
-                                                + "  " + b.result ;
-                                 document.getElementById("outcome").innerHTML = msg;
-                               } else {
-                                  this.setState (nodes[count]) ;
-                                  this.canvas.renderAll();
-                                  count = count + 1 ;
-                               }
-                             }, 1000) ;
- 
-      
-     } // end showSeq
-
-
-
-
 } // end guiBoard
