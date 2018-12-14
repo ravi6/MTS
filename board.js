@@ -78,4 +78,11 @@ class board {
        console.log ("Last Player:"  + (this.player? "o":"x") + "     Result: " + this.result);                          
     } // end show
 
+    id () { // Generate unique ID for the state
+        let str ="" ;
+        this.cells.forEach (function (e, i) {
+            str = str + e.cells[i] ;
+        });
+        return (str);
+    }
 } // End of board

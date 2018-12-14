@@ -77,22 +77,29 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
 
     learntPlay() { // returns true if I win 
      // Note: Opponent plays random
- 
-      var anode = game.root ;
+      var unknown = false ;
+      var anode = this.root ;
       var ab = anode.board.clone() ; // A temporary board we can play with 
+      var i = undefined ;
 
             while (ab.result == "NONE") { // Keep the play until conclusion 
+            
+             if (!unknown) {
 
-                if (anode.player) { // it is opponents turn 
+                if (ab.player) { // it is opponents turn 
                     let rnum = Math.floor (Math.random() * ab.moves.size) ;
                     let move  = Array.from (ab.moves)[rnum]; 
-                    ab.play (move) ;
-                }
-                else { // my turn .. and I am intelligent :))
-                     let i = anode.bestChild (game.UTCF) ;
-                     let move = ab.moves[i];
-                     ab.play (move) ;
-                }                                     
+                                        
+                    // check to see if he made unknown move (ie. not in the explored tree)
+                    i = anode.baord.moves.findIndex(function(e){return (e == move)}) ;
+                    unknown = (i == -1) ;
+                    
+                } else { // my turn .. and I am intelligent :))                    
+                       let i = anode.bestChild (game.UTCF) ;
+                       let move = ab.moves[i];
+                       ab.play (move) ;   
+                     }
+                     }                                     
              } 
 
          return (ab.player && ab.result == "WIN")
