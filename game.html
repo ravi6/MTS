@@ -114,8 +114,11 @@ var game = {} ;
 
 
 $("#btnplay").click(function(){
+for(let i=0 ; i<1 ; i++) {
  let win = game.learntPlay();
+ console.log(win);
  if (win) $("#outcome").html("I Win");
+}
 });
 
 

@@ -73,7 +73,7 @@ class node {  // A genertic node for Montecarlo Tree Search
       return ( Math.sqrt (x) ) ;
     } 
 
-    bestChild (fUTC) { // based on some measure return best child node index
+    bestChild (fUTC) { // based on some measure return best child node 
 
           let measure = [] ;
 
@@ -82,7 +82,7 @@ class node {  // A genertic node for Montecarlo Tree Search
 			                      measure.push (x) ;
                                     });
           let i = measure.indexOf (Math.max(...measure)) ;
-          return (i) ;  
+          return (this.children[i]) ;  
 
     } // end bestChild
 } // end node

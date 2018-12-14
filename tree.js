@@ -22,8 +22,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
        var anode = this.root ;       anode.trials = 1 ;
        while (anode.isExpanded () && !anode.isTerminal()) { // It has all of the potential children         
            //travel down the tree until you hit a node with unexplored moves 
-          let i = anode.bestChild (this.UTCF) ;
-          anode = anode.children[i] ;  // Latch on to the best and repeat
+          anode = anode.bestChild (this.UTCF) ;  // Latch on to the best and repeat
        }
           this.selNode = anode ;         
     } // end select
@@ -76,33 +75,47 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
 
 
     learntPlay() { // returns true if I win 
+
      // Note: Opponent plays random
       var unknown = false ;
       var anode = this.root ;
-      var ab = anode.board.clone() ; // A temporary board we can play with 
-      var i = undefined ;
+      var ab = anode.board.clone() ; // A temporary board we can play with    
 
-            while (ab.result == "NONE") { // Keep the play until conclusion 
-            
-             if (!unknown) {
+            while (ab.hasMoves()) { // Keep the play until conclusion 
+                 console.log(anode.depth, anode.index, ab.player);
+                 if (!unknown) { // The play is within explored territory
 
-                if (ab.player) { // it is opponents turn 
-                    let rnum = Math.floor (Math.random() * ab.moves.size) ;
-                    let move  = Array.from (ab.moves)[rnum]; 
+                    if (ab.player) { // it is opponents turn 
+                        let rnum = Math.floor (Math.random() * ab.moves.size) ;
+                        let move  = Array.from (ab.moves)[rnum]; 
+                        ab.play(move) ;  
                                         
-                    // check to see if he made unknown move (ie. not in the explored tree)
-                    i = anode.baord.moves.findIndex(function(e){return (e == move)}) ;
-                    unknown = (i == -1) ;
-                    
-                } else { // my turn .. and I am intelligent :))                    
-                       let i = anode.bestChild (game.UTCF) ;
-                       let move = ab.moves[i];
-                       ab.play (move) ;   
-                     }
-                     }                                     
-             } 
+                        // check to see if he made a move and landed in undiscovered node
+                        let movA = [] ;
+                        anode.children.forEach( function (e) {movA.push(e.board.move)});
+                        let i = movA.findIndex(function(e){return (e == move);}) ;
+                        //console.log(i, move, movA[i]);
+                        unknown = (i == -1) ;
+                        if (!unknown) anode = anode.children[i] ;
 
-         return (ab.player && ab.result == "WIN")
+                    } else { // my turn .. and I am intelligent :))                    
+                          ab.play (anode.bestChild(this.UTCF).board.move) ; // choose the best move
+                          anode = anode.bestChild(this.UTCF) ;         // ready for another iter       
+                    }
+
+                 } else { // landed in unknown terrain (both players blinded)
+                        console.log("random play");
+
+                        let rnum = Math.floor (Math.random() * ab.moves.size) ;
+                        let move  = Array.from (ab.moves)[rnum]; 
+                        ab.play(move) ;                               
+                        } 
+                         ab.show();
+            } // end while loop
+
+          
+
+           return (ab.player && (ab.result == "WIN")) ;
 
     } // end learntPlay
 
