@@ -17,6 +17,19 @@ function isEmpty(obj) { // empty object test
           && obj.constructor === Object ) ;
 }
 
+function getStats (vec) {  // Get Mean ans Std of a vector
+
+  var mean = 0 ;
+  for (let i=0 ; i<vec.length ; i++)  {mean = mean + vec[i]};
+  mean = mean / vec.length ;
+
+  var std = 0 ;
+  for (let i=0 ; i<vec.length ; i++)  {std = std + Math.pow((vec[i] - mean),2)};
+  std = Math.sqrt (std / (vec.length -1)); 
+
+  return ({mean: mean, std: std}) ;
+} // end getStats
+
 
 /* Does not seem to work
 Object.prototype.clone = function() { // A generic deep copy of any object

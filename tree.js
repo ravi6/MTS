@@ -21,7 +21,8 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
            
        var anode = this.root ;       anode.trials = 1 ;
        while (anode.isExpanded () && !anode.isTerminal()) { // It has all of the potential children         
-           //travel down the tree until you hit a node with unexplored moves 
+                                                            //travel down the tree until you hit a node
+                                                           // with unexplored moves 
           anode = anode.bestChild (this.UTCF) ;  // Latch on to the best and repeat
        }
           this.selNode = anode ;         
@@ -82,7 +83,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
       var ab = anode.board.clone() ; // A temporary board we can play with    
 
             while (ab.hasMoves()) { // Keep the play until conclusion 
-                 console.log(anode.depth, anode.index, ab.player);
+                
                  if ( !unknown && anode.hasChildren() )  { // The play is within explored territory
 
                     if (ab.player) { // it is opponents turn 
@@ -94,7 +95,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
                         let movA = [] ;
                         anode.children.forEach( function (e) {movA.push(e.board.move)});
                         let i = movA.findIndex(function(e){return (e == move);}) ;
-                        //console.log(i, move, movA[i]);
+                        
                         unknown = (i == -1) ;
                         if (!unknown) anode = anode.children[i] ;
 
@@ -104,15 +105,14 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
                     }
 
                  } else { // landed in unknown terrain (both players blinded)
-                        console.log("random play");
+                        // console.log("random play");
                         let rnum = Math.floor (Math.random() * ab.moves.size) ;
                         let move  = Array.from (ab.moves)[rnum]; 
                         ab.play(move) ;                               
                         } 
-                 // ab.show();
+                 
             } // end while loop
 
-           //return (ab.player && (ab.result == "WIN")) ;
              return (ab);
 
     } // end learntPlay

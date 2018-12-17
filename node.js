@@ -53,12 +53,10 @@ class node {  // A genertic node for Montecarlo Tree Search
             anode.board.play(move);           
             this.children.push (anode) ; // A child is born
 
-
-            // console.log( "New Child: ", anode);
-           //  anode.board.show();
-             return (anode);
+            return (anode);
+             
         } else {
-             //  console.log("No more nodes to add") ;
+               //  console.log("No more nodes to add") ;
                return ({});  // return empty object
         } 
 

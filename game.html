@@ -40,7 +40,7 @@
 <div class="jumbotron text-center ">
 	<h1>Monte Carlo Tree Search Algorithm </h>
 		<h3> Ravi Saripalli </h3> <h4> 26th November 2018 </h4>
-		<p>	A test bed with the simple Tic Toc Toe game </p>
+		<p>	A test bed with the simple Tic Tac Toe game </p>
 </div>
 
 <div class="container">
@@ -56,26 +56,31 @@
 			 <input class="col-md-4 margin-bottom" type="number" min=0 step=10 id="nsim">
 
 			 <label class="col-md-8">Exploration Factor:</label>
-			 <input class="col-md-4 margin-bottom" type="number" min=0 max=2 step=0.1 id="utcf">
+			 <input class="col-md-4 margin-bottom" type="number"  
+			      data-toggle="tooltip" title="Increase this factor to add encourage selection of neglected children" min=0 max=2 step=0.1 id="utcf">
 
 			 <button id="simbtn" type="button" 
+			     data-toggle="tooltip" title="Runs through exploration, expansion, simulation, propagation cycles"
 				 class="btn btn-primary col-md-4 margin-bottom"  >simulate</button>
          </div>
 
            <div class="row">
 		   
-		     <label class="col-md-8">Total Nodes in the Tree:</label>
+		     <label class="col-md-8" data-toggle="tooltip" title="Nodes discovered">Total Nodes:</label>
 		     <label class="col-md-4" id="lblnodes"> ...</label>	    
 	
 		      <button id="btnplay" type="button" 
+		         data-toggle="tooltip" title="Runs 100 batches of real 100 plays based on the above learning."
 				 class="btn btn-primary col-md-12 " >play</button>
 				 <span class="col-md-8"></span>
 				 	     
 		    
-		     <label class="col-md-8">Percent Wins :</label>
+		     <label class="col-md-8"
+		      data-toggle="tooltip" title="Number of wins in the current batch of plays">Percent Wins :</label>
 		     <label class="col-md-4" id="lblPWins">...</label>
 
-		     <label class="col-md-8">Mean</label>
+		     <label class="col-md-8"
+		         data-toggle="tooltip" title="Statistics based on all batches of plays">Mean</label>
 		     <label class="col-md-4" id="lblMean">...</label>
 		     <label class="col-md-8">Std</label>
 		     <label class="col-md-4" id="lblStd">...</label>
@@ -83,7 +88,7 @@
 		</div>
 
 	   <div class="col col-md-9 margin-bottom" >
-		  <h3>Tic Toc Toe</h3>
+		  <h3>Tic Tac Toe</h3>
 		  <canvas id="canvas">  </canvas>	
 		   <div class="col-md-12 margin-bottom" id="outcome" >
 		   </div> 
@@ -111,30 +116,32 @@
 var game = {} ;
 
     $(document).ready(function() {
-
       $("#nsim").val(100) ;
       $("#nexp").val(100) ;
       $("#utcf").val(0.2) ;
     }); // end of Initial Set up
 
 
-
-
+var ticker = true ;
+var tickerID = setInterval(function(){ticker = !ticker},1000);
 
 function miniPlay () {  // Breaking down big iteration execution
-                            // with setTimeOut
-	    const NPLAYS = 100 ;
-        const NBATCHS = 100 ;
-        const DELAY = 1 ; // milliseconds
+                        // with setTimeOut
+	    const NPLAYS = 100 ;  // in a batch
+        const NBATCHS = 100 ; // no. of batches
+        const DELAY = 1 ;    // milliseconds .. yielding
 
-			   ab = game.learntPlay() ;  gb.setState(ab); canvas.renderAll() ;// show it
-			   win = ab.player && (ab.result == "WIN")	;
-			    let txt = win ? "o: Wins!!" : "o:((" ;	
-			    $("#outcome").html("batch: " + data.nbatch +  " play:" + data.count + "  " + txt);
-		  
+			    ab = game.learntPlay() ;  			  
+			    win = ab.player && (ab.result == "WIN")	;
+			    
+			    if (ticker) { // We display every so often (crude setup)
+                  gb.setState(ab); canvas.renderAll() ;// show it			    
+			      let txt = win ? "o: Wins!!" : "o:((" ;	
+			      $("#outcome").html("batch: " + data.nbatch +  " play:" + data.count + "  " + txt);
+			    }
+
 			   if (win) {
 			   	  data.count = data.count + 1 ;				   	 
-
 			   }
 			   
 			   if ( data.nplays < NPLAYS ) {
@@ -152,10 +159,6 @@ function miniPlay () {  // Breaking down big iteration execution
 			   	      $("#lblStd").html(stats.std.toPrecision(2));
 			   }
 
-// We have our answers
-   // console.log (this.data.wins) ;
-   // console.log (getStats (this.data.wins));
-			          
 } // end MiniPlay
 
 
@@ -194,18 +197,7 @@ function status(msg) { // Add messages to status
     $("#status").append(br, content) ;
 }
 
-function getStats (vec) {
 
-  var mean = 0 ;
-  for (let i=0 ; i<vec.length ; i++)  {mean = mean + vec[i]};
-  mean = mean / vec.length ;
-
-  var std = 0 ;
-  for (let i=0 ; i<vec.length ; i++)  {std = std + Math.pow((vec[i] - mean),2)};
-  std = Math.sqrt (std / (vec.length -1)); 
-
-  return ({mean: mean, std: std}) ;
-} // end getStats
 </script>
 
 </html>
