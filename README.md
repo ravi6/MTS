@@ -17,10 +17,11 @@ Tic Tac Toe
             ## The MonteCarlo Tree Search in my own words
              
             ### Selection
-              Starting from root node, look for fully expanded node whose all possible children have
-              been spawned and initialized. Choose the best of the children based on win/trials ratio
-              With the best child continue the process until you hit unexpanded or partially expanded node.
-
+              Starting from root node,
+              if fully expanded node (all possible children have been spawned and initialized) 
+              Choose the best of the children based on win/trials ratio and repeat selection process until           
+              until an unexpanded or partially expanded node.  (more on selection criterion in footnote)
+              
             ### Epansion 
                First spawn off a new child node from the previously found partiallly expanded node. 
                If it is not terminal node (node that can't have children).  
@@ -34,11 +35,14 @@ Tic Tac Toe
                With the end result of the game at hand, propagate the information up the tree till we reach the root
                re-enforcing the desired behaviour.
 
-         
+        
          Repeat enough times until some convergence ...
 
-         .... reward calculations are yet to be properly implemented
-         ....  Expansion of tree heuristics yet to be understood   
+     Biasing Selection criterion towards less used children (discovered)
+         The selection criterion (win/trial ratio)  can be furher
+              refined (UTC) add bias towards children who are less visted. This is done by augmenting the win/trial ratio
+              with a function that adds bias based on the ratio of current node trials to the parent node trials.
+
 
   * 12 Dec.  Overall algorithm implemented. Few tests with random light play
             were made. UTC component that allows tree exploration based on 
