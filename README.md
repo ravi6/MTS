@@ -51,3 +51,13 @@ Tic Tac Toe
             be coded. I though I had that with bestChildren chain. But that appears
             incorrect, because opponent play should be random but should not be 
             based on what is best for you :((
+ 
+ * 17 Dec.  Implemented learntPlay, where 'o' player makes use of the learnt behaviour whenever he can,
+            the opponent always plays random. (misses even obvious wins/losses). If the opponent makes a move
+            that pushes the game into unexplored tree, even the 'o' player has no other go but to play random.
+            All of this logic is implemented. GUI elements to examine statistics of such a game is added.
+            Considering several sets of game plays, statstics of the outcome is extracted based on the sets of the games
+            100 sets of 100 games each. (say).  Because JavaScript is single thread execution, for gui to work properly
+            heavy cpu functions need to be split into smaller chunks with recourse to "setTimeout" calls and recursive functions.
+
+ 
