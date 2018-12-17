@@ -33,9 +33,9 @@ class guiBoard { // TicToc board graphics
 
      } // end constructor
 
-     setState (node) { //  Display given nodes state
+     setState (board) { //  Display given board 
        this.gcells.forEach (function (e, i){
-                   let txt = node.board.cells[i] ;
+                   let txt = board.cells[i] ;
                    e.tbox.set('text', txt);
                     });
      }

@@ -49,38 +49,43 @@
 	   <div class="col-md-3">
 	   <div class="row">
 		  <h3>Parameters</h3>
-			 <label class="col-sm-8">No. of Expolorations:</label>
-			 <input class="col-sm-4 margin-bottom" type="number" min=0 step=10  id="nexp">
+			 <label class="col-md-8">No. of Expolorations:</label>
+			 <input class="col-md-4 margin-bottom" type="number" min=0 step=10  id="nexp">
 
-			 <label class="col-sm-8"> No. of Simulations:</label>
-			 <input class="col-sm-4 margin-bottom" type="number" min=0 step=10 id="nsim">
+			 <label class="col-md-8"> No. of Simulations:</label>
+			 <input class="col-md-4 margin-bottom" type="number" min=0 step=10 id="nsim">
 
-			 <label class="col-sm-8">Exploration Factor:</label>
-			 <input class="col-sm-4 margin-bottom" type="number" min=0 max=2 step=0.1 id="utcf">
+			 <label class="col-md-8">Exploration Factor:</label>
+			 <input class="col-md-4 margin-bottom" type="number" min=0 max=2 step=0.1 id="utcf">
 
 			 <button id="simbtn" type="button" 
-				 class="btn btn-primary col-sm-6">simulate</button>
+				 class="btn btn-primary col-md-4 margin-bottom"  >simulate</button>
          </div>
 
            <div class="row">
-		     <h3>Output</h3>
-		     
-		     <label class="col-sm-8">Total Nodes in the Tree:</label>
-		     <label class="col-sm-4" id="lblnodes"></label>
+		   
+		     <label class="col-md-8">Total Nodes in the Tree:</label>
+		     <label class="col-md-4" id="lblnodes"> ...</label>	    
+	
+		      <button id="btnplay" type="button" 
+				 class="btn btn-primary col-md-12 " >play</button>
+				 <span class="col-md-8"></span>
+				 	     
+		    
+		     <label class="col-md-8">Percent Wins :</label>
+		     <label class="col-md-4" id="lblPWins">...</label>
 
-		     <label class="col-sm-8">Percent Wins :</label>
-		     <label class="col-sm-4" id="lblWins"></label>
-		     
-		     <button id="btnplay" type="button" 
-				 class="btn btn-primary col-sm-6" >play</button>
+		     <label class="col-md-8">Mean</label>
+		     <label class="col-md-4" id="lblMean">...</label>
+		     <label class="col-md-8">Std</label>
+		     <label class="col-md-4" id="lblStd">...</label>
 		   </div>
 		</div>
 
-
-	   <div class="col-md-9 margin-bottom" >
+	   <div class="col col-md-9 margin-bottom" >
 		  <h3>Tic Toc Toe</h3>
 		  <canvas id="canvas">  </canvas>	
-		   <div class="col-md-12 margin-bottome" id="outcome" >
+		   <div class="col-md-12 margin-bottom" id="outcome" >
 		   </div> 
 	  </div>
 
@@ -113,12 +118,50 @@ var game = {} ;
     }); // end of Initial Set up
 
 
-$("#btnplay").click(function(){
-for(let i=0 ; i<1 ; i++) {
- let win = game.learntPlay();
- console.log(win);
- if (win) $("#outcome").html("I Win");
-}
+
+
+
+function miniPlay () {  // Breaking down big iteration execution
+                            // with setTimeOut
+	    const NPLAYS = 100 ;
+        const NBATCHS = 100 ;
+        const DELAY = 1 ; // milliseconds
+
+			   ab = game.learntPlay() ;  gb.setState(ab); canvas.renderAll() ;// show it
+			   win = ab.player && (ab.result == "WIN")	;
+			    let txt = win ? "o: Wins!!" : "o:((" ;	
+			    $("#outcome").html("batch: " + data.nbatch +  " play:" + data.count + "  " + txt);
+		  
+			   if (win) {
+			   	  data.count = data.count + 1 ;				   	 
+
+			   }
+			   
+			   if ( data.nplays < NPLAYS ) {
+			   	  data.nplays ++ ;
+			   	  setTimeout (miniPlay, DELAY) ;
+			   } else if (data.nbatch < NBATCHS ){
+			   	  data.wins.push (data.count);
+			   	  data.count = 0 ;
+			   	  data.nplays = 0 ;
+			   	  data.nbatch ++ ;
+			   	  setTimeout (miniPlay, DELAY)
+			   	  let stats = getStats(data.wins);
+			   	    $("#lblPWins").html(data.wins[data.nbatch-1]);
+			   	    $("#lblMean").html(stats.mean.toPrecision(2));
+			   	      $("#lblStd").html(stats.std.toPrecision(2));
+			   }
+
+// We have our answers
+   // console.log (this.data.wins) ;
+   // console.log (getStats (this.data.wins));
+			          
+} // end MiniPlay
+
+
+$("#btnplay").click (function() {
+	data = {wins:[], count: 0, nplays:0, nbatch: 0}	;
+	miniPlay () ;
 });
 
 
@@ -151,6 +194,18 @@ function status(msg) { // Add messages to status
     $("#status").append(br, content) ;
 }
 
+function getStats (vec) {
+
+  var mean = 0 ;
+  for (let i=0 ; i<vec.length ; i++)  {mean = mean + vec[i]};
+  mean = mean / vec.length ;
+
+  var std = 0 ;
+  for (let i=0 ; i<vec.length ; i++)  {std = std + Math.pow((vec[i] - mean),2)};
+  std = Math.sqrt (std / (vec.length -1)); 
+
+  return ({mean: mean, std: std}) ;
+} // end getStats
 </script>
 
 </html>

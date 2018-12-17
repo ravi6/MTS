@@ -74,8 +74,8 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
      } // end propagate
 
 
-    learntPlay() { // returns true if I win 
-
+    learntPlay() { // returns board state after play concluded
+   
      // Note: Opponent plays random
       var unknown = false ;
       var anode = this.root ;
@@ -83,7 +83,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
 
             while (ab.hasMoves()) { // Keep the play until conclusion 
                  console.log(anode.depth, anode.index, ab.player);
-                 if (!unknown) { // The play is within explored territory
+                 if ( !unknown && anode.hasChildren() )  { // The play is within explored territory
 
                     if (ab.player) { // it is opponents turn 
                         let rnum = Math.floor (Math.random() * ab.moves.size) ;
@@ -105,17 +105,15 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
 
                  } else { // landed in unknown terrain (both players blinded)
                         console.log("random play");
-
                         let rnum = Math.floor (Math.random() * ab.moves.size) ;
                         let move  = Array.from (ab.moves)[rnum]; 
                         ab.play(move) ;                               
                         } 
-                         ab.show();
+                 // ab.show();
             } // end while loop
 
-          
-
-           return (ab.player && (ab.result == "WIN")) ;
+           //return (ab.player && (ab.result == "WIN")) ;
+             return (ab);
 
     } // end learntPlay
 
