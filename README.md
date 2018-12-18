@@ -38,7 +38,8 @@ Tic Tac Toe
         
          Repeat enough times until some convergence ...
 
-     Biasing Selection criterion towards less used children (discovered)
+    ### Note: 
+    Biasing Selection criterion towards less used children (discovered)
          The selection criterion (win/trial ratio)  can be furher
               refined (UTC) add bias towards children who are less visted. This is done by augmenting the win/trial ratio
               with a function that adds bias based on the ratio of current node trials to the parent node trials.
