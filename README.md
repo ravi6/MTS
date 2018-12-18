@@ -39,6 +39,10 @@ Tic Tac Toe
               The selection criterion (win/trial ratio)  can be furher
               refined (UTC) add bias towards children who are less visted. This is done by augmenting the win/trial ratio
               with a function that adds bias based on the ratio of current node trials to the parent node trials.
+              That function is Alpha*sqrt( ln(Np) / Ni ). where Np and Ni are parent and child node trial counts respectively.
+              Alpha is an empirical constant. When Np is very large relative to Ni and Alpha is not zero the bias increases to allow
+              selection of neglected child. But when the are of similar magnitude the correction becomes relatively small. (We assume
+              Alpaha is of the order of 1. (It has been suggested that Alpha is theoretically 1.4. Rationale is not yet explored. 
         
               Repeat the process.  Simulation and propagation loop can be nested in the overall loop.
 
