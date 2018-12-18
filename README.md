@@ -19,31 +19,28 @@ Tic Tac Toe
             ### Selection
               Starting from root node,
               if fully expanded node (all possible children have been spawned and initialized) 
-              Choose the best of the children based on win/trials ratio and repeat selection process until           
-              until an unexpanded or partially expanded node.  (more on selection criterion in footnote)
+              Choose the best of the child nodes based on win/trials ratio and repeat selection process 
+              until anode with potential child nodes yet to be discovered is found.
               
             ### Epansion 
-               First spawn off a new child node from the previously found partiallly expanded node. 
-               If it is not terminal node (node that can't have children).  
+               Spawn off a new child node from the previously found partially expanded node
+               if it is not a terminal node (node that can't have children).  
              
             ### Simulation
-               play a random game from the freshly spawned child state
-               until game is drawn or over. (Note:) During this phase no new nodes are created but
+               play a random game from the freshly spawned child node until a terminal node is reached. 
+               (ie. game is drawn or over) (Note:) During this phase no new nodes are created but
                visited in a volatile space.
 
             ### Propagation
-               With the end result of the game at hand, propagate the information up the tree till we reach the root
-               re-enforcing the desired behaviour.
+               With the end result of the game at hand, propagate the information up the tree from the newly 
+               spawned node till we reach the root re-enforcing the desired behaviour.
 
-        
-         Repeat enough times until some convergence ...
-
-    ### Note: 
-    Biasing Selection criterion towards less used children (discovered)
-         The selection criterion (win/trial ratio)  can be furher
+           ### Note:  Biasing "selection" criterion towards less used but discovered children 
+              The selection criterion (win/trial ratio)  can be furher
               refined (UTC) add bias towards children who are less visted. This is done by augmenting the win/trial ratio
               with a function that adds bias based on the ratio of current node trials to the parent node trials.
-
+        
+              Repeat the process.  Simulation and propagation loop can be nested in the overall loop.
 
   * 12 Dec.  Overall algorithm implemented. Few tests with random light play
             were made. UTC component that allows tree exploration based on 
