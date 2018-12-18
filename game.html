@@ -44,65 +44,82 @@
 </div>
 
 <div class="container">
-  <div class="row">
+    <div class="row"> <!--container row1  -->
 
 	   <div class="col-md-3">
-	   <div class="row">
-		  <h3>Parameters</h3>
-			 <label class="col-md-8">No. of Expolorations:</label>
-			 <input class="col-md-4 margin-bottom" type="number" min=0 step=10  id="nexp">
-
-			 <label class="col-md-8"> No. of Simulations:</label>
-			 <input class="col-md-4 margin-bottom" type="number" min=0 step=10 id="nsim">
-
-			 <label class="col-md-8">Exploration Factor:</label>
-			 <input class="col-md-4 margin-bottom" type="number"  
-			      data-toggle="tooltip" title="Increase this factor to add encourage selection of neglected children" min=0 max=2 step=0.1 id="utcf">
-
-			 <button id="simbtn" type="button" 
-			     data-toggle="tooltip" title="Runs through exploration, expansion, simulation, propagation cycles"
-				 class="btn btn-primary col-md-4 margin-bottom"  >simulate</button>
-         </div>
-
-           <div class="row">
-		   
-		     <label class="col-md-8" data-toggle="tooltip" title="Nodes discovered">Total Nodes:</label>
-		     <label class="col-md-4" id="lblnodes"> ...</label>	    
-	
-		      <button id="btnplay" type="button" 
-		         data-toggle="tooltip" title="Runs 100 batches of real 100 plays based on the above learning."
-				 class="btn btn-primary col-md-12 " >play</button>
-				 <span class="col-md-8"></span>
-				 	     
-		    
-		     <label class="col-md-8"
-		      data-toggle="tooltip" title="Number of wins in the current batch of plays">Percent Wins :</label>
-		     <label class="col-md-4" id="lblPWins">...</label>
-
-		     <label class="col-md-8"
-		         data-toggle="tooltip" title="Statistics based on all batches of plays">Mean</label>
-		     <label class="col-md-4" id="lblMean">...</label>
-		     <label class="col-md-8">Std</label>
-		     <label class="col-md-4" id="lblStd">...</label>
+		   <div class="row">
+			  <h3>Parameters</h3>
+				 <label class="col-md-8">No. of Expolorations:</label>
+				 <input class="col-md-4 margin-bottom" type="number" min=0 step=10  id="nexp">
 		   </div>
-		</div>
+		   <div class="row">
+				 <label class="col-md-8"> No. of Simulations:</label>
+				 <input class="col-md-4 margin-bottom" type="number" min=0 step=10 id="nsim">
+		   </div>
 
-	   <div class="col col-md-9 margin-bottom" >
-		  <h3>Tic Tac Toe</h3>
-		  <canvas id="canvas">  </canvas>	
-		   <div class="col-md-12 margin-bottom" id="outcome" >
-		   </div> 
-	  </div>
+		   <div class="row">
+				 <label class="col-md-8">Exploration Factor:</label>
+				 <input class="col-md-4 margin-bottom" type="number"  
+					  data-toggle="tooltip" title="Upper Confidence Bound Tree (UCT) factor. Increase it to encourage selection of neglected children"
+                                          min=0 max=2 step=0.1 id="utcf">
+		   </div>
 
-  </div> 
+		   <div class="row">
+				 <button id="simbtn" type="button" 
+					 data-toggle="tooltip" title="Runs through selection, expansion, simulation, propagation cycles"
+					 class="btn btn-primary col-md-4 margin-bottom"  >simulate</button>
+	  	   </div>
 
-  <div class=row>
-      <h3>Status</h3>
-    <div id="status" class=well rounded style="height:60px; overflow: scroll">
-    </div>
-  </div>
+		  <div class="row">		   
+				 <label class="col-md-8" data-toggle="tooltip" title="Nodes discovered">Total Nodes:</label>
+				 <label class="col-md-4" id="lblnodes"> ...</label>	    
+                  </div>
 
-</div>
+		  <div class="row">		   
+                                 <button  id="btnplay" type="button" 
+					 data-toggle="tooltip" title="Runs 100 batches of real 100 plays based on the above learning."
+                                         class="btn btn-primary col-md-4">play</button> 
+                  </div>
+
+		  <div class="row">		   
+				 <label class="col-md-8"
+				  data-toggle="tooltip" title="Number of wins in the current batch of plays">Percent Wins :</label>
+				 <label class="col-md-4" id="lblPWins">...</label>
+                  </div>
+
+		  <div class="row">		   
+				 <label class="col-md-8"
+					 data-toggle="tooltip" title="Statistics based on all batches of plays">Mean</label>
+				 <label class="col-md-4" id="lblMean">...</label>
+                  </div>
+
+		  <div class="row">		   
+				 <label class="col-md-8">Std</label>
+				 <label class="col-md-4" id="lblStd">...</label>
+		 </div>
+           </div> <!-- end large first column -->
+
+            <div class="col-md-9 margin-bottom" >
+		  <div class="row">		   
+			<h3>Tic Tac Toe</h3>
+			<div  class="col-md-6">
+			   <canvas id="canvas"></canvas></div>
+			<div  class="col-md-6">
+     		          <img src= "mcts.png" width=100%></img></div>	 
+	          </div> 
+		  <div class="row">		   
+   	              <div class="col-md-12 margin-bottom" id="outcome" >
+	          </div> 
+            </div>  <!-- end large second column -->
+
+      </div> <!-- end container row1 -->
+
+      <div class=row>  <!-- container row 2 -->
+        <h3>Status</h3>
+        <div id="status" class=well rounded style="height:60px; overflow: scroll"> </div>
+      </div>  <!--  end container row2 -->
+
+  </div> <!-- end container -->
 <script>
    
  var canvas = new fabric.Canvas("canvas", {backgroundColor: 'lightyellow',
@@ -193,8 +210,10 @@ function status(msg) { // Add messages to status
     // an easier way is to use innerHTML but that is not safe!!!
     var br = document.createElement("br") ;
     var d = new Date();    var n = d.toLocaleString();
-    var content = document.createTextNode(n + ": " + msg) ; 
-    $("#status").append(br, content) ;
+    var content = document.createTextNode(n + ": " + msg ) ; 
+   var stat =  $("#status") ;
+    stat.append(br, content) ;
+    stat.scrollTop(40)  ; 
 }
 
 
