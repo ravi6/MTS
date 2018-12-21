@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="flot/jquery.flot.js"></script>
 <style>
 
   .margin-bottom {
@@ -73,13 +74,13 @@
 		  <div class="row">		   
 				 <label class="col-md-8" data-toggle="tooltip" title="Nodes discovered">Total Nodes:</label>
 				 <label class="col-md-4" id="lblnodes"> ...</label>	    
-                  </div>
+          </div>
 
 		  <div class="row">		   
-                                 <button  id="btnplay" type="button" 
-					 data-toggle="tooltip" title="Runs 100 batches of real 100 plays based on the above learning."
-                                         class="btn btn-primary col-md-4">play</button> 
-                  </div>
+                 <button  id="btnplay" type="button" 
+			     data-toggle="tooltip" title="Runs 100 batches of real 100 plays based on the above learning."
+                 class="btn btn-primary col-md-4">play</button> 
+          </div>
 
 		  <div class="row">		   
 				 <label class="col-md-8"
@@ -91,25 +92,25 @@
 				 <label class="col-md-8"
 					 data-toggle="tooltip" title="Statistics based on all batches of plays">Mean</label>
 				 <label class="col-md-4" id="lblMean">...</label>
-                  </div>
+          </div>
 
 		  <div class="row">		   
 				 <label class="col-md-8">Std</label>
 				 <label class="col-md-4" id="lblStd">...</label>
 		 </div>
-           </div> <!-- end large first column -->
+       </div> <!-- end large first column -->
 
-            <div class="col-md-9 margin-bottom" >
+       <div class="col-md-9 margin-bottom" >
 		  <div class="row">		   
 			<h3>Tic Tac Toe</h3>
 			<div  class="col-md-6">
-			   <canvas id="canvas"></canvas></div>
+			      <canvas id="canvas"></canvas></div>
 			<div  class="col-md-6">
-     		          <img src= "mcts.png" width=100%></img></div>	 
+     		       <img src= "mcts.png" width=100%></img></div>	 
 	          </div> 
 		  <div class="row">		   
    	              <div class="col-md-12 margin-bottom" id="outcome" >
-	          </div> 
+	      </div> 
             </div>  <!-- end large second column -->
 
       </div> <!-- end container row1 -->
@@ -119,12 +120,18 @@
         <div id="status" class=well rounded style="height:60px; overflow: scroll"> </div>
       </div>  <!--  end container row2 -->
 
+      
+     <div id="plotarea" class=well style="height:400px"></div>
+
+
   </div> <!-- end container -->
 <script>
    
  var canvas = new fabric.Canvas("canvas", {backgroundColor: 'lightyellow',
                                               width: 400, height: 400});
  var gb = new guiBoard (canvas) ;
+
+ var myplot = {} ;
 
   // var my = new myTbox ("Ravi Sankar", 150, 100);
   //my.group.top = 100 ;  my.group.left = 100 ;  my.flashtxt(true);
@@ -173,7 +180,7 @@ function miniPlay () {  // Breaking down big iteration execution
 			   	  let stats = getStats(data.wins);
 			   	    $("#lblPWins").html(data.wins[data.nbatch-1]);
 			   	    $("#lblMean").html(stats.mean.toPrecision(2));
-			   	      $("#lblStd").html(stats.std.toPrecision(2));
+			   	    $("#lblStd").html(stats.std.toPrecision(2));
 			   }
 
 } // end MiniPlay
@@ -181,7 +188,15 @@ function miniPlay () {  // Breaking down big iteration execution
 
 $("#btnplay").click (function() {
 	data = {wins:[], count: 0, nplays:0, nbatch: 0}	;
-	miniPlay () ;
+	// miniPlay () ;
+   // plotme();
+   var series = [( [][[1,2], [2,4], [3,6]], 
+                 [[1,2.2], [2,4.2], [3,6.2]], 
+                 [[1,2.3], [2,4.5], [3,6.2]]] );
+   console.log(myplot.options);
+   myplot.setData(data) ;
+   myplot.draw(); //console.log(data);
+  // $.plot("#plotarea", data);
 });
 
 
@@ -216,6 +231,17 @@ function status(msg) { // Add messages to status
     stat.scrollTop(40)  ; 
 }
 
+ myplot = $.plot("#plotarea",[{data: [[1,2],[2,3]]}]) ;
+ myplot.options = {
+				     series: {
+				   	     lines: { show: true },
+					    points: { show: true }
+				     }
+				   }; 
+				   myplot.draw();
+
+
+		
 
 </script>
 
