@@ -131,11 +131,15 @@
                                               width: 400, height: 400});
  var gb = new guiBoard (canvas) ;
 
- var myplot = {} ;
-
-  // var my = new myTbox ("Ravi Sankar", 150, 100);
-  //my.group.top = 100 ;  my.group.left = 100 ;  my.flashtxt(true);
-
+ var myplot = { 
+                     id: "#plotarea",
+                 series: [],
+                 options: {  // flot plot default options
+   	                       series: {
+	                                 lines: { show: true },
+	                                 points: { show: true }
+	                               }}};
+                          
 
 var game = {} ;
 
@@ -183,20 +187,23 @@ function miniPlay () {  // Breaking down big iteration execution
 			   	    $("#lblStd").html(stats.std.toPrecision(2));
 			   }
 
+			 
+	let stats = getStats(data.wins);
+	ser.push([data.nbatch, stats.mean]);
+	console.log(ser);
+	$.plot(myplot.id, [ser], myplot.options);
+
+
 } // end MiniPlay
 
 
 $("#btnplay").click (function() {
 	data = {wins:[], count: 0, nplays:0, nbatch: 0}	;
-	// miniPlay () ;
+	ser = [] ;
+	miniPlay () ;
+	
    // plotme();
-   var series = [( [][[1,2], [2,4], [3,6]], 
-                 [[1,2.2], [2,4.2], [3,6.2]], 
-                 [[1,2.3], [2,4.5], [3,6.2]]] );
-   console.log(myplot.options);
-   myplot.setData(data) ;
-   myplot.draw(); //console.log(data);
-  // $.plot("#plotarea", data);
+  
 });
 
 
@@ -231,14 +238,7 @@ function status(msg) { // Add messages to status
     stat.scrollTop(40)  ; 
 }
 
- myplot = $.plot("#plotarea",[{data: [[1,2],[2,3]]}]) ;
- myplot.options = {
-				     series: {
-				   	     lines: { show: true },
-					    points: { show: true }
-				     }
-				   }; 
-				   myplot.draw();
+			      
 
 
 		
