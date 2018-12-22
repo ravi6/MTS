@@ -143,87 +143,103 @@
 
 var game = {} ;
 
-    $(document).ready(function() {
-      $("#nsim").val(100) ;
-      $("#nexp").val(100) ;
-      $("#utcf").val(0.2) ;
+
+var ticker = true ;
+var tickerID = setInterval(function(){ticker = !ticker},10);
+
+var sim = {nexp: 100, nsim: 100, utcf: 0.2};
+
+
+$(document).ready(function() {
+      $("#nsim").val(sim.nsim) ;
+      $("#nexp").val(sim.nexp) ;
+      $("#utcf").val(sim.utcf) ;
     }); // end of Initial Set up
 
 
-var ticker = true ;
-var tickerID = setInterval(function(){ticker = !ticker},1000);
-
-function miniPlay () {  // Breaking down big iteration execution
+function miniPlay (data) { // returns statistics after several plays
+ // Breaking down big iteration execution
                         // with setTimeOut
-	    const NPLAYS = 100 ;  // in a batch
-        const NBATCHS = 100 ; // no. of batches
+	    const NPLAYS = 10 ;  // in a batch
+        const NBATCHS = 10 ; // no. of batches
         const DELAY = 1 ;    // milliseconds .. yielding
+        
+        // Kludge to allow Timeout function to be used with miniPlay which takes an argument
+        var myfun = function (param) {
+        	             setTimeout (function (){ miniPlay (param); }, DELAY) ; }
 
 			    ab = game.learntPlay() ;  			  
 			    win = ab.player && (ab.result == "WIN")	;
 			    
-			    if (ticker) { // We display every so often (crude setup)
-                  gb.setState(ab); canvas.renderAll() ;// show it			    
-			      let txt = win ? "o: Wins!!" : "o:((" ;	
-			      $("#outcome").html("batch: " + data.nbatch +  " play:" + data.count + "  " + txt);
-			    }
+				if (ticker) { // We display every so often (crude setup)
+					  gb.setState(ab); canvas.renderAll() ;// show it			    
+					  let txt = win ? "o: Wins!!" : "o:((" ;	
+					  $("#outcome").html("batch: " + data.nbatch +  " play:" + data.count + "  " + txt);
+				}
 
 			   if (win) {
 			   	  data.count = data.count + 1 ;				   	 
 			   }
 			   
 			   if ( data.nplays < NPLAYS ) {
-			   	  data.nplays ++ ;
-			   	  setTimeout (miniPlay, DELAY) ;
+			   	       data.nplays ++ ;
+			   	       myfun (data, DELAY) ;
+			   	       //setTimeout (miniPlay, DELAY) ;
+
 			   } else if (data.nbatch < NBATCHS ){
-			   	  data.wins.push (data.count);
-			   	  data.count = 0 ;
-			   	  data.nplays = 0 ;
-			   	  data.nbatch ++ ;
-			   	  setTimeout (miniPlay, DELAY)
-			   	  let stats = getStats(data.wins);
-			   	    $("#lblPWins").html(data.wins[data.nbatch-1]);
-			   	    $("#lblMean").html(stats.mean.toPrecision(2));
-			   	    $("#lblStd").html(stats.std.toPrecision(2));
+			   	    data.wins.push (data.count);
+			   	    data.count = 0 ;
+			   	    data.nplays = 0 ;
+			   	    data.nbatch ++ ;
+			   	    myfun (data) ;
+			   	    // setTimeout (miniPlay, DELAY) ;
+			   	    $("#lblPWins").html(data.wins[data.nbatch-1]);		   	       
+                  			   	  			   	   
+			   } else { // All batches done
+	                let stats = getStats(data.wins);
+                    $("#lblMean").html(stats.mean.toPrecision(2));
+	                $("#lblStd").html(stats.std.toPrecision(2));	
+                    status("miniPlay Done");
+                    return (stats);
 			   }
-
-			 
-	let stats = getStats(data.wins);
-	ser.push([data.nbatch, stats.mean]);
-	console.log(ser);
-	$.plot(myplot.id, [ser], myplot.options);
-
 
 } // end MiniPlay
 
 
 $("#btnplay").click (function() {
-	data = {wins:[], count: 0, nplays:0, nbatch: 0}	;
-	ser = [] ;
-	miniPlay () ;
-	
-   // plotme();
-  
+    var data = {wins: [], nplays: 0, nbatch: 0, count: 0, stats: {} };
+	miniPlay (data) ;
+	console.log(data);
 });
 
 
 $("#simbtn").click(function() {
   
-  status ("Started Tree Search") ;
-    game = new tree(); game.UTCF =  $("#utcf").val() ;
-   console.log("Root Node: \n", game.root);
-  
-  for (let i=0 ; i < $("#nexp").val() ; i++) {  
-     game.select() ;  
-     for(let j=0 ; j < $("#nsim").val() ; j++) {   
-        game.simulate() ;   
-        game.propagate() ;   
-  }};
-
-  status ("Tree Search Completed") ;
-  $("#lblnodes").html(game.NodeSet.length) ;
+	  status ("Started Tree Search") ;
+	  sim.nexp = $("#nexp").val();
+	  sim.nsim = $("#nsim").val();
+	  sim.utcf = $("#utcf").val();
+	  mtsCycle();
+	  status ("Tree Search Completed") ;
+	  $("#lblnodes").html(game.NodeSet.length) ;
 
 }); // Simulation button click 
+
+
+
+
+function mtsCycle() { // MonteCarlo Tree SEP
+
+  game = new tree(); game.UTCF =  sim.utcf;
+  
+  for (let i=0 ; i < sim.nexp ; i++) {  
+     game.select() ;  
+     for(let j=0 ; j < sim.nsim ; j++) {   
+        game.simulate() ;   
+        game.propagate() ;   
+     }};
+} // end mtsCycle
+
 
 
 
@@ -233,16 +249,11 @@ function status(msg) { // Add messages to status
     var br = document.createElement("br") ;
     var d = new Date();    var n = d.toLocaleString();
     var content = document.createTextNode(n + ": " + msg ) ; 
-   var stat =  $("#status") ;
+    var stat =  $("#status") ;
     stat.append(br, content) ;
     stat.scrollTop(40)  ; 
 }
-
-			      
-
-
-		
-
+			     
 </script>
 
 </html>
