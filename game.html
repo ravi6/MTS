@@ -160,8 +160,8 @@ $(document).ready(function() {
 function miniPlay (data) { // updates data statistics after several plays back in data
  // Breaking down big iteration execution
                         // with setTimeOut
-	    const NPLAYS = 10 ;  // in a batch
-        const NBATCHS = 10 ; // no. of batches
+	    const NPLAYS = 100 ;  // in a batch
+        const NBATCHS = 100 ; // no. of batches
         const DELAY = 1 ;    // milliseconds .. yielding
         
         // Kludge to allow Timeout function to be used with miniPlay which takes an argument
@@ -197,31 +197,49 @@ function miniPlay (data) { // updates data statistics after several plays back i
                   			   	  			   	   
 			   } else { // All batches done
 	                let stats = getStats(data.wins);
+	                data.stats = stats ;
                     $("#lblMean").html(stats.mean.toPrecision(2));
 	                $("#lblStd").html(stats.std.toPrecision(2));	
-                    status("miniPlay Done");                   
+                    status("miniPlay Done Calling back"); 
+                    data.cb(data) ; // make the call back passing info                  
 			   }
 
 } // end MiniPlay
 
 
-function doit() {// some batch process that gives some trends
+function doit(count) {// some batch process that gives some trends
+   const NMAX = 100 ;
 
-   sim = {nexp: 10, nsim: 10, utcf: 0.2};
-    var ser1 = {label: "100,100,0.2 CyclePlay", data: []} ;
-    for (let i=0; i<100 ; i++) {
-    	console.log(i);
-  	  mtsCycle();
-  	  let data = {wins: [], nplays: 0, nbatch: 0,
-  	               count: 0, stats: {} };
-	  miniPlay (data) ;
-	  ser1.data.push = [i+1, data.stats.mean];
-
-	  $.plot(myplot.id, [ser1], myplot.options);
+    if (count == 0) {
+        sim = {nexp: 100, nsim: 100, utcf: 0.2};
+        myplot.series.push({label: "100,100,0.2 CyclePlay", data: []}) ;
     }
+
+    var myfun = function (param) {
+        	             setTimeout (function (){ doit (param); }, 10) ; }   
+ 
+    if ( count < NMAX )
+    {
+		mtsCycle();
+
+		let cb = function (data) {
+						myplot.series[0].data.push([count+1, data.stats.mean]);
+						$.plot(myplot.id, myplot.series, myplot.options);  
+						count = count + 1;
+						doit (count);
+						//console.log(myplot.series[0].data);
+				 } // end callback definition
+
+		let data = {wins: [], nplays: 0, nbatch: 0,
+					   count: 0, stats: {},  cb: cb};
+		miniPlay (data) ;
+    } else {
+    	console.log ("We are Done");
+    }
+	  
 } // end doit
 
-$(function(){doit();})
+$(function(){doit(0);})
 
 $("#btnplay").click (function() {
     var data = {wins: [], nplays: 0, nbatch: 0, count: 0, stats: {} };
