@@ -1,0 +1,7 @@
+23rd Dec. 2018
+First two figures are the runs with iffy .. becaus
+the sim variable passed is potentially changed in the second range call
+(object arguments are always by reference)
+The third figure is the result after fixing that issue.
+Still  I don't see huge change in behaviour. I was hoping to see big
+change in result with utc factor change but nothing of that sort so far.
