@@ -33,19 +33,14 @@ $("#btnplay").click (function() {
 });
 
 $("#btnPlot").click (function() {
-
-    let ser = {label: "500,100,0.2 CyclePlay", data: []} ;
-    myplot.series.push(ser);
-    plotit ({ ser:   myplot.series[myplot.series.length-1],
-              count: 0, sim: {nexp: 500, nsim: 100, utcf: 0.2} }); 
-               
-    ser = {label: "500,100,1.4 CyclePlay", data: []} ;
-    myplot.series.push(ser);
-    plotit ({ ser: myplot.series[myplot.series.length-1],
-              count: 0, sim: {nexp: 500, nsim: 100, utcf: 1.4} }); 
+  
+RunTest2 ({ ser: {label: "", data: []},	               
+	        sim: {nexp:  $("#nexp").val(),
+	              nsim:  0, utcf: 0}, // these two are dummy arguments
+	       count: 0}); 
 });
 
-$("#simbtn").click(function() {  
+$("#btnSim").click(function() {  
 	  status ("Started Tree Search") ;
 	  let sim = {} ;
 	  sim.nexp = $("#nexp").val();
@@ -104,12 +99,57 @@ function miniPlay (data) { // updates data statistics after several plays back i
 			   }
 } // end MiniPlay
 
-function plotit (pdata) {// some batch process that gives some trends
+function RunTest1() {
+	// This tests sensitivity of game outcome to UTCF,
+	// Number of simulations and expansion cycles
 
-   const NMAX = 10 ;
+	let ser = {label: "500,100,0.2 CyclePlay", data: []} ;
+    myplot.series.push(ser);
+    Test1 ({ ser:   myplot.series[myplot.series.length-1],
+              count: 0, sim: {nexp: 500, nsim: 100, utcf: 0.2} }); 
+               
+    ser = {label: "500,100,1.4 CyclePlay", data: []} ;
+    myplot.series.push(ser);
+    Test1 ({ ser: myplot.series[myplot.series.length-1],
+              count: 0, sim: {nexp: 500, nsim: 100, utcf: 1.4} });
+} // end of RunTest1
+
+
+function RunTest2 (pdata) {
+	// Show how the tree is going through number of nodes
+	// The number of nodes statistics for a given no. of exploration
+	 // minify my compute
+        var myfun = function (param) {
+        	             setTimeout (function (){ RunTest2 (param); }, 10) ; }
+	      
+   if (pdata.count < 100) {   	             
+	     mtsCycle(pdata.sim);
+	     pdata.ser.data.push ([pdata.count, game.NodeSet.length]) ;
+	     pdata.count = pdata.count +1 ;
+	     myfun(pdata) ;
+   } else {       
+      let v = [] ;
+      pdata.ser.data.forEach (function (vec) {
+      	v.push (vec[1]);});
+	  let stats = getStats (v);
+	  let mean = stats.mean.toPrecision(2);
+      let std  = stats.std.toPrecision(2); 
+	  pdata.ser.label = "Nexp=" + pdata.sim.nexp + 
+	              " mean="+ mean + 
+	              " std=" + std ;
+	  myplot.series.push(pdata.ser);
+	  $.plot(myplot.id, myplot.series, myplot.options);
+	  	  console.log(myplot.series[0]);
+   }  
+} // RunTest2 end
+
+
+function Test1 (pdata) {// some batch process that gives some trends
+
+   const NMAX = 100 ;
 
     var myfun = function (param) {
-        	             setTimeout (function (){ plotit (param); }, 10) ; }   
+        	             setTimeout (function (){ Test1 (param); }, 10) ; }   
  
     if ( pdata.count < NMAX )
     {
@@ -130,7 +170,8 @@ function plotit (pdata) {// some batch process that gives some trends
     	console.log ("We are Done");
     }
 	  
-} // end plotit
+} // end Test1
+
 
 function mtsCycle(sim) { // MonteCarlo Tree SEP
 
@@ -143,6 +184,8 @@ function mtsCycle(sim) { // MonteCarlo Tree SEP
         game.propagate() ;   
      }};
 } // end mtsCycle
+
+
 
 
 function status(msg) { // Add messages to status

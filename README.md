@@ -66,4 +66,14 @@ Tic Tac Toe
             100 sets of 100 games each. (say).  Because JavaScript is single thread execution, for gui to work properly
             heavy cpu functions need to be split into smaller chunks with recourse to "setTimeout" calls and recursive functions.
 
- 
+ * 28 Dec.  Completed adding plottinig functionality to evaluate MTS performance
+            At this stage there appears not so significant performance when UTC
+            factor or expansion phase counts increases. This is a little surprising.
+            Has this any bearing to the fact that I favour the first discovered child
+            with highest score. (ie. ideally when many candidates with a tie some randomness
+            need to be used to pick the winner).
+            A big lesson, they are always passed by reference. Be very careful
+            especially when you are using Timeout calls with objects passed assume
+            as parameters. Have to make special effort if you want the state
+            of the passed object not changed between Timeout calls.
+
