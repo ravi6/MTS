@@ -80,6 +80,7 @@ class node {  // A genertic node for Montecarlo Tree Search
 			                      measure.push (x) ;
                                     });
           let i = measure.indexOf (Math.max(...measure)) ;
+
           return (this.children[i]) ;  
 
     } // end bestChild

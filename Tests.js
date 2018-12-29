@@ -33,12 +33,10 @@ $("#btnplay").click (function() {
 });
 
 $("#btnPlot").click (function() {
-  
-RunTest2 ({ ser: {label: "", data: []},	               
-	        sim: {nexp:  $("#nexp").val(),
-	              nsim:  0, utcf: 0}, // these two are dummy arguments
-	       count: 0}); 
+  RunTest2();
 });
+
+
 
 $("#btnSim").click(function() {  
 	  status ("Started Tree Search") ;
@@ -114,13 +112,20 @@ function RunTest1() {
               count: 0, sim: {nexp: 500, nsim: 100, utcf: 1.4} });
 } // end of RunTest1
 
+function RunTest2 () {
+	Test2 ({ ser: {label: "", data: []},	               
+	        sim: {nexp:  $("#nexp").val(),
+	              nsim:  $("#nsim").val(), 
+	              utcf:  $("#utcf").val()}, 
+	       count: 0}); 
+}	 // RunTest2
 
-function RunTest2 (pdata) {
+function Test2 (pdata) {
 	// Show how the tree is going through number of nodes
 	// The number of nodes statistics for a given no. of exploration
 	 // minify my compute
         var myfun = function (param) {
-        	             setTimeout (function (){ RunTest2 (param); }, 10) ; }
+        	             setTimeout (function (){ Test2 (param); }, 10) ; }
 	      
    if (pdata.count < 100) {   	             
 	     mtsCycle(pdata.sim);
@@ -135,13 +140,15 @@ function RunTest2 (pdata) {
 	  let mean = stats.mean.toPrecision(2);
       let std  = stats.std.toPrecision(2); 
 	  pdata.ser.label = "Nexp=" + pdata.sim.nexp + 
+	              " Nsim=" + pdata.sim.nsim +
+	              " Utcf=" + pdata.sim.utcf +
 	              " mean="+ mean + 
 	              " std=" + std ;
 	  myplot.series.push(pdata.ser);
 	  $.plot(myplot.id, myplot.series, myplot.options);
-	  	  console.log(myplot.series[0]);
+	  	  //console.log(myplot.series[0]);
    }  
-} // RunTest2 end
+} // Test2 end
 
 
 function Test1 (pdata) {// some batch process that gives some trends
@@ -178,8 +185,10 @@ function mtsCycle(sim) { // MonteCarlo Tree SEP
   game = new tree(); game.UTCF =  sim.utcf;
   
   for (let i=0 ; i < sim.nexp ; i++) {  
-     game.select() ;  
-     for(let j=0 ; j < sim.nsim ; j++) {   
+     game.select() ; 
+     game.expand() ;
+      
+     for(let j=0 ; j < sim.nsim ; j++) {        
         game.simulate() ;   
         game.propagate() ;   
      }};

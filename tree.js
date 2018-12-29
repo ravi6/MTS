@@ -28,16 +28,18 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
           this.selNode = anode ;         
     } // end select
 
+    expand() { // Tree expansion phase
+           this.simNode = {} ;
+            if (!this.selNode.isTerminal()) {
+               this.simNode = this.selNode.addNode();
+               if ( ! isEmpty(this.simNode) ) {
+                 this.NodeSet.push(this.simNode);
+               }}                           
+    } // end expand
+
     simulate () {  // We play from the given node randomly until result
-
-        if (this.selNode.isTerminal()) {
-            return ;
-        } else {
-            this.simNode = this.selNode.addNode();
-            if ( isEmpty(this.simNode) ) { return ; }
-               else  { this.NodeSet.push(this.simNode); }
-        }
-
+   
+        if ( isEmpty(this.simNode) ) { return };
         var ab = this.simNode.board.clone() ; // A temporary board we can play with 
   
         while (ab.result == "NONE") { // Keep the play until conclusion     
