@@ -33,7 +33,7 @@ $("#btnplay").click (function() {
 });
 
 $("#btnPlot").click (function() {
-  RunTest2();
+  RunTest1 ();
 });
 
 
@@ -99,17 +99,17 @@ function miniPlay (data) { // updates data statistics after several plays back i
 
 function RunTest1() {
 	// This tests sensitivity of game outcome to UTCF,
-	// Number of simulations and expansion cycles
+	// Number of simulations and expansion cycle
+	 let asim = { nexp: $("#nexp").val(),
+	              nsim:  $("#nsim").val(), 
+	              utcf:  $("#utcf").val() } ;
+	 let astr = asim.nexp + "," + asim.nsim + "," + asim.utcf;
 
-	let ser = {label: "500,100,0.2 CyclePlay", data: []} ;
+	let ser = {label: astr, data: []} ;
     myplot.series.push(ser);
     Test1 ({ ser:   myplot.series[myplot.series.length-1],
-              count: 0, sim: {nexp: 500, nsim: 100, utcf: 0.2} }); 
-               
-    ser = {label: "500,100,1.4 CyclePlay", data: []} ;
-    myplot.series.push(ser);
-    Test1 ({ ser: myplot.series[myplot.series.length-1],
-              count: 0, sim: {nexp: 500, nsim: 100, utcf: 1.4} });
+              count: 0, sim: asim}); 
+ 
 } // end of RunTest1
 
 function RunTest2 () {
@@ -153,7 +153,7 @@ function Test2 (pdata) {
 
 function Test1 (pdata) {// some batch process that gives some trends
 
-   const NMAX = 100 ;
+   const NMAX = 20 ;
 
     var myfun = function (param) {
         	             setTimeout (function (){ Test1 (param); }, 10) ; }   
