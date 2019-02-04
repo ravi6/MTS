@@ -1,23 +1,28 @@
-<html>
-<head>
-<script src="geometry.js"></script>
+<!doctype html>
+<html lang="en">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!--script src="flot/jquery.flot.js"-->
+    <!--/script -->
+    <script src="geometry.js"></script>
+    <script src="board.js"></script>
+    <script src="node.js"></script>
+    <script src="tree.js"></script>
+    <script src="robot.js"></script>
+    <script src="util.js"></script>
+    <h>Robot Simulation 0</h>
+    <p>The fat cat satcc on a mat </p>
+    <script>
+        $(document).ready(function() {
+            var pt = new point(3,3);
+            var l1 = new line(pt,pt);
+            console.log(l1);
+            var arena = new board();
 
-<script src="node.js"></script>
-<script src="tree.js"></script>
-<script src="robot.js"></script>
-<scritp src="board.js"></script>
-</head>
-
-<body>
-
-<h> Robot Simulation </h>
-<script>
-     var pt = new point(10,20);
-     var l1 = new line(pt,pt);
-     var bd = new board() ;
-     var rob = new robot("cat", bd); // 
-     rob.mtsCycle();
-</script>
-</body>
+            var rob = new robot("cat",pt, arena);
+            // 
+            rob.mtsCycle();
+        });
+    </script>
 </html>
-

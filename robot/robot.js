@@ -1,10 +1,11 @@
 class robot {
 // This the robot
-    constructor (id, parent) {
-        this.id = id ;
-        this.tree = new tree ; // Its MTCS tree
-        this.budget = 40 ;     // This could be made different for each robot
-        this.board = parent ;
+    constructor (id, pos, arena) {
+        this.id       = id       ;
+        this.pos      = pos      ; 
+        this.budget   = 40       ; // This could be made different for each robot 
+        this.arena    = arena    ; // where Robot can move
+        this.tree     = new tree (this) ; // Its MTCS tree
     }
 
     mtsCycle() { // MonteCarlo Tree SEP 
@@ -16,7 +17,7 @@ class robot {
 
    getMoves (pt, cost) {
 
-      // get possible moves from given position
+      // get possible moves from given position and accumulated cost
       // 
       // we could make them different for each robot if we wanted
         const MOVES = [[0,1], [0,-1], [1,0], [-1,0]] ;
@@ -24,18 +25,19 @@ class robot {
         // Dermine possible moves (actions) by the robot at current pos
         var moves = []   ;
 
-        MOVES.forEach ( function (move) {
-            let npt = new point (pt.x + move[0],
+        MOVES.forEach ( function (move, pt) {
+            var npt = new point (pt.x + move[0],
                                    pt.y + move[1]) ;
             var lm = new line(pt, npt) ;
+            var hitswall ;
             
             // Test if the move lands outside arena
-            let offBoard =  ( (npt.x < 0 || npt.x > this.board.xmax) ||
-                              (npt.y < 0 || npt.y > this.board.ymax) ) ;
+            let offBoard =  ( (npt.x < 0 || npt.x > this.arena.xmax) ||
+                              (npt.y < 0 || npt.y > this.arena.ymax) ) ;
 
             if (!offBoard) {
-               let hitswall = false ; // starting assumption for each move
-               board.walls.forEach ( function (wall) {
+               hitswall = false ; // starting assumption for each move
+               this.arena.walls.forEach ( function (wall) {
 
                    let ipt = intsect(lm, wall); // get intersection pt
                    if (ipt == undefined) { // lines
@@ -46,9 +48,9 @@ class robot {
                 }); // wall loop
             } // offBoard
 
-              let overBudget = (cost > this.Budget) ;
+              let overBudget = (cost > this.budget) ;
               if (!(hitswall || offBoard || overBudget) ) moves.push = move ;
-        }); // all Moves
+        }.bind(this)); // all Moves
 
         return (moves) ;
     } // end getpMoves

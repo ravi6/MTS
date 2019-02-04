@@ -1,16 +1,22 @@
 class tree {    // The Game Tree (MonteCarlo Tree Search)
 
     constructor (parent) {
-        
-         this.root        = new node() ;
-         this.root.isRoot = true ;
-         this.parent      = parent ;  // Holds the robot that
-         this.selNode   = undefined; // Node selected at the end of selection
-         this.simNode   = undefined; // New node from which simulation occurs
+
+         this.parent      = parent      ;  // Holds the robot that has this tree
+         this.selNode     = undefined   ;  // Node selected at the end of selection
+         this.simNode     = undefined   ;  // New node from which simulation occurs
          
-         this.Nsim = 0;        // Total number of simulations
-         this.NodeSet = [] ;   // All discovered nodes of the tree
-	     this.UTCF = 1.414     ; // Normally 1.414
+         this.Nsim      = 0      ;        // Total number of simulations
+         this.NodeSet   = []     ;   // All discovered nodes of the tree
+	     this.UTCF      = 1.414  ; // Normally 1.414
+
+
+	     // Root Node creation and initialization        
+         this.root        = new node(parent.pos, undefined)  ; // root node has no move
+         this.root.isRoot = true ;
+         this.root.robot = parent ;
+         this.root.moves = parent.getMoves(parent.pos, this.root.Cost) ;
+
     } // end constructor
 
 
@@ -38,18 +44,31 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
     simulate () {  // We play from the given node randomly until result
    
         if ( isEmpty(this.simNode) ) { return };
-        var ab = this.simNode.board.clone() ; // A temporary board we can play with 
+        let pos = this.simNode.pos ; // Starting from simNode positon
+        let cost = this.simNode.Cost ; 
+        let moves = this.robot.getMoves(pos, cost);
+        let reward = this.simNode.Gain ;
   
-        while (ab.result == "NONE") { // Keep the play until conclusion     
-            var rnum = Math.floor (Math.random() * ab.moves.size) ;
-            var move  = Array.from (ab.moves)[rnum]; 
-            ab.play (move) ;                 
-        }
+        while ( (cost < this.robot.budget) &&
+                  moves.size > 0  )  { // Keep moving until budget exhausted or run out
+                                       // of moves             
+            var rnum = Math.floor (Math.random() * moves.size) ; // random selection
+            var move  = Array.from (moves)[rnum]; 
+            
+            cost = cost + this.robot.getCost(move);          
+            pos.x = pos.x + move[0] ;
+            pos.y = pos.y + move[1] ;
+            reward = reward + this.robot.getReward (pos) ;
+                    // Update possible moves from new pos
+            moves = this.robot.getMoves(pos, cost);
+                            
+        } // end playout
    
         this.Nsim = this.Nsim + 1   ;  // simulation count 
-        this.simResult = ab.result ;
-        this.simPlayer = ab.player ;
-         
+        this.simResult = reward     ; // We need benefit calcs
+                                                             // but we will have some
+                                                             // garbage for now
+          
     } // end simulation
 
 
@@ -61,14 +80,9 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
 
         do  {  // Move up the chain and update
            anode.trials = anode.trials + 1 ; // bump each nodes trial count
-
+           
            // update the wins based on end result
-           if ((this.simResult == "WIN") && 
-               (this.simPlayer == anode.board.player)) {
-                 anode.wins = anode.wins + 1 ;
-           } else if (this.simResult == "DRAW") { 
-                      anode.wins = anode.wins + 0.5} ;
-         
+           anode.gGain = anode.gGain + this.simResult ;
            anode = anode.parent ; // move up the chain                   
        } while (!(anode.isRoot)) ;
 

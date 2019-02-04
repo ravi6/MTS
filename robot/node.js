@@ -9,20 +9,16 @@ class node {  // A genertic node for Montecarlo Tree Search
       this.move     = move            ; // The move that resulted in this node
 
       this.gGain    = 0               ; // Global benefit (of all robots actions)
+   
+      this.Gain     = 0               ; // Cumulative Gains of Robot
       this.Cost     = 0               ; // Accumulated cost
    
       this.isRoot   = false           ;     
       this.depth    = 0               ;  // how far down the tree 
       this.index    = 0               ;  // its index among the siblings
 
-       let cnode = this ;
-        while (!cnode.parent.isRoot()) {
-            cnode = cnode.parent ;
-        }
-
-       this.tree = cnode.parent.parent ;
-       this.robot = this.tree.parent ;
-       this.moves = robot.getMoves(this.pos) ; // All possible children moves
+      this.robot     = undefined      ; // The robot this belongs to
+      this.moves     = undefined      ; // All possible children moves
 
     } // end constructor
 
@@ -56,15 +52,23 @@ class node {  // A genertic node for Montecarlo Tree Search
             let rnum = Math.floor(Math.random() * (pMoves.size)) ;
             let move  = Array.from(pMoves)[rnum];  
 
-            // spawn the child node state
+            // spawn the child node state (with new pos, and new Cost)
             let newpos = new point (this.pos.x + move[0],
                                     this.pos.y + move[1]);
+
             let anode = new node(newpos, move) ;
 
+            // Additional initializations of anode
+            anode.Cost = anode.parent.Cost + this.robot.getCost(move);
+            anode.Gain = anode.parent.Gain + this.robot.getReward(anode.pos);
             anode.parent = this ;
+            anode.robot = this.robot ; // Pass parental info
+            //Determine all the moves this child can make and store
+            anode.moves = this.robot.getMoves(anode.pos, anode.Cost) ;
+
             anode.depth = this.depth + 1 ;
             anode.index = this.children.length ;
-            anode.Cost = anode.parent.Cost + getCost(move);
+
                   
             this.children.push (anode) ; // A child is born
             return (anode);
