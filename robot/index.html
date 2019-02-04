@@ -1,0 +1,23 @@
+<html>
+<head>
+<script src="geometry.js"></script>
+
+<script src="node.js"></script>
+<script src="tree.js"></script>
+<script src="robot.js"></script>
+<scritp src="board.js"></script>
+</head>
+
+<body>
+
+<h> Robot Simulation </h>
+<script>
+     var pt = new point(10,20);
+     var l1 = new line(pt,pt);
+     var bd = new board() ;
+     var rob = new robot("cat", bd); // 
+     rob.mtsCycle();
+</script>
+</body>
+</html>
+

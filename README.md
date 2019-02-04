@@ -77,3 +77,8 @@ Tic Tac Toe
             as parameters. Have to make special effort if you want the state
             of the passed object not changed between Timeout calls.
 
+
+* 29 Dec.   Well expansion factor does indeed effect the nodes discovered, you have
+            to make it larger than 1.4 to see the dramatic effect. Also, realized 
+            in order for the tree to expand, one need to make simulations only then
+            you can get the selection process
