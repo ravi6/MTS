@@ -23,6 +23,7 @@ class line {
       return ( (this.p2.x - this.p1.x)^2 +
                (this.p2.y - this.p1.y)^2 );
    }
+
 } // end line
 
 class point {
@@ -33,6 +34,13 @@ class point {
 }// end point
 
 
+function onLine (pt, l1) { // test if a point is 
+  if (l1.p1.x == l2.p2.x) {
+    f = (pt.x - l1.p1.x) / (l1.p2.x - l1.p1.x)
+  } else if (l1.p1.y) == l1.p2.y) {
+    f = (pt.y - l1.p1.y) / (l1.p2.y - l1.p1.y)
+  }
+}
 
 function intsect (l1, l2) {
 // find intersection of two lines
@@ -44,7 +52,7 @@ function intsect (l1, l2) {
   let Haligned = (l1.slope() == 0) && (l1.p1.y == l2.p1.y) ;
   let Valigned = (l1.slope() == undefined) && (l1.p1.x == l2.p1.x) ;
 
-  let aligned  = parallel && ( Halign || Valign ) ;
+  let aligned  = parallel && ( Haligned || Valigned ) ;
                   
   if (!parallel) { // not parallel lines      
         if (l1.slope() == undefined) {
@@ -70,16 +78,20 @@ function intsect (l1, l2) {
      if (!parallel || aligned) {
        // Check to see if intersection is within the lines
          intSects =   xi >= l1.p1.x  && xi <= l1.p2.x &&
-                         yi >= l1.p1.y  && yi <= l1.p2.y &&
-                         xi >= l2.p1.x  && xi <= l2.p2.x &&
-                         yi >= l2.p1.y  && yi <= l2.p2.y  ;     
+                      yi >= l1.p1.y  && yi <= l1.p2.y &&
+                      xi >= l2.p1.x  && xi <= l2.p2.x &&
+                      yi >= l2.p1.y  && yi <= l2.p2.y  ;     
      }
 
        let pt =  new point(xi,yi) ;
 
-       if (intSects) {console.log(Halign, Valign);}
+       if (intSects) {console.log("hello",Haligned, Valigned);}
 
-       if (intSects) return (pt);
-       else return (undefined);
+       if (intSects) {
+         console.log("Intersects@:", pt)
+         return (pt);
+       } else {
+           return (undefined);
+       }
 
 } // Intersection of two lines

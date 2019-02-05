@@ -3,8 +3,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <!--script src="flot/jquery.flot.js"-->
-    <!--/script -->
+    <script src="../flot/jquery.flot.js">   </script>
     <script src="geometry.js"></script>
     <script src="board.js"></script>
     <script src="node.js"></script>
@@ -13,12 +12,15 @@
     <script src="util.js"></script>
     <h>Robot Simulation 0</h>
     <p>The fat cat satcc on a mat </p>
+     <div id="plotarea" class=well style="height:400px"></div>
     <script>
         $(document).ready(function() {
+   
             var pt = new point(2,2);
             var l1 = new line(pt,pt);
             console.log(l1);
             var arena = new board();
+            arena.show();
 
             var rob = new robot("cat",pt, arena);
             /*
@@ -28,8 +30,10 @@
             console.log(rob.tree.info());
             console.log(rob);
             */
-            let moves = rob.getMoves(new point(0,3), 0);
-            console.log(moves);
+           let moves = rob.getMoves(new point(3,4), 0);
+           console.log(moves);
         });
     </script>
+
+
 </html>
