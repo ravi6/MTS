@@ -43,13 +43,15 @@ class robot {
                    let ipt = intsect(lm, wall); // get intersection pt
                    if (!(ipt == undefined)) {
                        hitswall = true ;
+                       console.log("Hit wall ", k, "at", ipt,
+                                   "while moving from", pt, "to", npt);
                        break ;  // No need to check remaining walls
                    }
                 } // wall loop
             } // offBoard
 
-              let overBudget = (cost + getCost(move)) > this.budget;
-              if (!(hitswall || offBoard || overBudget) ) moves.push = move ;
+              let overBudget = (cost + this.getCost(move)) > this.budget;
+              if (!(hitswall || offBoard || overBudget) ) moves.push(move) ;
         }; // all Moves
 
         return (moves) ;
