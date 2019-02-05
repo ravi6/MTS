@@ -32,11 +32,6 @@ class point {
     }
 }// end point
 
-function isInside(pt, line) {  // This test function is intended for points 
-                               // along the line direction only  
-    f = (pt.x - line.p1.x) / (line.p2.x - line.p1.x) ;
-    return ( (f >= 0 && f <= 1)) ;
-}
 
 function intsect (l1, l2) {
 // find intersection of two lines
@@ -50,10 +45,16 @@ function intsect (l1, l2) {
         } else if(l2.slope() == undefined) {
             xi = l2.p1.x ;  
             yi = l1.slope() * xi + l1.c() ;
-          } else {
+         } else {
             xi = - (l2.c() - l1.c()) / (l2.slope() - l1.slope());
             yi = l1.slope() * xi + l1.c() ;
           }
        
-        return (new point(xi, yi));
+// Check to see if it is within the lines
+
+        let isInside =   xi >= l1.p1.x  && xi <= l1.p2.x &&
+                         yi >= l1.p1.y  && yi <= l1.p2.y ;
+
+        if (isInside) {return (new point(xi, yi));}
+        else          {return (undefined)} ;
 } // Intersection of two lines

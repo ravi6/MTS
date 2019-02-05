@@ -23,13 +23,14 @@ class robot {
         const MOVES = [[0,1], [0,-1], [1,0], [-1,0]] ;
 
         // Dermine possible moves (actions) by the robot at current pos
-        var moves = []   ;
+        let moves = []   ;
 
-        MOVES.forEach ( function (move, pt) {
-            var npt = new point (pt.x + move[0],
+        for (let i=0 ; i<MOVES.length ; i++) {  
+            let move = MOVES[i] ;
+            let npt = new point (pt.x + move[0],
                                    pt.y + move[1]) ;
-            var lm = new line(pt, npt) ;
-            var hitswall ;
+            let lm = new line(pt, npt) ;
+            let hitswall = false ;
             
             // Test if the move lands outside arena
             let offBoard =  ( (npt.x < 0 || npt.x > this.arena.xmax) ||
@@ -37,20 +38,19 @@ class robot {
 
             if (!offBoard) {
                hitswall = false ; // starting assumption for each move
-               this.arena.walls.forEach ( function (wall) {
-
+               for (let k=0 ; k < this.arena.walls.length ; k++) {
+                   let wall = this.arena.walls[k] ;
                    let ipt = intsect(lm, wall); // get intersection pt
-                   if (ipt == undefined) { // lines
-                      hitswall = hitswall || isInside (npt, wall) ; // we are hitting a wall
-                   } else { // not parallel lines
-                       hitswall = hitswall || isInside (ipt, wall);
+                   if (!(ipt == undefined)) {
+                       hitswall = true ;
+                       break ;  // No need to check remaining walls
                    }
-                }); // wall loop
+                } // wall loop
             } // offBoard
 
-              let overBudget = (cost > this.budget) ;
+              let overBudget = (cost + getCost(move)) > this.budget;
               if (!(hitswall || offBoard || overBudget) ) moves.push = move ;
-        }.bind(this)); // all Moves
+        }; // all Moves
 
         return (moves) ;
     } // end getpMoves
