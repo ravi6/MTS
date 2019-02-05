@@ -61,10 +61,17 @@ class robot {
     } // end getCost
 
     getReward (pos) {// Calculate reward moving to pos
-        let xv = [6, 8, 4, 1, 2] ;
-        let v = [7, 4, 2, 3, 8] ;
-        // reward if you land in any (x,y) combo from above vectors
-        let reward = xv.includes(pos) && yv.includes(pos);
+       let tps = [ [2,1], [4,1], [5,3], [9,4], [3,4],
+                   [2,6], [7,6], [4,8], [6,8], [8,9]] ; // Treasure points
+    
+        let reward = false ; 
+        for (let i=0; i<tps.length; i++ ) {
+            if (pos.x == tps[i][0] && pos.y == tps[i][1]) {
+                reward = true ;
+                break ;
+            }
+        } 
+
         if (reward) {return (100);}
         else {return(0);}       
     } // end getReward
