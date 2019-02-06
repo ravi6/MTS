@@ -33,51 +33,53 @@ class point {
     }
 }// end point
 
-
-function onLine (pt, l1) { // test if a point is on line
- let f = ( (l1.p2.x - l1.p1.x) * (pt.y - l1.p1.y) 
+/*
+ function onLine (pt, l1) { // test if a point is on line
+  let f = ( (l1.p2.x - l1.p1.x) * (pt.y - l1.p1.y) 
           -(l1.p2.y - l1.p1.y) * (pt.x - l1.p1.x) ) ;
-         
     return ( f == 0 ); 
 }
+*/
 
-function testme(pt, l1) {
 
- var dx =  l1.p2.x - l1.p1.x ;
- var dy =  l1.p2.y - l1.p1.y ;
- var dxc = (pt.x - l1.p1.x)  ;
- var dyc = (pt.y - l1.p1.y) ;
+function onLine (pt, l1) {
 
  var ans = false ;
+ var dx = (l1.p2.x - l1.p1.x) ;
+ var dy = (l1.p2.y - l1.p1.y) ;
+ 
  if (dx == 0) { // Vertical line
-   ans = (pt.x == l1.p1.x) && (pt.x >= Math.min(l1.p1.x, l1.p2.x))
-                           && (pt.x <= Math.max(l1.p1.x, l1.p2.x)) ;
- }
- else if (dy == 0) { // Horizontal line
-     ans = (pt.y == l1.p1.y) && (pt.y >= Math.min(l1.p1.y, l1.p2.y))
+   ans = (pt.x == l1.p1.x) && (pt.y >= Math.min(l1.p1.y, l1.p2.y))
                            && (pt.y <= Math.max(l1.p1.y, l1.p2.y)) ;
- } else {
-      var fx = dxc / dx ;
-      var fy = dyc / dy ;
-     ans = (fx == fy) && (fx >= 0) && (fx <= 1)
-     console.log(fx,fy);
-
- }
-    
-console.log(ans);
-}
+     console.log("ver", ans);
+   return (ans);
+ } else if (dy == 0) { // Horizontal line
+   ans = (pt.y == l1.p1.y) && (pt.x >= Math.min(l1.p1.x, l1.p2.x))
+                           && (pt.x <= Math.max(l1.p1.x, l1.p2.x)) ;
+     console.log("hor",ans);
+   return (ans);
+ } 
+ 
+ var fx = (pt.x - l1.p1.x) / dx ;
+ var fy = (pt.y - l1.p1.y) / dy ;
+ 
+ ans = (fx == fy) && (fx >= 0) && (fx <= 1)
+ return (ans);
+     console.log(fx,fy,ans);
+} // end onLine
 
 function intsect (l1, l2) {
-// find intersection of two lines
+   // find intersection of two lines
+
   var xi, yi ;  
- 
+
   let parallel = (l1.slope() == l2.slope()) ;
             
   if (!parallel) { // not parallel lines      
-        if (l1.slope() == undefined) {
+        if (l1.p1.x == l1.p2.x) {
             xi = l1.p1.x ;
             yi = l2.slope() * xi + l2.c() ;
-        } else if (l2.slope() == undefined) {
+        } else if (l2.p1.x == l2.p2.x) {
             xi = l2.p1.x ;  
             yi = l1.slope() * xi + l1.c() ;
          } else {
@@ -85,6 +87,7 @@ function intsect (l1, l2) {
             yi = l1.slope() * xi + l1.c() ;
            }
      let pt = new point(xi,yi);
+     console.log(pt);
 
      if ( onLine (pt, l1) && onLine (pt, l2)) {
        return (pt) ; // Found proper intersection

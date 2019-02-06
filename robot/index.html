@@ -31,10 +31,14 @@
             console.log(rob);
             */
            let moves = rob.getMoves(new point(3,4), 0);
-           console.log(moves);
+           //console.log(moves);
 
            //console.log(onLine(new point(4,5),arena.walls[2]));
-           testme(new point(7,1), arena.walls[1]);
+           let l3=new line(new point(1,1), new point(3,4));
+           var pt = intsect(l3, arena.walls[0]);
+           console.log("Intersect",pt);
+           console.log("Bello",onLine(new point(2.3333333333333335,3), arena.walls[0]));
+           console.log("Hello",onLine(new point(2.3333333333333335,3), l3));
         });
     </script>
 
