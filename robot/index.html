@@ -22,7 +22,7 @@
             var arena = new board();
             arena.show();
 
-            var rob = new robot("cat",pt, arena);
+           var rob = new robot("cat",pt, arena);
             /*
             for(let i=0 ; i<<10 ; i++){
                rob.mtsCycle();
@@ -30,15 +30,10 @@
             console.log(rob.tree.info());
             console.log(rob);
             */
-           let moves = rob.getMoves(new point(3,4), 0);
-           //console.log(moves);
+             let moves = rob.getMoves(new point(5,5), 0);
+             console.log(moves);
 
-           //console.log(onLine(new point(4,5),arena.walls[2]));
-           let l3=new line(new point(1,1), new point(3,4));
-           var pt = intsect(l3, arena.walls[0]);
-           console.log("Intersect",pt);
-           console.log("Bello",onLine(new point(2.3333333333333335,3), arena.walls[0]));
-           console.log("Hello",onLine(new point(2.3333333333333335,3), l3));
+           
         });
     </script>
 

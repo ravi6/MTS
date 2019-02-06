@@ -51,25 +51,26 @@ function onLine (pt, l1) {
  if (dx == 0) { // Vertical line
    ans = (pt.x == l1.p1.x) && (pt.y >= Math.min(l1.p1.y, l1.p2.y))
                            && (pt.y <= Math.max(l1.p1.y, l1.p2.y)) ;
-     console.log("ver", ans);
    return (ans);
  } else if (dy == 0) { // Horizontal line
    ans = (pt.y == l1.p1.y) && (pt.x >= Math.min(l1.p1.x, l1.p2.x))
                            && (pt.x <= Math.max(l1.p1.x, l1.p2.x)) ;
-     console.log("hor",ans);
    return (ans);
  } 
  
  var fx = (pt.x - l1.p1.x) / dx ;
  var fy = (pt.y - l1.p1.y) / dy ;
- 
- ans = (fx == fy) && (fx >= 0) && (fx <= 1)
+
+ // Tests if the pt is between line end points
+ let delta = 1e-6 ; // We need this tolerance due to counter round off
+ ans = (Math.abs(fx - fy) <= delta) &&  fx > -delta 
+                                    &&  fx < (1 + delta) ;
  return (ans);
-     console.log(fx,fy,ans);
+
 } // end onLine
 
 function intsect (l1, l2) {
-   // find intersection of two lines
+   // find intersection of two lines, does not cover collinear case
 
   var xi, yi ;  
 
@@ -82,18 +83,18 @@ function intsect (l1, l2) {
         } else if (l2.p1.x == l2.p2.x) {
             xi = l2.p1.x ;  
             yi = l1.slope() * xi + l1.c() ;
-         } else {
+        } else {
             xi = - (l2.c() - l1.c()) / (l2.slope() - l1.slope());
             yi = l1.slope() * xi + l1.c() ;
            }
      let pt = new point(xi,yi);
-     console.log(pt);
+     // console.log("True Int Test:", pt, onLine (pt, l1), onLine (pt, l2))
 
      if ( onLine (pt, l1) && onLine (pt, l2)) {
        return (pt) ; // Found proper intersection
      }
      else { 
-        return (undefined); // Extended intersection we don't care
+       return (undefined); // Extended intersection we don't care
      }  
   } else {
       return (undefined) ;
