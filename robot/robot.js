@@ -41,8 +41,10 @@ class robot {
                for (let k=0 ; k < this.arena.walls.length ; k++) {
                    let wall = this.arena.walls[k] ;
                    let ipt = intsect(lm, wall); // get intersection pt
-                   if (!(ipt == undefined)) {
+
+                   if ( !(ipt == undefined) || onLine (npt, wall)) {
                        hitswall = true ;
+                                       console.log("mmm", npt, onLine(npt,wall));
                        console.log("Hit wall ", k, "at", ipt,
                                    "while moving from", pt, "to", npt);
                        break ;  // No need to check remaining walls
