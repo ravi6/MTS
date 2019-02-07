@@ -30,30 +30,29 @@ class robot {
             let npt = new point (pt.x + move[0],
                                    pt.y + move[1]) ;
             let lm = new line(pt, npt) ;
-            let hitswall = false ;
+            let hitsWall = false ;
             
             // Test if the move lands outside arena
             let offBoard =  ( (npt.x < 0 || npt.x > this.arena.xmax) ||
                               (npt.y < 0 || npt.y > this.arena.ymax) ) ;
 
             if (!offBoard) {
-               hitswall = false ; // starting assumption for each move
+               hitsWall = false ; // starting assumption for each move
                for (let k=0 ; k < this.arena.walls.length ; k++) {
                    let wall = this.arena.walls[k] ;
                    let ipt = intsect(lm, wall); // get intersection pt
                    
                    if ( !(ipt == undefined) || onLine (npt, wall)) {
-                       hitswall = true ;
-                       
-                       console.log("Hit wall ", k, "at", ipt,
-                                   "while moving from", pt, "to", npt);
+                       hitsWall = true ;
+                    //   console.log("Hit wall ", k, "at", ipt,
+                    //               "while moving from", pt, "to", npt);
                        break ;  // No need to check remaining walls
                    }
                 } // wall loop
             } // offBoard
 
               let overBudget = (cost + this.getCost(move)) > this.budget;
-              if (!(hitswall || offBoard || overBudget) ) moves.push(move) ;
+              if (!(hitsWall || offBoard || overBudget) ) moves.push(move) ;
         }; // all Moves
 
         return (moves) ;

@@ -88,7 +88,7 @@ function intsect (l1, l2) {
             yi = l1.slope() * xi + l1.c() ;
            }
      let pt = new point(xi,yi);
-     // console.log("True Int Test:", pt, onLine (pt, l1), onLine (pt, l2))
+      // console.log("True Int Test:", pt, onLine (pt, l1), onLine (pt, l2))
 
      if ( onLine (pt, l1) && onLine (pt, l2)) {
        return (pt) ; // Found proper intersection
