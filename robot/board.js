@@ -6,6 +6,10 @@ class  board {
             this.walls = [ new line (new point(1, 3), new point(3, 3)),
                        new line (new point(7, 2), new point(7, 4)),
                        new line (new point(4, 5), new point(6, 7)) ]; 
+            
+            this.tps = [ [2,1], [4,1], [5,3], [9,4], [3,4],
+                        [2,6], [7,6], [4,8], [6,8], [8,9]] ; // Treasure points
+    
         this.myplot = {
 			id: "#plotarea",
 			series: [],
@@ -22,16 +26,34 @@ class  board {
 show () {
   
    //Draw walls
+
       for (let i=0; i < this.walls.length ; i++){
-           this.myplot.series.push ([[this.walls[i].p1.x, this.walls[i].p1.y],
-                           [this.walls[i].p2.x, this.walls[i].p2.y]]);                   
+      	var vec =  [[this.walls[i].p1.x, this.walls[i].p1.y],
+                     [this.walls[i].p2.x, this.walls[i].p2.y]] ;               
+      this.myplot.series.push ({data: vec, label: "wall", 
+                                lines: {lineWidth: 7, 
+                                        fillColor: "rgb(255, 0, 255, 0.8)" }
+                               });                  
       }
 
- 	  $.plot(this.myplot.id, this.myplot.series, this.myplot.options);
-}
+
+                                     
+
+     this.myplot.series.push ({data: this.tps, label: "Reward",
+                               lines: {show: false},
+                               points: { show: true, 
+                                         symbol: this.tpSymbol }
+                              });
+} // end show
+
 
 update () {
 	$.plot(this.myplot.id, this.myplot.series, this.myplot.options);
 }
+
+tpSymbol (ctx, x, y, radius, shadow) {
+  ctx.arc (x, y, radius * 4, 0,
+           shadow ? Math.PI : Math.PI * 2, false);
+} // end tpSymbol
 
 } // End of board
