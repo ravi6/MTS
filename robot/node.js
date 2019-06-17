@@ -9,8 +9,6 @@ class node {  // A genertic node for Montecarlo Tree Search
       this.move     = move            ; // The move that resulted in this node
 
       this.gGain    = 0               ; // Global benefit (of all robots actions)
-   
-      this.Gain     = 0               ; // Cumulative Gains of Robot
       this.Cost     = 0               ; // Accumulated cost
    
       this.isRoot   = false           ;     
@@ -23,7 +21,7 @@ class node {  // A genertic node for Montecarlo Tree Search
     } // end constructor
 
     isExpanded () {
-         return ( (this.children.length == this.moves.size) ) ;
+         return ( (this.children.length == this.moves.length) ) ;
     }
 
     isTerminal () { 
@@ -60,7 +58,6 @@ class node {  // A genertic node for Montecarlo Tree Search
 
             // Additional initializations of anode
             anode.Cost = anode.parent.Cost + this.robot.getCost(move);
-            anode.Gain = anode.parent.Gain + this.robot.getReward(anode.pos);
             anode.parent = this ;
             anode.robot = this.robot ; // Pass parental info
             //Determine all the moves this child can make and store

@@ -8,7 +8,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
          
          this.Nsim      = 0      ;        // Total number of simulations
          this.NodeSet   = []     ;   // All discovered nodes of the tree
-	     this.UTCF      = 1.414  ; // Normally 1.414
+	 this.UTCF      = 1.414  ; // Normally 1.414
 
 
 	     // Root Node creation and initialization        
@@ -43,11 +43,14 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
 
     simulate () {  // We play from the given node randomly until result
    
-        if ( isEmpty(this.simNode) ) { return };
-        let pos = this.simNode.pos ; // Starting from simNode positon
+        if ( isEmpty(this.simNode) ) { return }
+
+        let posSeq = [] ; 
+        let pos = new point(this.simNode.pos.x, this.simNode.pos.y) ; // Starting from simNode positon
+        posSeq.push(pos) ;
+
         let cost = this.simNode.Cost ; 
         let moves = this.robot.getMoves(pos, cost);
-        let reward = this.simNode.Gain ;
   
         while ( (cost < this.robot.budget) &&
                   moves.size > 0  )  { // Keep moving until budget exhausted or run out
@@ -58,17 +61,15 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
             cost = cost + this.robot.getCost(move);          
             pos.x = pos.x + move[0] ;
             pos.y = pos.y + move[1] ;
-            reward = reward + this.robot.getReward (pos) ;
-                    // Update possible moves from new pos
+            posSeq.push(pos) ;        // append to posSeq
+
+            // Update possible moves from new pos
             moves = this.robot.getMoves(pos, cost);
                             
         } // end playout
    
         this.Nsim = this.Nsim + 1   ;  // simulation count 
-        this.simResult = reward     ; // We need benefit calcs
-                                                             // but we will have some
-                                                             // garbage for now
-          
+
     } // end simulation
 
 
@@ -81,8 +82,8 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
         do  {  // Move up the chain and update
            anode.trials = anode.trials + 1 ; // bump each nodes trial count
            
-           // update the wins based on end result
-           anode.gGain = anode.gGain + this.simResult ;
+           // propagate Reward (based on collective actions)
+           anode.gGain = anode.gGain + getReward(this) ;
            anode = anode.parent ; // move up the chain                   
        } while (!(anode.isRoot)) ;
 
