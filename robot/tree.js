@@ -9,13 +9,16 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
          this.Nsim      = 0      ;        // Total number of simulations
          this.NodeSet   = []     ;   // All discovered nodes of the tree
 	 this.UTCF      = 1.414  ; // Normally 1.414
+        
+         this.robot =  parent ;
 
-
-	     // Root Node creation and initialization        
+	 // Root Node creation and initialization        
          this.root        = new node(parent.pos, undefined)  ; // root node has no move
          this.root.isRoot = true ;
          this.root.robot = parent ;
          this.root.moves = parent.getMoves(parent.pos, this.root.Cost) ;
+
+         this.simActionSeq = [] ; // ActionSeq from the latest simulation 
 
     } // end constructor
 
@@ -45,9 +48,8 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
    
         if ( isEmpty(this.simNode) ) { return }
 
-        let posSeq = [] ; 
+        let posSeq = [] ;  // holds positions of rollout branch after simNode
         let pos = new point(this.simNode.pos.x, this.simNode.pos.y) ; // Starting from simNode positon
-        posSeq.push(pos) ;
 
         let cost = this.simNode.Cost ; 
         let moves = this.robot.getMoves(pos, cost);
@@ -68,6 +70,11 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
                             
         } // end playout
    
+        this.simActionSeq = getActionSeq (posSeq) ; // to be used by propagate call
+        
+        // Stores as many sequences as we need in pdf ... 
+        this.pdf.seq[this.Nsim%pdf.size] = this.simActionSeq ;
+
         this.Nsim = this.Nsim + 1   ;  // simulation count 
 
     } // end simulation
@@ -83,11 +90,28 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
            anode.trials = anode.trials + 1 ; // bump each nodes trial count
            
            // propagate Reward (based on collective actions)
-           anode.gGain = anode.gGain + getReward(this) ;
+           anode.gGain = anode.gGain 
+                      + this.robot.team.CondExpTeamReward(this.robot.id, this.simActionSeq);
            anode = anode.parent ; // move up the chain                   
+
        } while (!(anode.isRoot)) ;
 
      } // end propagate
+
+
+
+    getActionSeq (simSeq) { // Generate full action sequence from root to end
+                                //  after a simulation/rollout
+      // Traverse up the tree
+        let anode = this.simNode ;
+        let seq = [] ;
+        do {
+            seq.push (anode.move) ;
+        } while(!(anode.isRoot))
+        
+        return ( (seq.reverse()).concat(simSeq) ) ;
+    }
+
 
    info () {  // A bit more information of the state of the tree
 

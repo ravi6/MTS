@@ -1,13 +1,13 @@
 class robot {
 // This the robot
-    constructor (id, pos, arena) {
+    constructor (id, pos, arena, team) {
         this.id       = id       ;
         this.pos      = pos      ; 
         this.budget   = 40       ; // This could be made different for each robot 
         this.arena    = arena    ; // where Robot can move
         this.tree     = new tree (this) ; // Its MTCS tree
-        this.q        = []       ; // Probabilities associated with action seq
-        this.aSeq     = []       ; // Corresponding Action sequences 
+        this.pdf      = new pdf(5)      ; // Probability dist func. of this robot (size 5)
+        this.team     = team            ; // The team this robot belongs to
     }
 
     mtsCycle() { // MonteCarlo Tree SEP 
@@ -65,21 +65,6 @@ class robot {
         return (1) ; // We only travel 1 unit distance here
     } // end getCost
 
-    getReward (pos) {// Calculate reward moving to pos
-       let tps = [ [2,1], [4,1], [5,3], [9,4], [3,4],
-                   [2,6], [7,6], [4,8], [6,8], [8,9]] ; // Treasure points
-    
-        let reward = false ; 
-        for (let i=0; i<tps.length; i++ ) {
-            if (pos.x == tps[i][0] && pos.y == tps[i][1]) {
-                reward = true ;
-                break ;
-            }
-        } 
-
-        if (reward) {return (100);}
-        else {return(0);}       
-    } // end getReward
-
  
+
 } // end robot
