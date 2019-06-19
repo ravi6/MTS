@@ -4,7 +4,7 @@
             var arena = new board();
             arena.show();
             var zzz = 0.1 ;
-            var rob = new robot("Cat",new point(0,0), arena);
+            var rob = new robot("Cat",new point(0,0), arena, null);
 
        let pos = new point (5,5);
        let vec = [[pos.x, pos.y]] ;

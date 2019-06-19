@@ -8,26 +8,36 @@
     <script src="board.js"></script>
     <script src="node.js"></script>
     <script src="tree.js"></script>
+    <script src="pdf.js"></script>
     <script src="robot.js"></script>
+    <script src="team.js"></script>
     <script src="util.js"></script>
     <script src="tests.js"></script>
     <h>Robot Simulation 0</h>
-    <p>The fat cat satcc on a mat </p>
+    <p>The fat cat sat on a mat </p>
      <div id="plotarea" class=well style="height:400px"></div>
     <script>
         $(document).ready(function() {
    
             /*
-            for(let i=0 ; i<<10 ; i++){
+            
+            */
+
+            // console.log(moves);
+
+           console.log("=====================");
+           // randomwalk();
+
+           var ateam = new team ();
+           var rob = ateam.robots[0] ;
+        
+         for(let i=0 ; i<10 ; i++){
                rob.mtsCycle();
             }
             console.log(rob.tree.info());
             console.log(rob);
-            */
 
-            // console.log(moves);
-           console.log("=====================");
-           randomwalk();
+            console.log(rob.id);
         });
 
 

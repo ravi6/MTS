@@ -8,7 +8,7 @@ class robot {
         this.tree     = new tree (this) ; // Its MTCS tree
         this.pdf      = new pdf(5)   ; // Probability dist func. of this robot (size 5)
         this.team     = team            ; // The team this robot belongs to
-    }
+    } // end constructor
 
     mtsCycle() { // MonteCarlo Tree SEP 
          this.tree.select() ; 
@@ -28,6 +28,7 @@ class robot {
         let moves = []   ;
 
         for (let i=0 ; i<MOVES.length ; i++) {  
+
             let move = MOVES[i] ;
             let npt = new point (pt.x + move[0],
                                    pt.y + move[1]) ;
@@ -110,7 +111,7 @@ class robot {
          let robots = this.team.robots ;
          for (let i=0; i < robots.length ; i++) {
               let rb = robots[i] ;
-              if (rb.id != this.robot.id){
+              if (rb.id != this.id){
                    let js = rb.pdf.choose();
                    if (js.seq != "none") {
                           let sum = 0 ;
@@ -121,8 +122,8 @@ class robot {
                    }
               } else { // calling robot case
                           let sum = 0 ;
-                          for (let j=0 ; j< q.length ; j++) {
-                              sum = sum + getReward(seq) ;
+                          for (let j=0 ; j< seq.length ; j++) {
+                              sum = sum + this.getReward(seq) ;
                           }
                           reward = reward + sum ;  
                       }
@@ -146,9 +147,7 @@ class robot {
                               sum = sum + getReward( js.seq[j] ) ;
                           }
                           reward = reward + sum * js.q ;
-                          } }
-         } // end loop over all robots 
-
+                          } } // end loop over all robots 
         return (reward) ; 
     } // end team reward
 
@@ -172,9 +171,48 @@ class robot {
 
    updateQ () {
 
-      for (let i=0 ; i < this.pdf
+      for (let i=0 ; i < this.pdf.size ; i++) {
+          ExpF = ExpTeamReward () ;
+          if (this.pdf.seq[i] != "none")
+             CondExpF = CondExpTeamReward (this.pdf.seq[i]) ;
+          else
+            CondExpF = 0 ;
+        
+          let qold = this.pdf.q[i] ;
+
+          let qnew = qold - alpha * qold * ( ( ExpF - CondExpF ) / beta
+                                             + Entropy() + log (qold) ) ;
+          this.pdf.q[i] = qnew ;
+          NormalizeQ (i, qnew) ; 
+
+      }
+   } // end update Q
 
 
-   }
+  Entropy () {  // Calculate Entropy of q_i disribution for this robot
+      let s = 0 ;
+      for (let i=0 ; i < this.pdf.size ; i++) {
+            let q = this.pdf.q[i] ;
+            if (q > 0)
+              s = s + this.pdf.q[i] * log (this.pdf.q[i]) ;
+            else
+              console.log ("Negative q", i, q[i]) ;
+      }
+      retunr (s) ;
+  }
+
+  NormalizeQ (i, qval) { // Ensure that sum of all q_i in distribution is one
+      let sum = 0 ;
+      
+      for (let i=0 ; i < this.pdf.size ; i++) {
+          sum = sum + this.pdf.q[i] ; 
+      }
+
+      for (let i=0 ; i < this.pdf.size ; i++) {
+          this.pdf.q[i] = this.pdf.q[i] / sum  ; 
+      }
+
+  } // End Noramalize q distribution
+
 
 } // end robot

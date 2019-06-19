@@ -8,7 +8,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
          
          this.Nsim      = 0      ;        // Total number of simulations
          this.NodeSet   = []     ;   // All discovered nodes of the tree
-	 this.UTCF      = 1.414  ; // Normally 1.414
+	     this.UTCF      = 1.414  ; // Normally 1.414
         
          this.robot =  parent       ;
 
@@ -59,7 +59,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
                                        // of moves             
             var rnum = Math.floor (Math.random() * moves.size) ; // random selection
             var move  = Array.from (moves)[rnum]; 
-            
+             
             cost = cost + this.robot.getCost(move);          
             pos.x = pos.x + move[0] ;
             pos.y = pos.y + move[1] ;
@@ -70,14 +70,14 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
                             
         } // end playout
    
-        this.simActionSeq = getActionSeq (posSeq) ; // to be used by propagate call
+        this.simActionSeq = this.getActionSeq (posSeq) ; // to be used by propagate call
         
         // Stores as many sequences as we need in pdf ... 
         // We write over the array from top to bottom ... (not a rolling buffer!!!)
-        this.pdf.seq[(this.Nsim + 1)%pdf.size] = this.simActionSeq ;
+        this.robot.pdf.seq[(this.Nsim + 1)%pdf.size] = this.simActionSeq ;
 
         this.Nsim = this.Nsim + 1   ;  // simulation count 
-
+       
 
     } // end simulation
 
@@ -93,7 +93,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
            
            // propagate Reward (based on collective actions)
            anode.gGain = anode.gGain 
-                      + CondExpTeamReward(this.simActionSeq); // should I use TeamReward instead
+                      + this.robot.CondExpTeamReward(this.simActionSeq); // should I use TeamReward instead
            anode = anode.parent ; // move up the chain                   
 
        } while (!(anode.isRoot)) ;
@@ -109,6 +109,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
         let seq = [] ;
         do {
             seq.push (anode.move) ;
+            anode = anode.parent ;
         } while(!(anode.isRoot))
         
         return ( (seq.reverse()).concat(simSeq) ) ;

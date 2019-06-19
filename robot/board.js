@@ -20,12 +20,12 @@ class  board {
 				  yaxis: {min: 0, max: 10, ticks: [0,1,2,3,4,5,6,7,8,9,10]}       
 			}};
               
-      }
+      } // end constructor
 
 
-show () {
+	show () {
   
-   //Draw walls
+       //Draw walls
 
       for (let i=0; i < this.walls.length ; i++){
       	var vec =  [[this.walls[i].p1.x, this.walls[i].p1.y],
@@ -44,16 +44,16 @@ show () {
                                points: { show: true, 
                                          symbol: this.tpSymbol }
                               });
-} // end show
+	} // end show
 
 
-update () {
-	$.plot(this.myplot.id, this.myplot.series, this.myplot.options);
-}
+	update () {
+	       $.plot(this.myplot.id, this.myplot.series, this.myplot.options);
+    }
 
-tpSymbol (ctx, x, y, radius, shadow) {
-  ctx.arc (x, y, radius * 4, 0,
-           shadow ? Math.PI : Math.PI * 2, false);
-} // end tpSymbol
+	tpSymbol (ctx, x, y, radius, shadow) {
+	          ctx.arc (x, y, radius * 4, 0,
+			            shadow ? Math.PI : Math.PI * 2, false);
+	} // end tpSymbol
 
 } // End of board
