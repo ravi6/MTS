@@ -47,7 +47,6 @@ function Test () {
             ateam.arena.update();
             console.log(rob.tree.info());
             console.log(rob);
-
             console.log(rob.id);
          console.log("==========END===========");
  } // End Test

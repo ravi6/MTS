@@ -58,9 +58,8 @@ class node {  // A genertic node for Montecarlo Tree Search
 
             // Additional initializations of anode
             // console.log(this.robot.getCost(move), move); //debug
-            
-            anode.Cost = anode.parent.Cost + this.robot.getCost(move);
             anode.parent = this ;
+            anode.Cost = anode.parent.Cost + this.robot.getCost(move);
             anode.robot = this.robot ; // Pass parental info
             
             //Determine all the moves this child can make and store

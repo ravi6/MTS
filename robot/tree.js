@@ -14,6 +14,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
 
 	 // Root Node creation and initialization        
          this.root        = new node(parent.pos, undefined)  ; // root node has no move
+         this.root.Cost   = 0 ;
          this.root.isRoot = true ;
          this.root.robot = parent ;
          this.root.moves = parent.getMoves(parent.pos, this.root.Cost) ;
@@ -74,7 +75,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
         
         // Stores as many sequences as we need in pdf ... 
         // We write over the array from top to bottom ... (not a rolling buffer!!!)
-        this.robot.pdf.seq[(this.Nsim + 1)%pdf.size] = this.simActionSeq ;
+        this.robot.pdf.seq[(this.Nsim + 1)%this.robot.pdf.size] = this.simActionSeq ;
 
         this.Nsim = this.Nsim + 1   ;  // simulation count 
        
