@@ -1,3 +1,9 @@
+function Test () {
+
+// randomwalk();
+   newTest() ;
+}
+
  function randomwalk () { // random walk Test with obstructions
 // Test status: passed
 
@@ -27,3 +33,21 @@
 
 } // end randomwalk
 
+
+ function newTest(){
+     
+           console.log("=====================");
+          
+           var ateam = new team ();
+           var rob = ateam.robots[0] ;
+        
+         for(let i=0 ; i<10 ; i++){
+               rob.mtsCycle();
+            }
+            ateam.arena.update();
+            console.log(rob.tree.info());
+            console.log(rob);
+
+            console.log(rob.id);
+         console.log("==========END===========");
+ } // End Test
