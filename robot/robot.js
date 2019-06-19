@@ -6,7 +6,7 @@ class robot {
         this.budget   = 40       ; // This could be made different for each robot 
         this.arena    = arena    ; // where Robot can move
         this.tree     = new tree (this) ; // Its MTCS tree
-        this.pdf      = new pdf(5)      ; // Probability dist func. of this robot (size 5)
+        this.pdf      = new pdf(5)   ; // Probability dist func. of this robot (size 5)
         this.team     = team            ; // The team this robot belongs to
     }
 
