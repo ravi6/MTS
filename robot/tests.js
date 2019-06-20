@@ -34,19 +34,62 @@ function Test () {
 } // end randomwalk
 
 
- function newTest(){
+function newTest(){
      
            console.log("=====================");
-          
+
            var ateam = new team ();
-           var rob = ateam.robots[0] ;
-        
-         for(let i=0 ; i<10 ; i++){
-               rob.mtsCycle();
-            }
-            ateam.arena.update();
-            console.log(rob.tree.info());
-            console.log(rob);
-            console.log(rob.id);
+           let Cat = ateam.robots[0] ;
+           let Dog = ateam.robots[1] ;
+           let alpha = 0.1;  let beta = 100 ;
+         
+           for (k=0 ; k<400 ; k++ ){
+                 for(let i=0 ; i<5 ; i++) Cat.mtsCycle();             
+                 Cat.updateQ(alpha, beta);
+                 Cat.sendPDF();
+                 for(let i=0 ; i<5 ; i++) Dog.mtsCycle(); 
+                 Dog.updateQ(alpha, beta);
+                 Dog.sendPDF();
+           }
+            
+
+           ateam.arena.update();
+           ateam.arena.myplot.series.push({});
+            ateam.arena.myplot.series.push({});
+            var ip = ateam.arena.myplot.series.length ;
+           
+             var idx = 0 ;
+                 setInterval(function () {
+                     if (idx > 4) return ;
+                     let vec = getMoves(Cat, idx)
+                     ateam.arena.myplot.series[ip-2]=({label: "Cat walk" + idx, data: vec});
+                     vec = getMoves(Dog, idx);
+                     ateam.arena.myplot.series[ip-1]= ({label: "Dog walk" + idx, data: vec});
+                      ateam.arena.update(); idx = idx + 1; console.log(idx);}, 2000) ;
+    
+            console.log(Cat.tree);
+            console.log(Dog.tree);
+            //console.log(Dog.tree.info());
+           // console.log(Cat.tree.info());
+           console.log(Dog.pdf, Cat.pdf);
+           console.log(Dog.ExpTeamReward(), Cat.ExpTeamReward());
          console.log("==========END===========");
  } // End Test
+
+
+ function getMoves(robot, idx) {
+
+       let vec = [] ;
+       let seq = robot.pdf.seq[idx] ;
+
+       let x = robot.inipos.x ; let y = robot.inipos.y ;
+       vec.push([x,y]);
+        for (i=0 ; i < seq.length ; i++) {
+                 x = x + seq[i][0]  ; y = y + seq[i][1] ;
+                 vec.push ([x, y]);
+        }  // end plot sequence
+       return (vec);                    
+     
+ } // end getMoves
+
+

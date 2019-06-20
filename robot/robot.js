@@ -7,7 +7,9 @@ class robot {
         this.arena    = arena    ; // where Robot can move
         this.tree     = new tree (this) ; // Its MTCS tree
         this.pdf      = new pdf(5)   ; // Probability dist func. of this robot (size 5)
-        this.team     = team            ; // The team this robot belongs to
+        this.team     = team         ; // The team this robot belongs to
+        this.sentpdf  = new pdf(5) ;   // Holds pdf last transmitted
+        this.inipos   = pos      ;   // Start position
     } // end constructor
 
     mtsCycle() { // MonteCarlo Tree SEP 
@@ -55,6 +57,7 @@ class robot {
             } // offBoard
 
               let overBudget = (cost + this.getCost(move)) > this.budget;
+
               if (!(hitsWall || offBoard || overBudget) ) moves.push(move) ;
         }; // all Moves
 
@@ -83,24 +86,14 @@ class robot {
               if (rb.id != this.id){
                    let js = rb.pdf.choose();
                    if (js.seq != "none") {
-                          let sum = 0 ;
-                          for (let j=0 ; j< js.seq.length ; j++) {
-                              sum = sum + getReward( js.seq[j] ) ;
-                          }
-                          reward = reward + sum ; // note no probability multiplier
-                   }
-              } else { // calling robot case
-                          let sum = 0 ;
-                          for (let j=0 ; j< q.length ; j++) {
-                              sum = sum + getReward(seq) ;
-                          }
-                          reward = reward + sum ; 
-                      }
-         } // end loop over all robots 
-
-        return (reward) ; 
-
-   }
+                          reward = reward + getReward(rb, js.seq[j] ) ; // note no probability multiplier
+                   }}
+          } // end all other robots
+              
+          // Add this robots contribution           
+          reward = reward + getReward(this, seq) ; 
+          return (reward) ; 
+   } // end TeamReward
 
 
     CondExpTeamReward (seq) {
@@ -109,84 +102,84 @@ class robot {
          //     Sum (G(X|x_k)*p(i!=k)   i=1..N
          let reward = 0 ;
          let robots = this.team.robots ;
-         for (let i=0; i < robots.length ; i++) {
+
+         for (let i=0; i < robots.length ; i++) { // consider other robots ony
               let rb = robots[i] ;
               if (rb.id != this.id){
-                   let js = rb.pdf.choose();
-                   if (js.seq != "none") {
-                          let sum = 0 ;
-                          for (let j=0 ; j< js.seq.length ; j++) {
-                              sum = sum + getReward( js.seq[j] ) ;
-                          }
-                          reward = reward + sum * js.q ;
+                   let js = rb.sentpdf.choose();
+                   if (js.seq != "none") {                        
+                       reward = reward + this.getReward(rb, js.seq) * js.q ;
                    }
-              } else { // calling robot case
-                          let sum = 0 ;
-                          for (let j=0 ; j< seq.length ; j++) {
-                              sum = sum + this.getReward(seq) ;
-                          }
-                          reward = reward + sum ;  
-                      }
-         } // end loop over all robots 
+               }
+          } // end all other robots
 
-        return (reward) ; 
-    } // end team reward
+          //  add this robots seq reward                          
+          reward = reward + this.getReward(this, seq) ;                     
+          return (reward) ; 
+          
+    } // end CondExpTeamReward
 
 
     ExpTeamReward () {
            // Calculates Expected global Reward based on all Robots action sets
           //     Sum (G(X)*q(i))   i=1..N
+          
          let reward = 0 ;
          let robots = this.team.robots ;
          for (let i=0; i < robots.length ; i++) {
               let rb = robots[i] ;
-                   let js = rb.pdf.choose();
-                   if (js.seq != "none") {
-                          let sum = 0 ;
-                          for (let j=0 ; j< js.seq.length ; j++) {
-                              sum = sum + getReward( js.seq[j] ) ;
-                          }
-                          reward = reward + sum * js.q ;
-                          } } // end loop over all robots 
+              let js = rb.sentpdf.choose();
+              if (js.seq != "none") {
+                     reward = reward + this.getReward(rb, js.seq) * js.q ;
+              }}
         return (reward) ; 
-    } // end team reward
+    } // end ExpTeamReward
 
 
 
-    getReward (pos) {// Calculate reward moving to pos for any robot
+    getReward (rb, seq) {// Calculate reward from a robots sequence of actions
     
-        let reward = false ; 
-        let tps = this.team.tps ;
-        for (let i=0; i<tps.length; i++ ) {
-            if (pos.x == tps[i][0] && pos.y == tps[i][1]) {
-                reward = true ;
-                break ;
-            }
-        } 
+       let x = rb.inipos.x ; let y = rb.inipos.y ;
 
-        if (reward) {return (100);}
-        else {return(0);}       
+       let sum = 0 ;
+       for (let i=0 ; i < seq.length ; i++) {
+            
+            x = x + seq[i][0]  ; y = y + seq[i][1] ;      
+   
+            let reward = 0 ; 
+            let tps = this.team.tps ;
+            for (let i=0; i<tps.length; i++ ) {
+                if (x == tps[i][0] && y == tps[i][1]) {
+                    reward = 100 ;
+                    break ;
+                }} 
+
+            sum = sum + reward ;
+       }
+
+       return (sum) ;
     } // end getReward
 
 
-   updateQ () {
+
+   updateQ (alpha, beta) {
+      let ExpF, CondExpF, qold, qnew
 
       for (let i=0 ; i < this.pdf.size ; i++) {
-          ExpF = ExpTeamReward () ;
+          ExpF = this.ExpTeamReward () ;
+          
           if (this.pdf.seq[i] != "none")
-             CondExpF = CondExpTeamReward (this.pdf.seq[i]) ;
+             CondExpF = this.CondExpTeamReward (this.pdf.seq[i]) ;
           else
             CondExpF = 0 ;
         
-          let qold = this.pdf.q[i] ;
-
-          let qnew = qold - alpha * qold * ( ( ExpF - CondExpF ) / beta
-                                             + Entropy() + log (qold) ) ;
+          qold = this.pdf.q[i] ;
+          qnew = qold - alpha * qold * ( ( ExpF - CondExpF ) / beta
+                                             + this.Entropy() + Math.log (qold) ) ;
           this.pdf.q[i] = qnew ;
-          NormalizeQ (i, qnew) ; 
-
+          this.NormalizeQ (i, qnew) ; 
       }
-   } // end update Q
+   } // end updateQ
 
 
   Entropy () {  // Calculate Entropy of q_i disribution for this robot
@@ -194,11 +187,11 @@ class robot {
       for (let i=0 ; i < this.pdf.size ; i++) {
             let q = this.pdf.q[i] ;
             if (q > 0)
-              s = s + this.pdf.q[i] * log (this.pdf.q[i]) ;
+              s = s + this.pdf.q[i] * Math.log (this.pdf.q[i]) ;
             else
               console.log ("Negative q", i, q[i]) ;
       }
-      retunr (s) ;
+      return (s) ;
   }
 
   NormalizeQ (i, qval) { // Ensure that sum of all q_i in distribution is one
@@ -214,5 +207,7 @@ class robot {
 
   } // End Noramalize q distribution
 
-
+  sendPDF () {
+         this.sentpdf = this.pdf ; // Assuming perfect reception by others
+  }
 } // end robot
