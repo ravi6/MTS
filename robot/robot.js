@@ -9,7 +9,6 @@ class robot {
         this.pdf      = new pdf(5)   ; // Probability dist func. of this robot (size 5)
         this.team     = team         ; // The team this robot belongs to
         this.sentpdf  = new pdf(5) ;   // Holds pdf last transmitted
-        this.inipos   = pos      ;   // Start position
     } // end constructor
 
     mtsCycle() { // MonteCarlo Tree SEP 
@@ -138,18 +137,15 @@ class robot {
 
 
     getReward (rb, seq) {// Calculate reward from a robots sequence of actions
-    
-       let x = rb.inipos.x ; let y = rb.inipos.y ;
-
+       
        let sum = 0 ;
        for (let i=0 ; i < seq.length ; i++) {
-            
-            x = x + seq[i][0]  ; y = y + seq[i][1] ;      
-   
+           
             let reward = 0 ; 
             let tps = this.team.tps ;
-            for (let i=0; i<tps.length; i++ ) {
-                if (x == tps[i][0] && y == tps[i][1]) {
+
+            for (let k=0; k<tps.length; k++ ) {
+                if (seq[i].x == tps[k][0] && seq[i].y  == tps[k][1]) {
                     reward = 100 ;
                     break ;
                 }} 

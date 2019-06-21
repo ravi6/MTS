@@ -55,17 +55,19 @@ function newTest(){
 
            ateam.arena.update();
            ateam.arena.myplot.series.push({});
-            ateam.arena.myplot.series.push({});
+           ateam.arena.myplot.series.push({});
             var ip = ateam.arena.myplot.series.length ;
            
              var idx = 0 ;
-                 setInterval(function () {
+                 var tmr = setInterval(function () {
                      if (idx > 4) return ;
                      let vec = getMoves(Cat, idx)
                      ateam.arena.myplot.series[ip-2]=({label: "Cat walk" + idx, data: vec});
                      vec = getMoves(Dog, idx);
                      ateam.arena.myplot.series[ip-1]= ({label: "Dog walk" + idx, data: vec});
-                      ateam.arena.update(); idx = idx + 1; console.log(idx);}, 2000) ;
+                     ateam.arena.update();
+                     idx = idx + 1;  console.log(idx);
+                     if (idx > 4) clearInterval(tmr) ;}, 2000) ;
     
             console.log(Cat.tree);
             console.log(Dog.tree);
@@ -79,16 +81,13 @@ function newTest(){
 
  function getMoves(robot, idx) {
 
-       let vec = [] ;
+       let vec = [robot.pos.x, robot.pos.y] ; // Start Point
+       console.log (robot);
        let seq = robot.pdf.seq[idx] ;
-
-       let x = robot.inipos.x ; let y = robot.inipos.y ;
-       vec.push([x,y]);
-        for (i=0 ; i < seq.length ; i++) {
-                 x = x + seq[i][0]  ; y = y + seq[i][1] ;
-                 vec.push ([x, y]);
-        }  // end plot sequence
-       return (vec);                    
+        for (let i=0 ; i < seq.length ; i++) {
+                vec.push ([seq[i].x, seq[i].y]) ;
+       }  // end plot sequence
+      return (vec);                    
      
  } // end getMoves
 

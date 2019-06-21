@@ -111,10 +111,10 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
         let anode = this.simNode ;
         let seq = [] ;
         do {
-            seq.push (anode.move) ;
+            seq.push (anode.pos) ;
             anode = anode.parent ;
         } while(!(anode.isRoot))
-        
+              
         return ( (seq.reverse()).concat(simSeq) ) ;
     }
 
