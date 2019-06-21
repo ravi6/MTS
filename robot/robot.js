@@ -139,23 +139,16 @@ class robot {
     getReward (rb, seq) {// Calculate reward from a robots sequence of actions
        
        let sum = 0 ;
-       for (let i=0 ; i < seq.length ; i++) {
-           
-            let reward = 0 ; 
-            let tps = this.team.tps ;
-
-            for (let k=0; k<tps.length; k++ ) {
-                if (seq[i].x == tps[k][0] && seq[i].y  == tps[k][1]) {
-                    reward = 100 ;
-                    break ;
-                }} 
-
-            sum = sum + reward ;
+       for (let i=0 ; i < seq.length ; i++) {      
+            sum = sum + this.team.tres.collect(seq[i]) ;
        }
 
+       // Restore the state of the treasure to original
+       //  so that subsequent calcs with other seq. are done correctly
+       this.team.tres.restore();
+       
        return (sum) ;
     } // end getReward
-
 
 
    updateQ (alpha, beta) {

@@ -89,7 +89,6 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
 
        var anode = this.simNode ;
        let addGain = this.robot.CondExpTeamReward(this.simActionSeq); // should I use TeamReward instead
-       if (addGain > 0) console.log (addGain);
        
         do  {  // Move up the chain and update
            anode.trials = anode.trials + 1 ; // bump each nodes trial count

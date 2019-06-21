@@ -27,9 +27,14 @@ class line {
 } // end line
 
 class point {
+  
     constructor (x,y) {
        this.x = x ;
        this.y = y ;
+    }
+
+    clone() {
+       return (new point(this.x, this.y));
     }
 }// end point
 

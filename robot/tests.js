@@ -41,9 +41,9 @@ function newTest(){
            var ateam = new team ();
            let Cat = ateam.robots[0] ;
            let Dog = ateam.robots[1] ;
-           let alpha = 0.1;  let beta = 100 ;
+           let alpha = 0.1;  let beta = 1 ;
          
-           for (k=0 ; k<400 ; k++ ){
+           for (k=0 ; k<800 ; k++ ){
                  for(let i=0 ; i<5 ; i++) Cat.mtsCycle();             
                  Cat.updateQ(alpha, beta);
                  Cat.sendPDF();
@@ -52,7 +52,6 @@ function newTest(){
                  Dog.sendPDF();
            }
             
-
            ateam.arena.update();
            ateam.arena.myplot.series.push({});
            ateam.arena.myplot.series.push({});
@@ -66,29 +65,90 @@ function newTest(){
                      vec = getMoves(Dog, idx);
                      ateam.arena.myplot.series[ip-1]= ({label: "Dog walk" + idx, data: vec});
                      ateam.arena.update();
-                     idx = idx + 1;  console.log(idx);
-                     if (idx > 4) clearInterval(tmr) ;}, 2000) ;
-    
-            console.log(Cat.tree);
-            console.log(Dog.tree);
-            //console.log(Dog.tree.info());
-           // console.log(Cat.tree.info());
-           console.log(Dog.pdf, Cat.pdf);
-           console.log(Dog.ExpTeamReward(), Cat.ExpTeamReward());
-         console.log("==========END===========");
- } // End Test
+                     idx = idx + 1;  //console.log(idx);
+                     if (idx > 4) clearInterval(tmr) ;}, 2000) ;  
+                     console.log(Cat.tree);
+                     console.log(Dog.tree);
+                    //console.log(Dog.tree.info());
+                   // console.log(Cat.tree.info());
+                   console.log(Dog.pdf, Cat.pdf);
+                   console.log(Dog.ExpTeamReward(), Cat.ExpTeamReward());
+                   reportRevisits(ateam.robots) ;
+
+                   console.log("==========END===========");
+ 
+
+      function getMoves(robot, idx) {
+             let vec = [] ;
+             vec.push([robot.pos.x, robot.pos.y]) ; // Start Point
+             let seq = robot.pdf.seq[idx] ;
+              for (let i=0 ; i < seq.length ; i++) {
+                      vec.push ([seq[i].x, seq[i].y]) ;
+             }  // end plot sequence
+            return (vec);                    
+
+       } // end getMoves
 
 
- function getMoves(robot, idx) {
 
-       let vec = [robot.pos.x, robot.pos.y] ; // Start Point
-       console.log (robot);
-       let seq = robot.pdf.seq[idx] ;
-        for (let i=0 ; i < seq.length ; i++) {
-                vec.push ([seq[i].x, seq[i].y]) ;
-       }  // end plot sequence
-      return (vec);                    
+      function countRevisits (seq) {
+            // Determine revisits in robot move sequence
+             let uniq = remAllDuplicates (seq);
+             console.log ("Unique", uniq.length, seq.length);
+
+      } // CountRevisits
+
+      function remAllDuplicates (seq) { // Removes all duplicates
+
+           var nseq = cloneSeq (seq) ;
+           var uniq = [] ;
+           var ulen = 0 ;
      
- } // end getMoves
+             do {
+                  uniq = remAllDuplicates (nseq[0], nseq);
+                  done = (uniq.length == ulen) ;
+                  ulen = uniq.length ;
+                  nseq = uniq ;
+                  console.log("got here");
+             } while (!done) ;                                  
+    
+            return (uniq);
+      } // end remAllDuplicate
 
+      function remDuplicates (pt, seq) { // Removes duplicates of a given point
+                                        // Does not alter seq
+            vec = [] ; 
+            seq.forEach(function (elm) {
+                  if (elm.x != pt.x || elm.y != pt.y) vec.push (elm.clone());
+            });
+            vec.push(pt.clone());
+            return (vec) ;
+      } // remDuplicates
+
+      function cloneSeq (seq) { // Clone a sequence
+            let vec = [] ;
+            for (let i=0 ; i < seq.length ; i++) {
+                  vec.push(seq[i].clone());
+            }
+            return (vec);
+      }
+
+      function reportRevisits(robs){
+       // Report revist counts for all robots and sequences in their pdf  
+        let obj = [] ;  
+            for (k=0 ; k < robs.length ; k++){
+                  let vec = [] ; let pcnt = [] ;
+                  let rob = robs[k]; let counts = [] ;
+                  for (let i=0; i < rob.pdf.size ; i++) {
+                     let rev = countRevisits (rob.pdf.seq[i]);
+                     vec.push(rev);
+                     counts.push(rob.pdf.seq[i].length);
+                     pcnt.push(Math.round(100 * rev / rob.pdf.seq[i].length));
+                  }
+                  obj.push ({Id: robs[k].id ,  counts: counts, revisits: vec, pcnt: pcnt });
+            }
+            console.log ("Revists", obj);   
+      }
+
+} // End Test
 
