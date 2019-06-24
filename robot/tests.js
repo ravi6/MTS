@@ -41,8 +41,11 @@ function newTest(){
            var ateam = new team ();
            let Cat = ateam.robots[0] ;
            let Dog = ateam.robots[1] ;
-           let alpha = 0.1;  let beta = 1 ;
-         
+           let alpha = 0.1;  let beta = 1000 ;
+
+           alpha = $('#alphaSlider').val();
+           beta =  $('#betaSlider').val() ;
+           
            for (k=0 ; k<800 ; k++ ){
                  for(let i=0 ; i<5 ; i++) Cat.mtsCycle();             
                  Cat.updateQ(alpha, beta);
@@ -74,7 +77,7 @@ function newTest(){
                    console.log(Dog.pdf, Cat.pdf);
                    console.log(Dog.ExpTeamReward(), Cat.ExpTeamReward());
                    reportRevisits(ateam.robots) ;
-
+                
                    console.log("==========END===========");
  
 
@@ -91,26 +94,17 @@ function newTest(){
 
 
 
-      function countRevisits (seq) {
-            // Determine revisits in robot move sequence
-             let uniq = remAllDuplicates (seq);
-             console.log ("Unique", uniq.length, seq.length);
-
-      } // CountRevisits
-
       function remAllDuplicates (seq) { // Removes all duplicates
 
            var nseq = cloneSeq (seq) ;
            var uniq = [] ;
-           var ulen = 0 ;
-     
-             do {
-                  uniq = remAllDuplicates (nseq[0], nseq);
-                  done = (uniq.length == ulen) ;
-                  ulen = uniq.length ;
-                  nseq = uniq ;
-                  console.log("got here");
-             } while (!done) ;                                  
+
+            let n = seq.length ;
+            for(let i=0 ; i<n ; i++) {  //               
+                  uniq = remDuplicates (nseq[0], nseq);              
+                  nseq = uniq ;              
+                 // console.log(uniq.length, uniq)     
+             } ;                                  
     
             return (uniq);
       } // end remAllDuplicate
@@ -137,17 +131,41 @@ function newTest(){
        // Report revist counts for all robots and sequences in their pdf  
         let obj = [] ;  
             for (k=0 ; k < robs.length ; k++){
-                  let vec = [] ; let pcnt = [] ;
+                  let prevs = [] ;    //percent of revisits
                   let rob = robs[k]; let counts = [] ;
+
                   for (let i=0; i < rob.pdf.size ; i++) {
-                     let rev = countRevisits (rob.pdf.seq[i]);
-                     vec.push(rev);
-                     counts.push(rob.pdf.seq[i].length);
-                     pcnt.push(Math.round(100 * rev / rob.pdf.seq[i].length));
+                     
+                     let uniqCount = remAllDuplicates (rob.pdf.seq[i]).length;
+                     let Count = rob.pdf.seq[i].length ;
+                     let revCountP = Math.round(100*(Count - uniqCount)/Count)
+                     prevs.push(revCountP);
+                     counts.push(Count); 
+
+                     let tabid = rob.id + "Table" ;
+                     let tab = document.getElementById(tabid);
+                     //console.log($(tabid));
+                     tab.rows[i+1].cells[1].innerHTML = (Count) ;
+                     tab.rows[i+1].cells[2].innerHTML = revCountP ;
+                     tab.rows[i+1].cells[3].innerHTML = rob.ExpTeamReward().toPrecision(2); 
+                     tab.rows[i+1].cells[4].innerHTML = rob.pdf.q[i].toPrecision(3); 
+                                      
                   }
-                  obj.push ({Id: robs[k].id ,  counts: counts, revisits: vec, pcnt: pcnt });
+
+                  obj.push ({Id: robs[k].id ,  counts: counts, prevs: prevs , 
+                             ExpTeamReward: robs[k].ExpTeamReward(), q: robs[k].pdf.q});
+
+
+
+
             }
             console.log ("Revists", obj);   
+               let msg = JSON.stringify (obj[0]) ;
+               console.log(msg);
+               $("#Results").html(msg);
+
+              
+
       }
 
 } // End Test
