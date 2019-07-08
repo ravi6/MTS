@@ -45,35 +45,46 @@ function newTest(){
 
            alpha = $('#alphaSlider').val();
            beta =  $('#betaSlider').val() ;
-           
-           for (k=0 ; k<800 ; k++ ){
-                 for(let i=0 ; i<5 ; i++) Cat.mtsCycle();             
+           beta = 1000 ; // override slider
+
+           for (let k=0 ; k<800 ; k++ ){
+                 for(let i=0 ; i<10 ; i++) Cat.mtsCycle();             
                  Cat.updateQ(alpha, beta);
                  Cat.sendPDF();
-                 for(let i=0 ; i<5 ; i++) Dog.mtsCycle(); 
+                 for(let i=0 ; i<10 ; i++) Dog.mtsCycle(); 
                  Dog.updateQ(alpha, beta);
                  Dog.sendPDF();
+                 beta = beta - k ; // progressively reduce beta
+                 if (k==70) {
+                       console.log("We are here ", ateam);
+                     // reportRevisits(ateam.robots);
+                      alert("hello");
+                 }
            }
-            
+           alert("Runs Completed");
            ateam.arena.update();
+
+           // We have two series in the plot one for Dog and
+           // other for Cat ... initializing
            ateam.arena.myplot.series.push({});
            ateam.arena.myplot.series.push({});
-            var ip = ateam.arena.myplot.series.length ;
+           var ip = ateam.arena.myplot.series.length ;
            
-             var idx = 0 ;
+             // Display each playout with 2 sec. pause
+             var idx = 0 ;  
                  var tmr = setInterval(function () {
-                     if (idx > 4) return ;
+                     if (idx > Cat.pdf.size-1) return ;
                      let vec = getMoves(Cat, idx)
                      ateam.arena.myplot.series[ip-2]=({label: "Cat walk" + idx, data: vec});
                      vec = getMoves(Dog, idx);
                      ateam.arena.myplot.series[ip-1]= ({label: "Dog walk" + idx, data: vec});
                      ateam.arena.update();
                      idx = idx + 1;  //console.log(idx);
-                     if (idx > 4) clearInterval(tmr) ;}, 2000) ;  
+                     if (idx > Cat.pdf.size-1) clearInterval(tmr) ;}, 2000) ;  
+
                      console.log(Cat.tree);
                      console.log(Dog.tree);
-                    //console.log(Dog.tree.info());
-                   // console.log(Cat.tree.info());
+                   
                    console.log(Dog.pdf, Cat.pdf);
                    console.log(Dog.ExpTeamReward(), Cat.ExpTeamReward());
                    reportRevisits(ateam.robots) ;
@@ -162,7 +173,7 @@ function newTest(){
             console.log ("Revists", obj);   
                let msg = JSON.stringify (obj[0]) ;
                console.log(msg);
-               $("#Results").html(msg);
+              // $("#Results").html(msg);
 
               
 

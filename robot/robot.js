@@ -6,9 +6,9 @@ class robot {
         this.budget   = 40       ; // This could be made different for each robot 
         this.arena    = arena    ; // where Robot can move
         this.tree     = new tree (this) ; // Its MTCS tree
-        this.pdf      = new pdf(5)   ; // Probability dist func. of this robot (size 5)
+        this.pdf      = new pdf(10)   ; // Probability dist func. of this robot (size 5)
         this.team     = team         ; // The team this robot belongs to
-        this.sentpdf  = new pdf(5) ;   // Holds pdf last transmitted
+        this.sentpdf  = new pdf(10) ;   // Holds pdf last transmitted
     } // end constructor
 
     mtsCycle() { // MonteCarlo Tree SEP 
@@ -197,6 +197,6 @@ class robot {
   } // End Noramalize q distribution
 
   sendPDF () {
-         this.sentpdf = this.pdf ; // Assuming perfect reception by others
+         this.sentpdf = this.pdf.clone() ; // Assuming perfect reception by others
   }
 } // end robot

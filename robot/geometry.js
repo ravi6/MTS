@@ -36,6 +36,7 @@ class point {
     clone() {
        return (new point(this.x, this.y));
     }
+
 }// end point
 
 /*
@@ -45,7 +46,6 @@ class point {
     return ( f == 0 ); 
 }
 */
-
 
 function onLine (pt, l1) {
 

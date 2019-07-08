@@ -56,15 +56,16 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
         let moves = this.robot.getMoves(pos, cost);
   
         while ( (cost < this.robot.budget) &&
-                  moves.size > 0  )  { // Keep moving until budget exhausted or run out
+                  moves.length > 0  )  { // Keep moving until budget exhausted or run out
                                        // of moves             
-            var rnum = Math.floor (Math.random() * moves.size) ; // random selection
+            var rnum = Math.floor (Math.random() * moves.length) ; // random selection
             var move  = Array.from (moves)[rnum]; 
              
-            cost = cost + this.robot.getCost(move);          
+            cost = cost + this.robot.getCost(move);     
+                 
             pos.x = pos.x + move[0] ;
             pos.y = pos.y + move[1] ;
-            posSeq.push(pos) ;        // append to posSeq
+            posSeq.push(pos.clone()) ;        // append to posSeq
 
             // Update possible moves from new pos
             moves = this.robot.getMoves(pos, cost);
