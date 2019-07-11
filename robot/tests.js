@@ -1,3 +1,7 @@
+var statsTimer ;
+var plotTimer ; // not used
+var data 
+
 function Test () {
 
 // randomwalk();
@@ -33,64 +37,74 @@ function Test () {
 
 } // end randomwalk
 
-
+;
 function newTest(){
      
            console.log("=====================");
 
            var ateam = new team ();
-           let Cat = ateam.robots[0] ;
-           let Dog = ateam.robots[1] ;
-           let alpha = 0.1;  let beta = 1000 ;
+           var  count = 0 ;
+         // We have two series in the plot one for Dog and
+           // other for Cat ... initializing
+           ateam.arena.myplot.series.push({});
+           ateam.arena.myplot.series.push({});
+           
+            data = {team: ateam, count: count};
+           statsTimer = setInterval(doMCTS(data), 2000);         
+} // end New Test
 
-           alpha = $('#alphaSlider').val();
-           beta =  $('#betaSlider').val() ;
-           beta = 1000 ; // override slider
 
-           for (let k=0 ; k<800 ; k++ ){
+function plotPaths (idx) {      
+       let vec = getMoves(Cat, idx)
+       var ip = ateam.arena.myplot.series.length ;
+       ateam.arena.myplot.series[ip-2]=({label: "Cat walk" + idx, data: vec});
+       vec = getMoves(Dog, idx);
+       ateam.arena.myplot.series[ip-1]= ({label: "Dog walk" + idx, data: vec});
+       ateam.arena.update();
+} 
+
+
+function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
+           let maxCount = 800 ;
+           console.log("count", data.count);
+           if ( data.count > maxCount ) {
+                   statsTimer.clearInterval();
+                   return;
+           }
+
+           // Plot robot paths with some time delay for each sequence
+           if (data.count == maxCount) {
+                 for (let idx=0 ; idx < Cat.pdf.size ; idx++) {
+                       setTimeout(plotPaths(idx),2000);
+                 }
+                 return ;
+           }
+
+
+           let alpha = 0.1 ;                          
+           let betamax = 1 ;
+           let betamin = 0.001 ;
+
+           let delBeta = betamax - betamin ;
+           let Cat = data.team.robots[0];
+           let Dog = data.team.robots[1];
+
+             for (let k = 0 ;  k< 1 ; k++) {
+                 data.count = data.count + 1 ;
+                 console.log(data.count) ;
+                 document.getElementById("counter").innerHTML = data.count;
+                 let beta = betamax - data.count * delBeta; // progressively reduce beta
                  for(let i=0 ; i<10 ; i++) Cat.mtsCycle();             
                  Cat.updateQ(alpha, beta);
                  Cat.sendPDF();
                  for(let i=0 ; i<10 ; i++) Dog.mtsCycle(); 
                  Dog.updateQ(alpha, beta);
                  Dog.sendPDF();
-                 beta = beta - k ; // progressively reduce beta
-                 if (k==70) {
-                       console.log("We are here ", ateam);
-                     // reportRevisits(ateam.robots);
-                      alert("hello");
-                 }
-           }
-           alert("Runs Completed");
-           ateam.arena.update();
+                 reportRevisits(data.team.robots);                 
+             } // end loop
 
-           // We have two series in the plot one for Dog and
-           // other for Cat ... initializing
-           ateam.arena.myplot.series.push({});
-           ateam.arena.myplot.series.push({});
-           var ip = ateam.arena.myplot.series.length ;
-           
-             // Display each playout with 2 sec. pause
-             var idx = 0 ;  
-                 var tmr = setInterval(function () {
-                     if (idx > Cat.pdf.size-1) return ;
-                     let vec = getMoves(Cat, idx)
-                     ateam.arena.myplot.series[ip-2]=({label: "Cat walk" + idx, data: vec});
-                     vec = getMoves(Dog, idx);
-                     ateam.arena.myplot.series[ip-1]= ({label: "Dog walk" + idx, data: vec});
-                     ateam.arena.update();
-                     idx = idx + 1;  //console.log(idx);
-                     if (idx > Cat.pdf.size-1) clearInterval(tmr) ;}, 2000) ;  
+} //end doMCTS
 
-                     console.log(Cat.tree);
-                     console.log(Dog.tree);
-                   
-                   console.log(Dog.pdf, Cat.pdf);
-                   console.log(Dog.ExpTeamReward(), Cat.ExpTeamReward());
-                   reportRevisits(ateam.robots) ;
-                
-                   console.log("==========END===========");
- 
 
       function getMoves(robot, idx) {
              let vec = [] ;
@@ -163,21 +177,18 @@ function newTest(){
                                       
                   }
 
-                  obj.push ({Id: robs[k].id ,  counts: counts, prevs: prevs , 
-                             ExpTeamReward: robs[k].ExpTeamReward(), q: robs[k].pdf.q});
+                //  obj.push ({Id: robs[k].id ,  counts: counts, prevs: prevs , 
+                //             ExpTeamReward: robs[k].ExpTeamReward(), q: robs[k].pdf.q});
 
 
 
 
             }
-            console.log ("Revists", obj);   
-               let msg = JSON.stringify (obj[0]) ;
-               console.log(msg);
+               //console.log ("Revists", obj);   
+               // let msg = JSON.stringify (obj[0]) ;
+               // console.log(msg);
               // $("#Results").html(msg);
-
-              
-
       }
 
-} // End Test
+
 

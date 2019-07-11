@@ -4,7 +4,7 @@ class treasure {
         this.loc = [ [2,1], [4,1], [5,3], [9,4], [3,4],
                    [2,6], [7,6], [4,8], [6,8], [8,9]] ; // Treasure locations
                    
-        this.defValue = new Array(this.loc.length).fill(10) ;  // Add some money in all locations
+        this.defValue = new Array(this.loc.length).fill(1) ;  // Add some money in all locations
         this.value    = this.defValue.slice()  ;              //Clones the array
     } 
 

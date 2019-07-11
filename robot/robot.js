@@ -165,6 +165,8 @@ class robot {
           qold = this.pdf.q[i] ;
           qnew = qold - alpha * qold * ( ( ExpF - CondExpF ) / beta
                                              + this.Entropy() + Math.log (qold) ) ;
+          if (qnew < 0) qnew = qold ;
+          
           this.pdf.q[i] = qnew ;
           this.NormalizeQ (i, qnew) ; 
       }
