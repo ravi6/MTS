@@ -1,6 +1,6 @@
 var statsTimer ;
 var plotTimer ; // not used
-var data 
+
 
 function Test () {
 
@@ -37,7 +37,7 @@ function Test () {
 
 } // end randomwalk
 
-;
+
 function newTest(){
      
            console.log("=====================");
@@ -49,8 +49,8 @@ function newTest(){
            ateam.arena.myplot.series.push({});
            ateam.arena.myplot.series.push({});
            
-            data = {team: ateam, count: count};
-           statsTimer = setInterval(doMCTS(data), 2000);         
+           var data = {team: ateam, count: count};
+           statsTimer = setInterval(function(){doMCTS(data);}, 2000);         
 } // end New Test
 
 
@@ -89,7 +89,7 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
            let Cat = data.team.robots[0];
            let Dog = data.team.robots[1];
 
-             for (let k = 0 ;  k< 1 ; k++) {
+             for (let k = 0 ;  k< 100 ; k++) {
                  data.count = data.count + 1 ;
                  console.log(data.count) ;
                  document.getElementById("counter").innerHTML = data.count;
