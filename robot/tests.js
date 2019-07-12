@@ -39,60 +39,60 @@ function Test () {
 
 
 function newTest(){
-     
-           console.log("=====================");
-
-           var ateam = new team ();
+ 
+       var ateam = new team ();
            var  count = 0 ;
          // We have two series in the plot one for Dog and
            // other for Cat ... initializing
            ateam.arena.myplot.series.push({});
            ateam.arena.myplot.series.push({});
-           
+
            var data = {team: ateam, count: count};
            statsTimer = setInterval(function(){doMCTS(data);}, 2000);         
 } // end New Test
 
 
-function plotPaths (idx) {      
+function plotPaths (data) {  
+
+        let Cat = data.team.robots[0];
+        let Dog = data.team.robots[1];
+        let myplot = data.team.arena.myplot ;
+        let idx = data.count ;
+
+       if (data.count > Cat.pdf.size-1) {  // No more to plot
+           clearInterval(plotTimer);
+           return; 
+       }
+
        let vec = getMoves(Cat, idx)
-       var ip = ateam.arena.myplot.series.length ;
-       ateam.arena.myplot.series[ip-2]=({label: "Cat walk" + idx, data: vec});
+       var ip = myplot.series.length ;
+       myplot.series[ip-2]=({label: "Cat walk" + idx, data: vec});
        vec = getMoves(Dog, idx);
-       ateam.arena.myplot.series[ip-1]= ({label: "Dog walk" + idx, data: vec});
-       ateam.arena.update();
-} 
+       myplot.series[ip-1]= ({label: "Dog walk" + idx, data: vec});
+       data.team.arena.update();
+
+       data.count = data.count + 1 ; // ready for next path plotting
+
+} // end plotPaths
 
 
 function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
+
            let maxCount = 800 ;
-           console.log("count", data.count);
-           if ( data.count > maxCount ) {
-                   statsTimer.clearInterval();
-                   return;
-           }
-
-           // Plot robot paths with some time delay for each sequence
-           if (data.count == maxCount) {
-                 for (let idx=0 ; idx < Cat.pdf.size ; idx++) {
-                       setTimeout(plotPaths(idx),2000);
-                 }
-                 return ;
-           }
-
-
            let alpha = 0.1 ;                          
            let betamax = 1 ;
            let betamin = 0.001 ;
-
            let delBeta = betamax - betamin ;
-           let Cat = data.team.robots[0];
-           let Dog = data.team.robots[1];
+           let robots = data.team.robots ;
+           let Cat = robots[0];
+           let Dog = robots[1];
+         
+ 
+       
+             for (let k = 0 ;  k < 100 ; k++) {
 
-             for (let k = 0 ;  k< 100 ; k++) {
                  data.count = data.count + 1 ;
-                 console.log(data.count) ;
-                 document.getElementById("counter").innerHTML = data.count;
+                 document.getElementById("counter").innerHTML = "Iterations: " + data.count;
                  let beta = betamax - data.count * delBeta; // progressively reduce beta
                  for(let i=0 ; i<10 ; i++) Cat.mtsCycle();             
                  Cat.updateQ(alpha, beta);
@@ -100,7 +100,16 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                  for(let i=0 ; i<10 ; i++) Dog.mtsCycle(); 
                  Dog.updateQ(alpha, beta);
                  Dog.sendPDF();
-                 reportRevisits(data.team.robots);                 
+                 reportRevisits(robots);  
+
+                if ( data.count > maxCount-1 ) { // Done with computations
+                   clearInterval(statsTimer);
+                   // We plot paths for the last iteration 
+                   data.count = 0 ; // reuse this to track paths now
+                   plotTimer = setInterval(function (){plotPaths(data);},2000);
+                   return;
+                }
+               
              } // end loop
 
 } //end doMCTS
@@ -150,7 +159,7 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                   vec.push(seq[i].clone());
             }
             return (vec);
-      }
+      } // end cloneSeq
 
       function reportRevisits(robs){
        // Report revist counts for all robots and sequences in their pdf  
@@ -173,22 +182,17 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                      tab.rows[i+1].cells[1].innerHTML = (Count) ;
                      tab.rows[i+1].cells[2].innerHTML = revCountP ;
                      tab.rows[i+1].cells[3].innerHTML = rob.ExpTeamReward().toPrecision(2); 
-                     tab.rows[i+1].cells[4].innerHTML = rob.pdf.q[i].toPrecision(3); 
-                                      
+                     tab.rows[i+1].cells[4].innerHTML = rob.pdf.q[i].toPrecision(3);                                      
                   }
 
                 //  obj.push ({Id: robs[k].id ,  counts: counts, prevs: prevs , 
                 //             ExpTeamReward: robs[k].ExpTeamReward(), q: robs[k].pdf.q});
-
-
-
-
             }
                //console.log ("Revists", obj);   
                // let msg = JSON.stringify (obj[0]) ;
                // console.log(msg);
               // $("#Results").html(msg);
-      }
+      } // end reportRevisits
 
 
 
