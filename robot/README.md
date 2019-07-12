@@ -19,9 +19,9 @@ mumber of agents, for now we will explore the problem with two agents.
 
 ## Development Log
 
-# 12th July 2019
+### 12th July 2019
 
-      - Completed full implementation of DMCTS and visulization of results.
+Completed full implementation of DMCTS and visulization of results.
 Discounting of rollout score with age is not implemented yet. Explorations so 
 far indicate that
 
