@@ -47,8 +47,12 @@ function newTest(){
            ateam.arena.myplot.series.push({});
            ateam.arena.myplot.series.push({});
 
-           var data = {team: ateam, count: count};
-           statsTimer = setInterval(function(){doMCTS(data);}, 2000);         
+           var plots = {Cat: new pdfPlot("#pdfCat"), 
+                        Dog: new pdfPlot("#pdfDog")} ;
+
+           var data = {team: ateam, count: count, pdfPlot: plots};
+           statsTimer = setInterval(function(){doMCTS(data);}, 2500);               
+                                                           
 } // end New Test
 
 
@@ -78,7 +82,7 @@ function plotPaths (data) {
 
 function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
 
-           let maxCount = 800 ;
+           let maxCount = 100 ;
            let alpha = 0.1 ;                          
            let betamax = 1 ;
            let betamin = 0.001 ;
@@ -87,12 +91,13 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
            let Cat = robots[0];
            let Dog = robots[1];
          
- 
+     
        
-             for (let k = 0 ;  k < 100 ; k++) {
+             for (let k = 0 ;  k < 10 ; k++) {
 
                  data.count = data.count + 1 ;
-                 document.getElementById("counter").innerHTML = "Iterations: " + data.count;
+                 document.getElementById("counter").innerHTML 
+                            = "Iterations: " + data.count;
                  let beta = betamax - data.count * delBeta; // progressively reduce beta
                  for(let i=0 ; i<10 ; i++) Cat.mtsCycle();             
                  Cat.updateQ(alpha, beta);
@@ -100,15 +105,21 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                  for(let i=0 ; i<10 ; i++) Dog.mtsCycle(); 
                  Dog.updateQ(alpha, beta);
                  Dog.sendPDF();
-                 reportRevisits(robots);  
-
+                 reportRevisits(robots);
+                
                 if ( data.count > maxCount-1 ) { // Done with computations
                    clearInterval(statsTimer);
                    // We plot paths for the last iteration 
                    data.count = 0 ; // reuse this to track paths now
-                   plotTimer = setInterval(function (){plotPaths(data);},2000);
+                   plotTimer = setInterval(function (){plotPaths(data);},500);
                    return;
                 }
+
+                 data.pdfPlot.Cat.addSeries(Cat.pdf.q); 
+                 data.pdfPlot.Cat.update();
+                 data.pdfPlot.Dog.addSeries(Dog.pdf.q);
+                 data.pdfPlot.Dog.update();
+
                
              } // end loop
 
@@ -195,4 +206,41 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
       } // end reportRevisits
 
 
+
+
+class pdfPlot {
+  
+        constructor (id) {
+
+                  this.id =  id;
+                  this.series =  [] ;
+                  this.options = {  // flot plot default options
+                                  series: { lines: { show: true },
+                                           points: { show: false } }, 
+                                  xaxes: { position: 'bottom', axisLabel: 'Sequence Number', showTickLabels: 'none' },
+                                  yaxes: { position: 'left', axisLabel: 'q', showTickLabels: 'none' },    
+                                 } ;
+                // this.options.axisLabels.show = true ;
+
+        } // end constuctor
+
+
+       addSeries (vec) {
+            var pdata = [] ;
+            for (let k=0 ; k < vec.length ; k++) {
+                  pdata.push([k, vec[k]]) ;
+            }
+            this.series.push ({ data:  pdata, 
+                                lines: {lineWidth: 7, 
+                                      fillColor: "rgb(255, 0, 255, 0.4)" }                              
+                            });
+      } // end addSeries
+
+      update () {
+	       $.plot(this.id, this.series, this.options);
+
+     }
+
+                                           
+} // end pdfPlot
 
