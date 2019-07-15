@@ -1,16 +1,17 @@
 # DMCTS-Test bed
 
 ## Background
-    This part of the repo contains code to understand the DMCTS algorithm 
+
+This part of the repo contains code to understand the DMCTS algorithm 
 with single threaded Javascript engine. The empahsis is more on 
 getting all the algorithmic component of each agent correct. True parallel 
 execution of each agent is not possible.
 
 ## Description of the task
-    Several agents can move about on a predifined grid in two dimensional
+Several agents can move about on a predifined grid in two dimensional
 space. The movement of the agent is restricted to only x and y directions
 and each move is confined to one grid space. The domain consists of arbitraily
- placed walls (lines in cartesian space) and these restric agent moves.
+placed walls (lines in cartesian space) and these restric agent moves.
 Also, some nodes of the grid have treasure for each agent to collect when they
 move into those positions. The task is to allow agents to seek best path that
 maximizes total bounty collected by all of the agents. The number of moves 
@@ -19,12 +20,20 @@ mumber of agents, for now we will explore the problem with two agents.
 
 ## Development Log
 
-#12th July 2019
-      - Completed full implementation of DMCTS and visulization of results.
-Discounting of rollout score with age is not implemented yet. Explorations so 
-far indicate that
+### 12th July 2019
 
-* All runs show that action sequences have about 20% of revisits in the
+Completed full implementation of DMCTS and visulization of results.
+Discounting of rollout score with age is not implemented yet.
+Using the following parameter
+* move budget for each robot = 40
+* treasure at each location  = 1
+* beta range = ( 1, 0.001)  reduced in  100 iterations
+* alpha = 0.1 (Newton step lag)
+* starting positions Cat (0,0), Dog(0,10)
+
+Explorations so far indicate that
+
+* All runs show that action sequences have about 20% to 50% revisits in 
 their move sequence by each agent.
 
 * With beta value decreasing from 1 to .001 over 100 iterations, the 
