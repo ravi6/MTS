@@ -93,7 +93,7 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
          
      
        
-             for (let k = 0 ;  k < 10 ; k++) {
+             for (let k = 0 ;  k <100 ; k++) {
 
                  data.count = data.count + 1 ;
                  document.getElementById("counter").innerHTML 
