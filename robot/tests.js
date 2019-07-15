@@ -192,8 +192,9 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                      //console.log($(tabid));
                      tab.rows[i+1].cells[1].innerHTML = (Count) ;
                      tab.rows[i+1].cells[2].innerHTML = revCountP ;
-                     tab.rows[i+1].cells[3].innerHTML = rob.ExpTeamReward().toPrecision(2); 
-                     tab.rows[i+1].cells[4].innerHTML = rob.pdf.q[i].toPrecision(3);                                      
+                     tab.rows[i+1].cells[3].innerHTML = rob.getReward(rob, rob.pdf.seq[i]);
+                     tab.rows[i+1].cells[4].innerHTML = rob.ExpTeamReward().toPrecision(2); 
+                     tab.rows[i+1].cells[5].innerHTML = rob.pdf.q[i].toPrecision(2);                                     
                   }
 
                 //  obj.push ({Id: robs[k].id ,  counts: counts, prevs: prevs , 

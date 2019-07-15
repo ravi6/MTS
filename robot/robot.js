@@ -146,7 +146,7 @@ class robot {
        // Restore the state of the treasure to original
        //  so that subsequent calcs with other seq. are done correctly
        this.team.tres.restore();
-       
+       console.log("Reward Value of a Seq =" , rb.id, sum);
        return (sum) ;
     } // end getReward
 
@@ -165,7 +165,8 @@ class robot {
           qold = this.pdf.q[i] ;
           qnew = qold - alpha * qold * ( ( ExpF - CondExpF ) / beta
                                              + this.Entropy() + Math.log (qold) ) ;
-          if (qnew < 0) qnew = qold ;
+          if (qnew < 0) qnew = qold ; // Don't let the newton step move to infeasible region
+                                      // One can not have negative probability
           
           this.pdf.q[i] = qnew ;
           this.NormalizeQ (i, qnew) ; 
