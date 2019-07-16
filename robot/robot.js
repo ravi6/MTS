@@ -146,7 +146,7 @@ class robot {
        // Restore the state of the treasure to original
        //  so that subsequent calcs with other seq. are done correctly
        this.team.tres.restore();
-       console.log("Reward Value of a Seq =" , rb.id, sum);
+       // console.log("Reward Value of a Seq =" , rb.id, sum);
        return (sum) ;
     } // end getReward
 
@@ -163,6 +163,10 @@ class robot {
             CondExpF = 0 ;
         
           qold = this.pdf.q[i] ;
+
+          // Here (1/beta  corresponds to  -T in my Lagrangian in write_up)
+          // Consequently positive beta values give maxima
+          
           qnew = qold - alpha * qold * ( ( ExpF - CondExpF ) / beta
                                              + this.Entropy() + Math.log (qold) ) ;
           if (qnew < 0) qnew = qold ; // Don't let the newton step move to infeasible region

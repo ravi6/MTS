@@ -50,8 +50,8 @@ function newTest(){
            var plots = {Cat: new pdfPlot("#pdfCat"), 
                         Dog: new pdfPlot("#pdfDog")} ;
 
-           var data = {team: ateam, count: count, pdfPlot: plots};
-           statsTimer = setInterval(function(){doMCTS(data);}, 2500);               
+           var data = {team: ateam, count: count, pdfPlot: plots, betaTrend: []};
+           statsTimer = setInterval(function(){doMCTS(data);}, 100);               
                                                            
 } // end New Test
 
@@ -82,45 +82,57 @@ function plotPaths (data) {
 
 function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
 
-           let maxCount = 100 ;
-           let alpha = 0.1 ;                          
-           let betamax = 1 ;
-           let betamin = 0.001 ;
-           let delBeta = betamax - betamin ;
+           var  params = { maxCount: 100,   // total number of global iterations 
+                           alpha   : 0.1,    // Newton update relaxation                      
+                           beta    : {max: 1, min: 0.001, anneal: 20 }
+                         } ;      
+                                    // beta.anneal controls how beta goes down
+                                    //  large values slows down the change
+ 
+
            let robots = data.team.robots ;
            let Cat = robots[0];
            let Dog = robots[1];
          
-     
-       
-             for (let k = 0 ;  k <100 ; k++) {
+
+             for (let k = 0 ;  k <2 ; k++) {
 
                  data.count = data.count + 1 ;
                  document.getElementById("counter").innerHTML 
                             = "Iterations: " + data.count;
-                 let beta = betamax - data.count * delBeta; // progressively reduce beta
+
+                  let beta = params.beta.max + (params.beta.min - params.beta.max) 
+                                 * cccurve(params.beta.anneal, data.count / params.maxCount); 
+                   
+                   // We use these two show how beta varies over iterations
+                   data.betaTrend.push ([data.count, beta]);
+              
+                 
                  for(let i=0 ; i<10 ; i++) Cat.mtsCycle();             
-                 Cat.updateQ(alpha, beta);
+                 Cat.updateQ(params.alpha, beta);
                  Cat.sendPDF();
                  for(let i=0 ; i<10 ; i++) Dog.mtsCycle(); 
-                 Dog.updateQ(alpha, beta);
+                 Dog.updateQ(params.alpha, beta);
                  Dog.sendPDF();
                  reportRevisits(robots);
                 
-                if ( data.count > maxCount-1 ) { // Done with computations
+                if ( data.count > params.maxCount-1 ) { // Done with computations
                    clearInterval(statsTimer);
+                   betaPlot(data.betaTrend) ;
                    // We plot paths for the last iteration 
                    data.count = 0 ; // reuse this to track paths now
-                   plotTimer = setInterval(function (){plotPaths(data);},500);
+                   plotTimer = setInterval(function (){plotPaths(data);},1000);
                    return;
                 }
+                
 
-                 data.pdfPlot.Cat.addSeries(Cat.pdf.q); 
-                 data.pdfPlot.Cat.update();
-                 data.pdfPlot.Dog.addSeries(Dog.pdf.q);
-                 data.pdfPlot.Dog.update();
-
-               
+                 if (((data.count+1)%10) == 0) {
+                       data.pdfPlot.Cat.addSeries(Cat.pdf.q); 
+                       data.pdfPlot.Cat.update();
+                       data.pdfPlot.Dog.addSeries(Dog.pdf.q);
+                       data.pdfPlot.Dog.update();
+                 }
+                          
              } // end loop
 
 } //end doMCTS
@@ -244,4 +256,20 @@ class pdfPlot {
 
                                            
 } // end pdfPlot
+
+
+function betaPlot(betaTrend) {
+   
+      let options = {  // flot plot default options
+                       series: { lines: { show: true },
+                       points: { show: false } }, 
+                        xaxes: { position: 'bottom', axisLabel: 'Sequence Number', showTickLabels: 'none' },
+                                  yaxes: { position: 'left', axisLabel: 'beta', showTickLabels: 'none' },    
+                                 } ;
+
+       $.plot("#betaPlot", [{ data: betaTrend,
+                              lines: {lineWidth: 7, 
+                                      fillColor: "rgb(255, 0, 255, 0.4)" }
+                             }], options);                                                                
+} // end betaPlot
 
