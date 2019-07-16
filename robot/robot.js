@@ -146,7 +146,7 @@ class robot {
        // Restore the state of the treasure to original
        //  so that subsequent calcs with other seq. are done correctly
        this.team.tres.restore();
-       // console.log("Reward Value of a Seq =" , rb.id, sum);
+        // console.log("Reward Value of a Seq =" , rb.id, sum);
        return (sum) ;
     } // end getReward
 
