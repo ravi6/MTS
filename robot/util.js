@@ -26,3 +26,20 @@ function getStats (vec) {  // Get Mean ans Std of a vector
 
   return ({mean: mean, std: std}) ;
 } // end getStats
+
+function cccurve(alpha, x) {
+// Provides scaled curve shape that is either concave or convex
+// alpha>1 concave, alpha <1 convex
+// never try alpha =1   it is singular
+// try  alpha 0.01 0.5 20
+
+  y = (Math.pow(alpha, x) - 1) / (alpha -1); 
+  return (y) ;
+}
+
+function sCurve(alpha, x) {
+  // if Alpha is negtive you get S curve
+  //             positive you get mirror of S curve
+  y = 1.0 / (1 + Math.pow(x/(1-x), alpha)) ;
+  return (y) ;
+}

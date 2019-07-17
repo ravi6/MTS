@@ -82,9 +82,9 @@ function plotPaths (data) {
 
 function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
 
-           var  params = { maxCount: 100,   // total number of global iterations 
+           var  params = { maxCount: 800,   // total number of global iterations 
                            alpha   : 0.1,    // Newton update relaxation                      
-                           beta    : {max: 1, min: 0.001, anneal: 20 }
+                           beta    : {max: 1, min: 0.0001, anneal: 3 }
                          } ;      
                                     // beta.anneal controls how beta goes down
                                     //  large values slows down the change
@@ -101,8 +101,9 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                  document.getElementById("counter").innerHTML 
                             = "Iterations: " + data.count;
 
-                  let beta = params.beta.max + (params.beta.min - params.beta.max) 
-                                 * cccurve(params.beta.anneal, data.count / params.maxCount); 
+                  // Good for min is a tiny fraction of max 
+                  let beta = params.beta.min + (params.beta.max - params.beta.min)
+                                 * sCurve(params.beta.anneal, data.count / (params.maxCount-1)); 
                    
                    // We use these two show how beta varies over iterations
                    data.betaTrend.push ([data.count, beta]);
@@ -118,15 +119,16 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                 
                 if ( data.count > params.maxCount-1 ) { // Done with computations
                    clearInterval(statsTimer);
+                   console.log("Finished", data.count);
                    betaPlot(data.betaTrend) ;
                    // We plot paths for the last iteration 
                    data.count = 0 ; // reuse this to track paths now
-                   plotTimer = setInterval(function (){plotPaths(data);},1000);
+                   plotTimer = setInterval(function (){plotPaths(data);},100);
                    return;
                 }
                 
 
-                 if (((data.count+1)%10) == 0) {
+                 if (((data.count+1)% (params.maxCount/10)) == 0) {
                        data.pdfPlot.Cat.addSeries(Cat.pdf.q); 
                        data.pdfPlot.Cat.update();
                        data.pdfPlot.Dog.addSeries(Dog.pdf.q);
