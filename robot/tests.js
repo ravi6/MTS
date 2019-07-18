@@ -86,7 +86,7 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
 
            var  params = { maxCount: 2000,   // total number of global iterations 
                            alpha   : 0.1,    // Newton update relaxation                      
-                           beta    : {max: 1, min: 0.0001, anneal: 6 }
+                           beta    : {max: 1, min: 0.0001, anneal: 20 }
                          } ;      
                                     // beta.anneal controls how beta goes down
                                     //  large values slows down the change
