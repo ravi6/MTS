@@ -41,3 +41,17 @@ probability associated with 10 sampled action sequences of each agent tend
 to oscillate but seem to monotonically increase in a stright line from first
 sequence to the last sequence. This to me does not make sense.
 
+### 18th July 2019
+* Well now I have more explorations beta low value upt 0.0001 was explore.
+Also, beta variation shape with S shaped curve with varying degrees of slope
+was also considered. In addition noted that sampling from pdf is not as trivial
+as I first imagined. Looks like when you have discrete probability distribution,
+one needs to generate cumulative table and then use a random number from 0 to 1 to
+select the sequence from the pdf. Anyway three different schemes just RANDOM, QMAX
+and SAMPLE (proper one) were explored. 
+
+* For some combination I was getting high peaks with just one pushing close 0.98
+but now I can't reproduce it. Perhaps that was with fewer iteration count (800).
+Need to re-examine. Overall the picture is still confusing. But what is encouraging is
+all sequences in the pdf tables produce expected high score after max iterations.
+
