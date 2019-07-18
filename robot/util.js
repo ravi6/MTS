@@ -43,3 +43,22 @@ function sCurve(alpha, x) {
   y = 1.0 / (1 + Math.pow(x/(1-x), alpha)) ;
   return (y) ;
 }
+
+function indexOfMax(arr) {
+  // get index of maximum value of arr
+    if (arr.length === 0) {
+        return -1;
+    }
+
+    var max = arr[0];
+    var maxIndex = 0;
+
+    for (var i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            maxIndex = i;
+            max = arr[i];
+        }
+    }
+
+    return maxIndex;
+}

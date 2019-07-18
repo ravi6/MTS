@@ -1,7 +1,6 @@
 var statsTimer ;
 var plotTimer ; // not used
 
-
 function Test () {
 
 // randomwalk();
@@ -38,8 +37,11 @@ function Test () {
 } // end randomwalk
 
 
+
 function newTest(){
- 
+
+
+        
        var ateam = new team ();
            var  count = 0 ;
          // We have two series in the plot one for Dog and
@@ -82,9 +84,9 @@ function plotPaths (data) {
 
 function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
 
-           var  params = { maxCount: 800,   // total number of global iterations 
+           var  params = { maxCount: 2000,   // total number of global iterations 
                            alpha   : 0.1,    // Newton update relaxation                      
-                           beta    : {max: 1, min: 0.0001, anneal: 3 }
+                           beta    : {max: 1, min: 0.0001, anneal: 6 }
                          } ;      
                                     // beta.anneal controls how beta goes down
                                     //  large values slows down the change
@@ -129,9 +131,10 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                 
 
                  if (((data.count+1)% (params.maxCount/10)) == 0) {
-                       data.pdfPlot.Cat.addSeries(Cat.pdf.q); 
+                       let label = "iter: " + (data.count + 1) ;
+                       data.pdfPlot.Cat.addSeries(Cat.pdf.q, label); 
                        data.pdfPlot.Cat.update();
-                       data.pdfPlot.Dog.addSeries(Dog.pdf.q);
+                       data.pdfPlot.Dog.addSeries(Dog.pdf.q, label);
                        data.pdfPlot.Dog.update();
                  }
                           
@@ -207,8 +210,7 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                      tab.rows[i+1].cells[1].innerHTML = (Count) ;
                      tab.rows[i+1].cells[2].innerHTML = revCountP ;
                      tab.rows[i+1].cells[3].innerHTML = rob.getReward(rob, rob.pdf.seq[i]);
-                     tab.rows[i+1].cells[4].innerHTML = rob.ExpTeamReward().toPrecision(2); 
-                     tab.rows[i+1].cells[5].innerHTML = rob.pdf.q[i].toPrecision(2);                                     
+                     tab.rows[i+1].cells[4].innerHTML = rob.pdf.q[i].toPrecision(2);                                     
                   }
 
                 //  obj.push ({Id: robs[k].id ,  counts: counts, prevs: prevs , 
@@ -240,12 +242,12 @@ class pdfPlot {
         } // end constuctor
 
 
-       addSeries (vec) {
+       addSeries (vec, label) {
             var pdata = [] ;
             for (let k=0 ; k < vec.length ; k++) {
                   pdata.push([k, vec[k]]) ;
             }
-            this.series.push ({ data:  pdata, 
+            this.series.push ({ data:  pdata, label: label, 
                                 lines: {lineWidth: 7, 
                                       fillColor: "rgb(255, 0, 255, 0.4)" }                              
                             });

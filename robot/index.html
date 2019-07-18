@@ -15,18 +15,17 @@
     <script src="team.js"></script>
     <script src="util.js"></script>
     <script src="tests.js"></script>
-    <h>Multi Robot DMTS simulation </h>
-    <p>Trials with just two robots</p>
-     <div id="plotarea" class=well style="height:400px"></div>
+
     <script>
         $(document).ready(function() {
-
         });
-
     </script>
 
 <div class="container">
+    <h>Multi Robot DMTS simulation </h>
+    <p>Trials with just two robots</p>
 
+<div id="plotarea" class=well style="height:400px"></div>
 <p><br><br></p>
 <button type="button" class="btn btn-primary btn-lg" 
                   onclick = "Test();" >SIMULATE</button>
@@ -35,29 +34,28 @@
 <p id="counter"></p>
 
 <h2>Cat Statistics</h2>
- <table class="table table-striped" id=CatTable>
-  <thead>
+ <table class="table table-striped" id=CatTable> 
+ <thead>
     <tr><th scope="col">#</th>
         <th scope="col">Moves</th>
         <th scope="col">%Revisits</th> 
         <th scope="col">SeqReward</th> 
-        <th scope="col">TeamReward</th>
         <th scope="col">q (PDF)</th>
     </tr>
   </thead>
   <tbody>
-    <tr> <th scope="row">1</th><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr> <th scope="row">2</th><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr> <th scope="row">3</th><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr> <th scope="row">4</th><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr> <th scope="row">5</th><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr> <th scope="row">6</th><td></td><td></td><td></td><td></td><td></td></tr> 
-    <tr> <th scope="row">7</th><td></td><td></td><td></td><td></td><td></td></tr> 
-    <tr> <th scope="row">8</th><td></td><td></td><td></td><td></td><td></td></tr>  
-    <tr> <th scope="row">9</th><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr> <th scope="row">10</th><td></td><td></td><td></td><td></td><td></td></tr>       
+    <tr> <th scope="row">1</th><td></td><td></td><td></td><td></td><td>
+    <tr> <th scope="row">2</th><td></td><td></td><td></td><td></td><td>
+    <tr> <th scope="row">3</th><td></td><td></td><td></td><td></td><td>
+    <tr> <th scope="row">4</th><td></td><td></td><td></td><td></td><td>
+    <tr> <th scope="row">5</th><td></td><td></td><td></td><td></td><td>
+    <tr> <th scope="row">6</th><td></td><td></td><td></td><td></td><td>
+    <tr> <th scope="row">7</th><td></td><td></td><td></td><td></td><td> 
+    <tr> <th scope="row">8</th><td></td><td></td><td></td><td></td><td>  
+    <tr> <th scope="row">9</th><td></td><td></td><td></td><td></td><td>
+    <tr> <th scope="row">10</th><td></td><td></td><td></td><td></td><td>       
   </tbody>
-</table>
+ </table>
 
 <h2>Dog Statistics</h2>
  <table class="table table-striped" id=DogTable>
@@ -66,34 +64,31 @@
         <th scope="col">Moves</th>
         <th scope="col">%Revisits</th> 
         <th scope="col">SeqReward</th> 
-        <th scope="col">TeamReward</th>
         <th scope="col">q (PDF)</th>
     </tr>
   </thead>
   <tbody>
-    <tr> <th scope="row">1</th><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr> <th scope="row">2</th><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr> <th scope="row">3</th><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr> <th scope="row">4</th><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr> <th scope="row">5</th><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr> <th scope="row">6</th><td></td><td></td><td></td><td></td><td></td></tr> 
-    <tr> <th scope="row">7</th><td></td><td></td><td></td><td></td><td></td></tr> 
-    <tr> <th scope="row">8</th><td></td><td></td><td></td><td></td><td></td></tr>  
-    <tr> <th scope="row">9</th><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr> <th scope="row">10</th><td></td><td></td><td></td><td></td><td></td></tr>        
+    <tr> <th scope="row">1</th><td></td><td></td><td></td><td></td><td>
+    <tr> <th scope="row">2</th><td></td><td></td><td></td><td></td><td>
+    <tr> <th scope="row">3</th><td></td><td></td><td></td><td></td><td>
+    <tr> <th scope="row">4</th><td></td><td></td><td></td><td></td><td>
+    <tr> <th scope="row">5</th><td></td><td></td><td></td><td></td><td>
+    <tr> <th scope="row">6</th><td></td><td></td><td></td><td></td><td>
+    <tr> <th scope="row">7</th><td></td><td></td><td></td><td></td><td> 
+    <tr> <th scope="row">8</th><td></td><td></td><td></td><td></td><td>  
+    <tr> <th scope="row">9</th><td></td><td></td><td></td><td></td><td>
+    <tr> <th scope="row">10</th><td></td><td></td><td></td><td></td><td>       
   </tbody>
 </table>
 
 <h2>Cat PDF </h2>
-<div id="pdfCat" class=well style="height:400px">
-</div>
+<div id="pdfCat" class=well style="height:400px"></div>
 
 <h2>Dog PDF </h2>
 <div id="pdfDog" class=well style="height:400px"></div>
-</div>
 
 <h2>Annealing Beta Trend </h2>
 <div id="betaPlot" class=well style="height:400px"></div>
-</div>
 
+</div>
 </html>
