@@ -52,7 +52,7 @@ function newTest(){
            var plots = {Cat: new pdfPlot("#pdfCat"), 
                         Dog: new pdfPlot("#pdfDog")} ;
 
-           var data = {team: ateam, count: count, pdfPlot: plots, betaTrend: []};
+           var data = {team: ateam, count: count, pdfPlot: plots, betaTrend: [], beta: 0};
            statsTimer = setInterval(function(){doMCTS(data);}, 100);               
                                                            
 } // end New Test
@@ -86,7 +86,7 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
 
            var  params = { maxCount: 2000,   // total number of global iterations 
                            alpha   : 0.1,    // Newton update relaxation                      
-                           beta    : {max: 1, min: 0.0001, anneal: 20 }
+                           beta    : {max: 100, min: 0.001, anneal: 20 }
                          } ;      
                                     // beta.anneal controls how beta goes down
                                     //  large values slows down the change
@@ -103,10 +103,10 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                  document.getElementById("counter").innerHTML 
                             = "Iterations: " + data.count;
 
-                  // Good for min is a tiny fraction of max 
+                  // Good for when min is a tiny fraction of max 
                   let beta = params.beta.min + (params.beta.max - params.beta.min)
                                  * sCurve(params.beta.anneal, data.count / (params.maxCount-1)); 
-                   
+                  data.beta = beta ;
                    // We use these two show how beta varies over iterations
                    data.betaTrend.push ([data.count, beta]);
               
@@ -131,11 +131,12 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                 
 
                  if (((data.count+1)% (params.maxCount/10)) == 0) {
-                       let label = "iter: " + (data.count + 1) ;
+                       let label = "iter: " + (data.count + 1) + " beta: " + data.beta.toPrecision(1) ;
                        data.pdfPlot.Cat.addSeries(Cat.pdf.q, label); 
                        data.pdfPlot.Cat.update();
                        data.pdfPlot.Dog.addSeries(Dog.pdf.q, label);
                        data.pdfPlot.Dog.update();
+                       data.pdfPlot.Dog.addinfo();
                  }
                           
              } // end loop
@@ -238,7 +239,7 @@ class pdfPlot {
                                   yaxes: { position: 'left', axisLabel: 'q', showTickLabels: 'none' },    
                                  } ;
                 // this.options.axisLabels.show = true ;
-
+              
         } // end constuctor
 
 
@@ -257,6 +258,10 @@ class pdfPlot {
 	       $.plot(this.id, this.series, this.options);
 
      }
+
+      addinfo() {
+           $(this.id).append("<div style='position:absolute;left:" + 50 + "px;top:" + 50 + "px;color:#666;font-size:smaller'>Actual measurements</div>");  
+      }
 
                                            
 } // end pdfPlot

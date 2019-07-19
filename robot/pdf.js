@@ -17,13 +17,13 @@ class pdf {
 
              let k = 0  ;
              switch (method) {
-                case method.RANDOM:
+                case pdf.select.RANDOM:
                      k  = Math.floor(Math.random() * this.size) ;
                      break ;
-                case method.MAXQ:
+                case pdf.select.MAXQ:
                      k = indexOfMax(this.q);   // Choosing maximum q sequence
                      break ;
-                case method.SAMPLE:
+                case pdf.select.SAMPLE:
                      // Generate cumulative q table
                      let cumQ = [] ;           
                      cumQ.push(this.q[0]);
