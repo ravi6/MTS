@@ -22,73 +22,109 @@
     </script>
 
 <div class="container">
-    <h>Multi Robot DMTS simulation </h>
-    <p>Trials with just two robots</p>
+    <h>Multi Robot DMTS simulation Test Bed </h>
 
-<div id="plotarea" class=well style="height:400px"></div>
-<p><br><br></p>
-<button type="button" class="btn btn-primary btn-lg" 
-                  onclick = "Test();" >SIMULATE</button>
-<p><br><br></p>
+<ul class="nav nav-tabs">
+ <li><a data-toggle=tab href="#arenaTab">Arena</a></li>
+ <li><a data-toggle=tab href="#tablesTab">PDF Tables</a></li>
+ <li><a data-toggle=tab href="#plotsTab">PDF Plots</a></li>
+</ul>
 
-<p id="counter"></p>
+<div class="tab-content">
+    <!-- Shows Moves of Robots -->
+  <div id="arenaTab" class="tab-pane fade">
+        <div id="plotarea" class=well style="height:400px"></div>
+        <p><br><br></p>
+       
+        <div class="container">
+          <div class="row">
+            <div class="col-sm">
+                 <button type="button" class="btn btn-primary btn-lg" 
+                          onclick = "Test();" >SIMULATE</button>
+            </div>
+            <div class="col-sm">
+                  <p> Select PDF Sampling Strategy </p>
+                      <div class="radio">
+                      <label><input type="radio" name="optradio" >Random</label></div>
+                      <div class="radio">
+                      <label><input type="radio" name="optradio">Qmax</label></div>
+                      <div class="radio">
+                      <label><input type="radio" name="optradio" checked>Sample</label></div> 
+           </div>
+           <div class="col-sm">
+                  <label for="usr">Max Iter:</label>
+                      <input type="text" class="form-control" id="MaxIter">
+                  <label for="pwd">PlotSamples:</label>
+                     <input type="text" class="form-control" id="PSamples">     
+           </div>
+          </div> <!-- End Row -->
+        </div>  <!-- End Container -->
+    </div> <!-- end of arenaTab -->
 
-<h2>Cat Statistics</h2>
- <table class="table table-striped" id=CatTable> 
- <thead>
-    <tr><th scope="col">#</th>
-        <th scope="col">Moves</th>
-        <th scope="col">%Revisits</th> 
-        <th scope="col">SeqReward</th> 
-        <th scope="col">q (PDF)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr> <th scope="row">0</th><td></td><td></td><td></td><td></td><td>
-    <tr> <th scope="row">1</th><td></td><td></td><td></td><td></td><td>
-    <tr> <th scope="row">2</th><td></td><td></td><td></td><td></td><td>
-    <tr> <th scope="row">3</th><td></td><td></td><td></td><td></td><td>
-    <tr> <th scope="row">4</th><td></td><td></td><td></td><td></td><td>
-    <tr> <th scope="row">5</th><td></td><td></td><td></td><td></td><td>
-    <tr> <th scope="row">6</th><td></td><td></td><td></td><td></td><td> 
-    <tr> <th scope="row">7</th><td></td><td></td><td></td><td></td><td>  
-    <tr> <th scope="row">8</th><td></td><td></td><td></td><td></td><td>
-    <tr> <th scope="row">9</th><td></td><td></td><td></td><td></td><td>       
-  </tbody>
- </table>
+    <!-- Shows PDF Tables -->
+    <div id="tablesTab" class="tab-pane fade">
+        <p id="counter"></p>
+        <h2>Cat Statistics</h2>
+         <table class="table table-striped" id=CatTable> 
+         <thead>
+            <tr><th scope="col">#</th>
+                <th scope="col">Moves</th>
+                <th scope="col">%Revisits</th> 
+                <th scope="col">SeqReward</th> 
+                <th scope="col">q (PDF)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr> <th scope="row">0</th><td></td><td></td><td></td><td></td><td>
+            <tr> <th scope="row">1</th><td></td><td></td><td></td><td></td><td>
+            <tr> <th scope="row">2</th><td></td><td></td><td></td><td></td><td>
+            <tr> <th scope="row">3</th><td></td><td></td><td></td><td></td><td>
+            <tr> <th scope="row">4</th><td></td><td></td><td></td><td></td><td>
+            <tr> <th scope="row">5</th><td></td><td></td><td></td><td></td><td>
+            <tr> <th scope="row">6</th><td></td><td></td><td></td><td></td><td> 
+            <tr> <th scope="row">7</th><td></td><td></td><td></td><td></td><td>  
+            <tr> <th scope="row">8</th><td></td><td></td><td></td><td></td><td>
+            <tr> <th scope="row">9</th><td></td><td></td><td></td><td></td><td>       
+          </tbody>
+         </table>
 
-<h2>Dog Statistics</h2>
- <table class="table table-striped" id=DogTable>
-  <thead>
-    <tr><th scope="col">#</th>
-        <th scope="col">Moves</th>
-        <th scope="col">%Revisits</th> 
-        <th scope="col">SeqReward</th> 
-        <th scope="col">q (PDF)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr> <th scope="row">0</th><td></td><td></td><td></td><td></td><td>
-    <tr> <th scope="row">1</th><td></td><td></td><td></td><td></td><td>
-    <tr> <th scope="row">2</th><td></td><td></td><td></td><td></td><td>
-    <tr> <th scope="row">3</th><td></td><td></td><td></td><td></td><td>
-    <tr> <th scope="row">4</th><td></td><td></td><td></td><td></td><td>
-    <tr> <th scope="row">5</th><td></td><td></td><td></td><td></td><td>
-    <tr> <th scope="row">6</th><td></td><td></td><td></td><td></td><td> 
-    <tr> <th scope="row">7</th><td></td><td></td><td></td><td></td><td>  
-    <tr> <th scope="row">8</th><td></td><td></td><td></td><td></td><td>
-    <tr> <th scope="row">9</th><td></td><td></td><td></td><td></td><td>       
-  </tbody>
-</table>
+        <h2>Dog Statistics</h2>
+         <table class="table table-striped" id=DogTable>
+          <thead>
+            <tr><th scope="col">#</th>
+                <th scope="col">Moves</th>
+                <th scope="col">%Revisits</th> 
+                <th scope="col">SeqReward</th> 
+                <th scope="col">q (PDF)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr> <th scope="row">0</th><td></td><td></td><td></td><td></td><td>
+            <tr> <th scope="row">1</th><td></td><td></td><td></td><td></td><td>
+            <tr> <th scope="row">2</th><td></td><td></td><td></td><td></td><td>
+            <tr> <th scope="row">3</th><td></td><td></td><td></td><td></td><td>
+            <tr> <th scope="row">4</th><td></td><td></td><td></td><td></td><td>
+            <tr> <th scope="row">5</th><td></td><td></td><td></td><td></td><td>
+            <tr> <th scope="row">6</th><td></td><td></td><td></td><td></td><td> 
+            <tr> <th scope="row">7</th><td></td><td></td><td></td><td></td><td>  
+            <tr> <th scope="row">8</th><td></td><td></td><td></td><td></td><td>
+            <tr> <th scope="row">9</th><td></td><td></td><td></td><td></td><td>       
+          </tbody>
+        </table>
+    </div> 
 
-<h2>Cat PDF </h2>
-<div id="pdfCat" class=well style="height:400px"></div>
 
-<h2>Dog PDF </h2>
-<div id="pdfDog" class=well style="height:400px"></div>
+    <!-- Shows PDF Plots -->
+    <div id="plotsTab" class="tab-pane fade">
+        <h2>Cat PDF </h2>
+        <div id="pdfCat" class=well style="height:400px"></div>
 
-<h2>Annealing Beta Trend </h2>
-<div id="betaPlot" class=well style="height:400px"></div>
+        <h2>Dog PDF </h2>
+        <div id="pdfDog" class=well style="height:400px"></div>
 
-</div>
+        <h2>Annealing Beta Trend </h2>
+        <div id="betaPlot" class=well style="height:400px"></div>
+    </div>
+</div> <!-- end Tabs content -->
+</div> <!-- End Container -->
 </html>

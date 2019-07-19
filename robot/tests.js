@@ -53,6 +53,7 @@ function newTest(){
                         Dog: new pdfPlot("#pdfDog")} ;
 
            var data = {team: ateam, count: count, pdfPlot: plots, betaTrend: [], beta: 0};
+           
            statsTimer = setInterval(function(){doMCTS(data);}, 100);               
                                                            
 } // end New Test
@@ -86,7 +87,7 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
 
            var  params = { maxCount: 2000,   // total number of global iterations 
                            alpha   : 0.1,    // Newton update relaxation                      
-                           beta    : {max: 100, min: 0.001, anneal: 20 }
+                           beta    : {max: 1, min: 0.001, anneal: 3 }
                          } ;      
                                     // beta.anneal controls how beta goes down
                                     //  large values slows down the change
@@ -106,7 +107,8 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                   // Good for when min is a tiny fraction of max 
                   let beta = params.beta.min + (params.beta.max - params.beta.min)
                                  * sCurve(params.beta.anneal, data.count / (params.maxCount-1)); 
-                  data.beta = beta ;
+                  data.beta = beta ;  // used for adding series legend info
+
                    // We use these two show how beta varies over iterations
                    data.betaTrend.push ([data.count, beta]);
               
@@ -117,8 +119,10 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                  for(let i=0 ; i<10 ; i++) Dog.mtsCycle(); 
                  Dog.updateQ(params.alpha, beta);
                  Dog.sendPDF();
+
                  reportRevisits(robots);
                 
+                // Start plotting paths once all iterations are over
                 if ( data.count > params.maxCount-1 ) { // Done with computations
                    clearInterval(statsTimer);
                    console.log("Finished", data.count);
@@ -135,8 +139,7 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                        data.pdfPlot.Cat.addSeries(Cat.pdf.q, label); 
                        data.pdfPlot.Cat.update();
                        data.pdfPlot.Dog.addSeries(Dog.pdf.q, label);
-                       data.pdfPlot.Dog.update();
-                       data.pdfPlot.Dog.addinfo();
+                       data.pdfPlot.Dog.update(); 
                  }
                           
              } // end loop
@@ -191,7 +194,9 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
       } // end cloneSeq
 
       function reportRevisits(robs){
-       // Report revist counts for all robots and sequences in their pdf  
+       // Report revist counts for all robots and sequences in their pdf 
+       // and updates PDF  Tables
+        
         let obj = [] ;  
             for (k=0 ; k < robs.length ; k++){
                   let prevs = [] ;    //percent of revisits
@@ -259,8 +264,15 @@ class pdfPlot {
 
      }
 
-      addinfo() {
-           $(this.id).append("<div style='position:absolute;left:" + 50 + "px;top:" + 50 + "px;color:#666;font-size:smaller'>Actual measurements</div>");  
+      addInfo(px, py, str) {
+          // If you wish to use multiline string use <br> to break
+          // lines in str
+          // position is absolute pixels ... may have to use trial and error
+          // since we don't use plot coordinates
+           $(this.id).append("<div style='position:absolute;left:" 
+                              + px + "px;top:" + py + 
+                              "px;color:#666;font-size:smaller'>" +
+                              + str + "</div>");  
       }
 
                                            
