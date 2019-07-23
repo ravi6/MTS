@@ -51,7 +51,7 @@ function newTest(){
 
            var plots = {Cat: new pdfPlot("#pdfCat"), 
                         Dog: new pdfPlot("#pdfDog")} ;
-
+                        
            var data = {team: ateam, count: count, pdfPlot: plots, betaTrend: [], beta: 0};
            
            statsTimer = setInterval(function(){doMCTS(data);}, 100);               
@@ -60,6 +60,8 @@ function newTest(){
 
 
 function plotPaths (data) {  
+
+       // activeTab("#arenaTab");
 
         let Cat = data.team.robots[0];
         let Dog = data.team.robots[1];
@@ -111,7 +113,6 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
 
                    // We use these two show how beta varies over iterations
                    data.betaTrend.push ([data.count, beta]);
-              
                  
                  for(let i=0 ; i<10 ; i++) Cat.mtsCycle();             
                  Cat.updateQ(params.alpha, beta);
@@ -129,7 +130,7 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                    betaPlot(data.betaTrend) ;
                    // We plot paths for the last iteration 
                    data.count = 0 ; // reuse this to track paths now
-                   plotTimer = setInterval(function (){plotPaths(data);},100);
+                   plotTimer = setInterval(function (){plotPaths(data);},500);
                    return;
                 }
                 
@@ -140,6 +141,10 @@ function doMCTS (data) {  // Do 10 iterations and yield for 2 sec
                        data.pdfPlot.Cat.update();
                        data.pdfPlot.Dog.addSeries(Dog.pdf.q, label);
                        data.pdfPlot.Dog.update(); 
+                 }
+
+                 if (data.count>1995) {
+                       Cat.pdf.showBest();
                  }
                           
              } // end loop
@@ -260,6 +265,8 @@ class pdfPlot {
       } // end addSeries
 
       update () {
+	       
+	    //   activeTab("#plotsTab"); // kludge to satisfy flot
 	       $.plot(this.id, this.series, this.options);
 
      }
@@ -288,6 +295,7 @@ function betaPlot(betaTrend) {
                                   yaxes: { position: 'left', axisLabel: 'beta', showTickLabels: 'none' },    
                                  } ;
 
+      //  activeTab("#plotsTab"); // a kludge to satisfy flot (moves to the tab)
        $.plot("#betaPlot", [{ data: betaTrend,
                               lines: {lineWidth: 7, 
                                       fillColor: "rgb(255, 0, 255, 0.4)" }

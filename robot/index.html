@@ -1,8 +1,44 @@
 <!doctype html>
 <html lang="en">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, 
+                  initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+
+<!-- This style kludge works well -- not too messy>
+<!-- To enable flot to deal with rendering on tabbed pages -->
+<!-- flot apparently cant draw on hidden divs .. by bootstrap -->
+<style>
+#plotsTab {
+    width:0;
+    display:block;
+    visibility:hidden;
+    height:0;
+}
+#plotsTab.active {
+    width:100%;
+    height:100%;
+    visibility:visible;
+}
+</style>
+  </head>
+  
+  <body>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script  src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
     <script src="../flot/jquery.flot.js"> </script>
 
     <script src="geometry.js"></script>
@@ -18,31 +54,40 @@
 
     <script>
         $(document).ready(function() {
+
         });
+
+       function activeTab(tab){
+          $('.nav-tabs a[href="' + tab + '"]').tab('show');
+       };
     </script>
+
 
 <div class="container">
     <h>Multi Robot DMTS simulation Test Bed </h>
 
 <ul class="nav nav-tabs">
- <li><a data-toggle=tab href="#arenaTab">Arena</a></li>
- <li><a data-toggle=tab href="#tablesTab">PDF Tables</a></li>
- <li><a data-toggle=tab href="#plotsTab">PDF Plots</a></li>
+  <li class='nav-item'>
+    <a class='nav-link' data-toggle='tab' href="#arenaTab">Arena</a></li>
+  <li class='nav-item'>
+    <a class='nav-link ' data-toggle='tab'  href="#tablesTab">PDF Tables</a></li>
+  <li class='nav-item'>
+    <a class='nav-link ' data-toggle='tab'  href="#plotsTab">PDF Plots</a></li>
 </ul>
 
 <div class="tab-content">
     <!-- Shows Moves of Robots -->
   <div id="arenaTab" class="tab-pane fade">
-        <div id="plotarea" class=well style="height:400px"></div>
+        
+        <div id="plotarea" class="card cardbody bg-light" style="height: 400px"></div>
         <p><br><br></p>
        
-        <div class="container">
           <div class="row">
-            <div class="col-sm">
+            <div class="col">
                  <button type="button" class="btn btn-primary btn-lg" 
                           onclick = "Test();" >SIMULATE</button>
-            </div>
-            <div class="col-sm">
+            </div>            
+            <div class="col">
                   <p> Select PDF Sampling Strategy </p>
                       <div class="radio">
                       <label><input type="radio" name="optradio" >Random</label></div>
@@ -51,14 +96,14 @@
                       <div class="radio">
                       <label><input type="radio" name="optradio" checked>Sample</label></div> 
            </div>
-           <div class="col-sm">
+           <div class="col">
                   <label for="usr">Max Iter:</label>
                       <input type="text" class="form-control" id="MaxIter">
                   <label for="pwd">PlotSamples:</label>
                      <input type="text" class="form-control" id="PSamples">     
            </div>
           </div> <!-- End Row -->
-        </div>  <!-- End Container -->
+       
     </div> <!-- end of arenaTab -->
 
     <!-- Shows PDF Tables -->
@@ -113,18 +158,21 @@
         </table>
     </div> 
 
-
     <!-- Shows PDF Plots -->
     <div id="plotsTab" class="tab-pane fade">
         <h2>Cat PDF </h2>
-        <div id="pdfCat" class=well style="height:400px"></div>
+        <div id="pdfCat" class="card card-body bg-light" style="height: 400px" ></div>
 
         <h2>Dog PDF </h2>
-        <div id="pdfDog" class=well style="height:400px"></div>
+        <div id="pdfDog" class="card card-body bg-light"  style="height: 400px"></div>
 
         <h2>Annealing Beta Trend </h2>
-        <div id="betaPlot" class=well style="height:400px"></div>
+        <div id="betaPlot" class="card card-body bg-light"  style="height: 400px"></div>
     </div>
+
 </div> <!-- end Tabs content -->
+
+
 </div> <!-- End Container -->
+</body>
 </html>

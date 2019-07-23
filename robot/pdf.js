@@ -63,4 +63,9 @@ class pdf {
             return (vec);
     } // end cloneSeq
 
+    showBest() { // show the highest q value seq
+         let i = indexOfMax(this.q);
+         console.log(i, this.q[i], this.seq.length) ;
+    }
+
 }// end class pdf
