@@ -40,9 +40,9 @@ function Test () {
 
 function newTest(){
 
-
-        
+            
        var ateam = new team ();
+
            var  count = 0 ;
          // We have two series in the plot one for Dog and
            // other for Cat ... initializing

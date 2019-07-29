@@ -6,14 +6,14 @@ class dcmts {
             this.count = 0 ;
             this.params = { alpha: 0.1, 
                              beta: {min: 0.001, max: 1, anneal: 6 },
-                             maxCount: 100 }
+                             maxCount: 1000 }
 
             // Timers to breakup compute tasks and animate path display
             this.mctsTimer =  undefined ;
-            this.mctsIntvl =  300       ;
+            this.mctsIntvl =  300       ; // 0.3 sec
 
             // Prepare for plotting paths taken by robtos
-            this.pathPlotIntvl = 1000   ;
+            this.pathPlotIntvl = 1000   ; //1 sec
             this.pathPlot =  new pathPlot(this.team, this.pathPlotIntvl) ;
               
             // prepare pdf plots for each robot
@@ -48,7 +48,7 @@ class dcmts {
         if ( this.count > this.params.maxCount-1 ) { // Done with computations
              clearInterval(this.mctsTimer);
              console.log("Finished", this.count);
-
+             this.betaPlot() ;
              // We plot paths for the last iteration 
              this.pathPlot.start();
           }
@@ -233,8 +233,9 @@ class pdfPlot {
                         });
       } // end addSeries
 
-   update () {
-       $.plot(this.id, this.series, this.options);
+   update () { // We have to delay update ... to counter drawing issues with flot
+       activeTab(this.id);  // move to the tab
+       setTimeout((function() {$.plot(this.id, this.series, this.options);}).bind(this), 1000);
    } // end update
 
    addInfo(px, py, str) {

@@ -15,17 +15,18 @@
 <!-- To enable flot to deal with rendering on tabbed pages -->
 <!-- flot apparently cant draw on hidden divs .. by bootstrap -->
 <style>
-#plotsTab {
+#xplotsTab {
     width:0;
     display:block;
     visibility:hidden;
     height:0;
 }
-#plotsTab.active {
+#xplotsTab.active {
     width:100%;
     height:100%;
     visibility:visible;
 }
+
 </style>
   </head>
   
@@ -54,18 +55,46 @@
     <script src="newtest.js"></script>
 
     <script>
-        $(document).ready(function() {
 
+       function addTable(id) { // Insert Rows/Cols in table given ID
+           let cols = ["#", "Moves", "%Revisits", "SeqReward", "q (PDF)"];
+           let rows = 10 ;           let str = "" ;
+           str = str + ("<thead><tr>");
+           cols.forEach (function (col) {
+                str = str + ("<th scope='col'>" + col + "</th>"); });
+
+           str = str + ("</tr></thead><tbody>"); 
+           for (let i = 0 ; i < rows ; i++){
+             str = str + ("<tr><th scope='row'>" + i + "</th>")
+             for (let k=0 ; k < cols.length ; k++) {
+               str = str + ("<td></td>");
+             }
+               str = str + ("</tr>");
+           }
+           str = str + ("</tbody>"); 
+           $(id).append(str);  
+        } // end addTable      
+
+        $(document).ready(function() {
+                         addTable("#CatTable");
+                         addTable("#DogTable");
+                          $('.nav-tabs a:first').tab('show');
         });
 
-       function activeTab(tab){
+         $(document).ready(function(){// Bootstrap way of showing tooltips
+              $('[data-toggle="tooltip"]').tooltip(); 
+         });
+
+       function activeTab(tab){ // Moves to a specified Tab 
           $('.nav-tabs a[href="' + tab + '"]').tab('show');
        };
+
+
     </script>
 
 
 <div class="container">
-    <h>Multi Robot DMTS simulation Test Bed </h>
+    <h2>Multi Robot DCMTS simulation Test Bed </h2>
 
 <ul class="nav nav-tabs">
   <li class='nav-item'>
@@ -78,7 +107,7 @@
 
 <div class="tab-content">
     <!-- Shows Moves of Robots -->
-  <div id="arenaTab" class="tab-pane fade">
+  <div id="arenaTab" class="tab-pane fade active in ">
         
         <div id="plotarea" class="card cardbody bg-light" style="height: 400px"></div>
         <p><br><br></p>
@@ -91,72 +120,58 @@
             <div class="col">
                   <p> Select PDF Sampling Strategy </p>
                       <div class="radio">
-                      <label><input type="radio" name="optradio" >Random</label></div>
+                      <label><input type="radio" name="pdfSelect" value = 0 >Random</label></div>
                       <div class="radio">
-                      <label><input type="radio" name="optradio">Qmax</label></div>
+                      <label><input type="radio" name="pdfSelect" value = 1
+                                data-toggle="tooltip" title = "Sample selection with highest q value">Qmax</label></div>
                       <div class="radio">
-                      <label><input type="radio" name="optradio" checked>Sample</label></div> 
+                      <label><input type="radio" name="pdfSelect" checked value = 2
+                               data-toggle="tooltip" title = "Proper Sampling Method">Sample</label></div> 
            </div>
            <div class="col">
-                  <label for="usr">Max Iter:</label>
-                      <input type="text" class="form-control" id="MaxIter">
-                  <label for="pwd">PlotSamples:</label>
-                     <input type="text" class="form-control" id="PSamples">     
+                  <label for="MaxIter">Max Iter:</label>
+                      <input type="number" class="form-control" id="MaxIter" min=0 max=10000 value=1000
+                                            data-toggle="tooltip"  title = "Simulation Iterations">
+                  <label for="pdfTraces">PlotSamples:</label>
+                     <input type="number" class="form-control" id="pdfTraces" min=2 max=10 value=10
+                                   data-toggle="tooltip"  title = "Number of PDF plot traces over simulation">     
            </div>
           </div> <!-- End Row -->
+
+          <div class=row>
+              <div class="col">
+                      <label for="betaMin">&beta;<sub>min</sub></label>
+                      <input type="number" class="form-control" id="betaMin" min=0.0001 max=1 value=0.001
+                                            data-toggle="tooltip"  title = "Minimum Value of Beta">
+                  <label for="betaMax">&beta;<sub>max</sub></label>
+                     <input type="number" class="form-control" id="betaMax" min=1 max=10 value=1
+                                   data-toggle="tooltip"  title = "Maximum Value of Beta"> 
+              </div> 
+              <div class="col">
+                  <label for="anneal">Anneal</label>
+                     <input type="number" class="form-control" id="anneal" min=0 max=25 value=6
+                                   data-toggle="tooltip"  title = "Annealing parameter that determines how beta varies with iteration">  
+
+                  <label for="alpha">&alpha;</label>
+                     <input type="number" class="form-control" id="alpha" min=0 max=1 value=0.1
+                                   data-toggle="tooltip"  title = "Newton step update relaxation factor">
+              </div>                   
+          </div>
        
     </div> <!-- end of arenaTab -->
+
+  
 
     <!-- Shows PDF Tables -->
     <div id="tablesTab" class="tab-pane fade">
         <p id="counter"></p>
         <h2>Cat Statistics</h2>
          <table class="table table-striped" id=CatTable> 
-         <thead>
-            <tr><th scope="col">#</th>
-                <th scope="col">Moves</th>
-                <th scope="col">%Revisits</th> 
-                <th scope="col">SeqReward</th> 
-                <th scope="col">q (PDF)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr> <th scope="row">0</th><td></td><td></td><td></td><td></td><td>
-            <tr> <th scope="row">1</th><td></td><td></td><td></td><td></td><td>
-            <tr> <th scope="row">2</th><td></td><td></td><td></td><td></td><td>
-            <tr> <th scope="row">3</th><td></td><td></td><td></td><td></td><td>
-            <tr> <th scope="row">4</th><td></td><td></td><td></td><td></td><td>
-            <tr> <th scope="row">5</th><td></td><td></td><td></td><td></td><td>
-            <tr> <th scope="row">6</th><td></td><td></td><td></td><td></td><td> 
-            <tr> <th scope="row">7</th><td></td><td></td><td></td><td></td><td>  
-            <tr> <th scope="row">8</th><td></td><td></td><td></td><td></td><td>
-            <tr> <th scope="row">9</th><td></td><td></td><td></td><td></td><td>       
-          </tbody>
          </table>
 
         <h2>Dog Statistics</h2>
-         <table class="table table-striped" id=DogTable>
-          <thead>
-            <tr><th scope="col">#</th>
-                <th scope="col">Moves</th>
-                <th scope="col">%Revisits</th> 
-                <th scope="col">SeqReward</th> 
-                <th scope="col">q (PDF)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr> <th scope="row">0</th><td></td><td></td><td></td><td></td><td>
-            <tr> <th scope="row">1</th><td></td><td></td><td></td><td></td><td>
-            <tr> <th scope="row">2</th><td></td><td></td><td></td><td></td><td>
-            <tr> <th scope="row">3</th><td></td><td></td><td></td><td></td><td>
-            <tr> <th scope="row">4</th><td></td><td></td><td></td><td></td><td>
-            <tr> <th scope="row">5</th><td></td><td></td><td></td><td></td><td>
-            <tr> <th scope="row">6</th><td></td><td></td><td></td><td></td><td> 
-            <tr> <th scope="row">7</th><td></td><td></td><td></td><td></td><td>  
-            <tr> <th scope="row">8</th><td></td><td></td><td></td><td></td><td>
-            <tr> <th scope="row">9</th><td></td><td></td><td></td><td></td><td>       
-          </tbody>
-        </table>
+         <table class="table table-striped" id=DogTable>       
+         </table>
     </div> 
 
     <!-- Shows PDF Plots -->

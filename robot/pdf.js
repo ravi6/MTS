@@ -1,22 +1,26 @@
 class pdf {
-
+          
     constructor (n) {
           this.size = n ;
           this.q = new Array(n) ;
           this.q.fill(1/n) ;     // equal probabilities
           this.seq = new Array(n) ;
-          this.seq.fill("none") ;  // unInitialized sequence           
+          this.seq.fill("none") ;  // unInitialized sequence 
+          this.method = pdf.select.SAMPLE ;  // default method
     }
 
     static get select() {
          return ({RANDOM: 0, MAXQ: 1, SAMPLE: 2}) ; // pdf table item selection methods 
     }
 
-    choose (){  // Choose one pdf element from the table
-             let method = pdf.select.RANDOM ;
+    static setMethod (method) {   // Enables to set all pdfs to have same selection method
+         this.method = method ;
+    }
 
+    choose (){  // Choose one pdf element from the table
+             
              let k = 0  ;
-             switch (method) {
+             switch (this.method) {
                 case pdf.select.RANDOM:
                      k  = Math.floor(Math.random() * this.size) ;
                      break ;
