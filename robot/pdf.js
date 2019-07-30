@@ -18,7 +18,7 @@ class pdf {
     }
 
     choose (){  // Choose one pdf element from the table
-             
+
              let k = 0  ;
              switch (this.method) {
                 case pdf.select.RANDOM:

@@ -10,7 +10,7 @@ class dcmts {
 
             // Timers to breakup compute tasks and animate path display
             this.mctsTimer =  undefined ;
-            this.mctsIntvl =  50
+            this.mctsIntvl =  250
 
             // Prepare for plotting paths taken by robtos
             this.pathPlotIntvl = 1000   ; //1 sec
@@ -35,11 +35,12 @@ class dcmts {
          document.getElementById("counter").innerHTML 
                       = "Iterations: " + this.count;
            
-        //  Sequentially process each robot
+        //  Sequentially process each robot to run mtsCycle, update q, and transmit pdf
         for (let k=0; k < robots.length ; k++) {
            for(let i=0 ; i < robots[k].pdf.size ; i++) 
                      robots[k].mtsCycle();           
            robots[k].updateQ(this.params.alpha, this.getBeta(this.count));
+           robots[k].sendPDF();
         }
          
          this.reportRevisits(robots);
