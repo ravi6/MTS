@@ -10,7 +10,7 @@ class dcmts {
 
             // Timers to breakup compute tasks and animate path display
             this.mctsTimer =  undefined ;
-            this.mctsIntvl =  300       ; // 0.3 sec
+            this.mctsIntvl =  50
 
             // Prepare for plotting paths taken by robtos
             this.pathPlotIntvl = 1000   ; //1 sec
