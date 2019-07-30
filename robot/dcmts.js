@@ -191,7 +191,8 @@ class pathPlot {
 
   plot () {
 
-       if (this.count > this.maxCount) {  // No more to plot
+
+       if (this.count > this.maxCount-1) {  // No more to plot
            clearInterval(this.timer);
            return; 
        }
@@ -234,8 +235,10 @@ class pdfPlot {
       } // end addSeries
 
    update () { // We have to delay update ... to counter drawing issues with flot
-       activeTab(this.id);  // move to the tab
-       setTimeout((function() {$.plot(this.id, this.series, this.options);}).bind(this), 1000);
+      
+      activeTab("#plotsTab"); // We need to move to tab for flot is not happy
+       // Make sure the tab is displayed before plotting
+       setTimeout((function() {$.plot(this.id, this.series, this.options);}).bind(this), 150);
    } // end update
 
    addInfo(px, py, str) {
