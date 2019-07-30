@@ -10,7 +10,7 @@ class dcmts {
 
             // Timers to breakup compute tasks and animate path display
             this.mctsTimer =  undefined ;
-            this.mctsIntvl =  250
+            this.mctsIntvl =  50
 
             // Prepare for plotting paths taken by robtos
             this.pathPlotIntvl = 1000   ; //1 sec
@@ -30,6 +30,7 @@ class dcmts {
 
     doMCTS () {  // does one cycle .. timer calls it many times
 
+       // console.time("MCTS Time");
         let robots = this.team.robots ;
 
          document.getElementById("counter").innerHTML 
@@ -64,7 +65,7 @@ class dcmts {
            }
                     
        this.count = this.count + 1 ; // ready for next time
-
+      // console.timeEnd("MCTS Time");
 
     } //end doMCTS
 
