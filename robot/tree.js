@@ -74,8 +74,6 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
    
         this.simActionSeq = this.getActionSeq (posSeq) ; // to be used by propagate call
         
-        this.robot.pdf.seq[(this.Nsim + 1)%this.robot.pdf.size] = this.simActionSeq ;
-
         this.Nsim = this.Nsim + 1   ;  // simulation count 
        
 

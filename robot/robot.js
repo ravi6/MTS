@@ -156,15 +156,10 @@ class robot {
    updateQ (alpha, beta) {
       let ExpF, CondExpF, qold, qnew
 
-      for (let i=0 ; i < this.pdf.size ; i++) {
+      for (let i=0 ; i < this.pdf.table.length ; i++) {
           ExpF = this.ExpTeamReward () ;
-          
-          if (this.pdf.seq[i] != "none")
-             CondExpF = this.CondExpTeamReward (this.pdf.seq[i]) ;
-          else
-            CondExpF = 0 ;
-        
-          qold = this.pdf.q[i] ;
+          CondExpF = this.CondExpTeamReward (this.pdf.table[i].seq) ;
+          qold = this.pdf.table[i].q ;
 
           // Here (1/beta  corresponds to  -T in my Lagrangian in write_up)
           // Consequently positive beta values give maxima
@@ -174,7 +169,7 @@ class robot {
           if (qnew < 0) qnew = qold ; // Don't let the newton step move to infeasible region
                                       // One can not have negative probability
           
-          this.pdf.q[i] = qnew ;
+          this.pdf.table[i].q = qnew ;
           this.NormalizeQ (i, qnew) ; 
       }
    } // end updateQ
@@ -182,12 +177,12 @@ class robot {
 
   Entropy () {  // Calculate Entropy of q_i disribution for this robot
       let s = 0 ;
-      for (let i=0 ; i < this.pdf.size ; i++) {
-            let q = this.pdf.q[i] ;
+      for (let i=0 ; i < this.pdf.table.length ; i++) {
+            let q = this.pdf.table[i].q ;
             if (q > 0)
-              s = s + this.pdf.q[i] * Math.log (this.pdf.q[i]) ;
+              s = s + q * Math.log (q) ;
             else
-              console.log ("Negative q", i, q[i]) ;
+              console.log ("Negative q", i, q) ;
       }
       return (s) ;
   }
@@ -195,12 +190,12 @@ class robot {
   NormalizeQ (i, qval) { // Ensure that sum of all q_i in distribution is one
       let sum = 0 ;
       
-      for (let i=0 ; i < this.pdf.size ; i++) {
-          sum = sum + this.pdf.q[i] ; 
+      for (let i=0 ; i < this.pdf.table.length ; i++) {
+          sum = sum + this.pdf.table[i].q ; 
       }
 
-      for (let i=0 ; i < this.pdf.size ; i++) {
-          this.pdf.q[i] = this.pdf.q[i] / sum  ; 
+      for (let i=0 ; i < this.pdf.table.length ; i++) {
+          this.pdf.table[i].q = this.pdf.table[i].q / sum  ; 
       }
 
   } // End Noramalize q distribution

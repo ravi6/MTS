@@ -38,7 +38,7 @@ class dcmts {
            
         //  Sequentially process each robot to run mtsCycle, update q, and transmit pdf
         for (let k=0; k < robots.length ; k++) {
-           for(let i=0 ; i < robots[k].pdf.size ; i++) 
+           for(let i=0 ; i < robots[k].pdf.table.length ; i++) 
                      robots[k].mtsCycle();           
            robots[k].updateQ(this.params.alpha, this.getBeta(this.count));
            robots[k].sendPDF();
@@ -59,7 +59,10 @@ class dcmts {
                  let label = "iter: " + (this.count + 1) + " beta: " 
                             + this.getBeta(this.count).toPrecision(1) ;
                  for (let k=0 ; k < robots.length ; k++) {
-                    this.pdfPlots[k].addSeries(robots[k].pdf.q, label); 
+		   let q = [] ;
+		    for (let m=0 ; m < robots[k].pdf.table.length ; m++)
+		          q.push (robots[k].pdf.table[m].q) ;
+                    this.pdfPlots[k].addSeries(q, label); 
                     this.pdfPlots[k].update();
                  }
            }
@@ -72,7 +75,7 @@ class dcmts {
     static getMoves(robot, idx) {
         let vec = [] ;
         vec.push([robot.pos.x, robot.pos.y]) ; // Start Point
-        let seq = robot.pdf.seq[idx] ;
+        let seq = robot.pdf.table[idx].seq ;
         for (let i=0 ; i < seq.length ; i++) {
               vec.push ([seq[i].x, seq[i].y]) ;
         }  // end plot sequence
@@ -120,10 +123,10 @@ class dcmts {
           let prevs = [] ;    //percent of revisits
           let rob = robs[k]; let counts = [] ;
 
-          for (let i=0; i < rob.pdf.size ; i++) {
+          for (let i=0; i < rob.pdf.table.length ; i++) {
              
-             let uniqCount = this.remAllDuplicates (rob.pdf.seq[i]).length;
-             let Count = rob.pdf.seq[i].length ;
+             let uniqCount = this.remAllDuplicates (rob.pdf.table[i].seq).length;
+             let Count = rob.pdf.table[i].seq.length ;
              let revCountP = Math.round(100*(Count - uniqCount)/Count)
              prevs.push(revCountP);
              counts.push(Count); 
@@ -133,8 +136,8 @@ class dcmts {
              //console.log($(tabid));
              tab.rows[i+1].cells[1].innerHTML = (Count) ;
              tab.rows[i+1].cells[2].innerHTML = revCountP ;
-             tab.rows[i+1].cells[3].innerHTML = rob.getReward(rob, rob.pdf.seq[i]);
-             tab.rows[i+1].cells[4].innerHTML = rob.pdf.q[i].toPrecision(2);
+             tab.rows[i+1].cells[3].innerHTML = rob.getReward(rob, rob.pdf.table[i].seq);
+             tab.rows[i+1].cells[4].innerHTML = rob.pdf.table[i].q.toPrecision(2);
           }
         }} // end of reportRevisits
 
