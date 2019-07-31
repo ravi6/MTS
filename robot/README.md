@@ -55,3 +55,44 @@ but now I can't reproduce it. Perhaps that was with fewer iteration count (800).
 Need to re-examine. Overall the picture is still confusing. But what is encouraging is
 all sequences in the pdf tables produce expected high score after max iterations.
 
+## 1st June 2019
+* Identified bug in pdf sampling selection logic and that alleviated above concerns. Now
+things are behaving as they were.
+
+* Digressed a bit to make the GUI more manageable with Tabbed interface, re-jigged code
+with class structure to avoid globals and make it more manageable. Added parameter inputs
+to GUI. Hit major issue with rendering jflot plots on tabbed content as jflot does not like
+to draw on hidden divisions. Had to move to  the plot tab, while refreshing plots and delay
+plotting to ensure tab content is fully displayed. 
+
+* Because the code was revamped, wanted to make sure that the newly structured code has not 
+introduced any bugs. Noting that no fundamental classes have been modfied, only top level
+DMCTS implementation was "classified !!!"(not in defence perspective). Initially was concerned
+that new version is producing different results. But after thorough comparison with old version
+results, it was clear that final pdf results after 2000 iterations varied within same version 
+without any changes to parameters.
+
+* Moving on with the new version, SAMPLE method for pdf selection is consistent with proper
+sampling method from a discrete distribution. After attending the course work, it is clear
+that one needs to make enough number of samples (with more playouts before restarting the
+cycle. Also, what is clear is that we need to propagate just the collective socre for selected
+action sequence combination. No need to weigh the score with associated probability numbers.
+Now that I am clear on the method of generating samples from discrete distribution, it makes
+sense that propagation of normal score eventually results in expected score. The probability
+values associated with the table are encoded in samples selected. (Obviously one need to take
+enough number of samples).
+
+* So far every rollout is replacing pdf table entry with the new rollout sequence. This is
+not appropriate. Have to replace an entry in the pdf table only when the rollout score is 
+superior to the best candidate (in terms of collective gain). This means pdf table should also
+contain the score/benefit values for ease of this implementation. As to what should happen
+to the corresponding q value is left to the implementaion. One could reset all q's or leave
+them as they were. Also, instead of using global collective score a relative global collective
+score is a natural choice for back propogation.
+
+* The above changes will be implemented in the following commits
+ 
+
+
+
+
