@@ -44,21 +44,21 @@ function sCurve(alpha, x) {
   return (y) ;
 }
 
-function indexOfMax(arr) {
+function indexMax(arr) {
   // get index of maximum value of arr
     if (arr.length === 0) {
         return -1;
     }
 
-    var max = arr[0];
-    var maxIndex = 0;
+    var x = arr[0];
+    var idx = 0;
 
     for (var i = 1; i < arr.length; i++) {
-        if (arr[i] > max) {
-            maxIndex = i;
-            max = arr[i];
+        if (arr[i] > x) {
+            idx = i;
+            x = arr[i];
         }
     }
 
-    return maxIndex;
+    return idx;
 }

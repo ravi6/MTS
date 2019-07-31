@@ -75,9 +75,6 @@ class robot {
 
    TeamReward (seq) {
         // This is unweighted Rollout reward, given a robot and rollout seq.
-        //  I am not sure if we have to use this or the next function which 
-       //   uses Conditional expected values for  backpropagation
-       //   My intution tells me that we need to use the later.
          let reward = 0 ;
          let robots = this.team.robots ;
          for (let i=0; i < robots.length ; i++) {
@@ -93,6 +90,11 @@ class robot {
           reward = reward + getReward(this, seq) ; 
           return (reward) ; 
    } // end TeamReward
+
+   DiffTeamReward (seq) { // Total Reward differential with my Action - my InAction
+       // In our case it is just depends only on my action (Very simplistic Team Reward as above)
+       return (getReward(this, seq) ;
+   }
 
 
     CondExpTeamReward (seq) {
