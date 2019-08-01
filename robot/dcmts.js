@@ -6,7 +6,7 @@ class dcmts {
             this.count = 0 ;
             this.params = { alpha: 0.1, 
                              beta: {min: 0.001, max: 1, anneal: 6 },
-                             maxCount: 1000 }
+                             maxCount: 100 }
 
             // Timers to breakup compute tasks and animate path display
             this.mctsTimer =  undefined ;
@@ -38,7 +38,7 @@ class dcmts {
            
         //  Sequentially process each robot to run mtsCycle, update q, and transmit pdf
         for (let k=0; k < robots.length ; k++) {
-           for(let i=0 ; i < robots[k].pdf.table.length ; i++) 
+           for(let i=0 ; i < robots[k].pdf.size ; i++) 
                      robots[k].mtsCycle();           
            robots[k].updateQ(this.params.alpha, this.getBeta(this.count));
            robots[k].sendPDF();

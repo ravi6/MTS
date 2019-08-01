@@ -69,14 +69,18 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
 
             // Update possible moves from new pos
             moves = this.robot.getMoves(pos, cost);
-                            
+                                        
         } // end playout
    
         this.simActionSeq = this.getActionSeq (posSeq) ; // to be used by propagate call
         
+        // Update pdf table entry if this simActionSeq is better than existing ones
+        // We could use DiffTeamReward too ... we will do it when we move to it
+          console.log(this.robot.TeamReward (this.SimActionSeq));
+        let breakPoint = this.robot.pdf.push (this.simActionSeq, this.robot.TeamReward (this.SimActionSeq)) ;
+        console.log (breakPoint);
         this.Nsim = this.Nsim + 1   ;  // simulation count 
        
-
     } // end simulation
 
 
@@ -85,7 +89,9 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
        if ( isEmpty(this.simNode) ) return ;
 
        var anode = this.simNode ;
-       let addGain = this.robot.CondExpTeamReward(this.simActionSeq); // should I use TeamReward instead
+       
+       // We could use DiffTeamReward too ... we will do it when we move to it
+       let addGain = this.robot.TeamReward(this.simActionSeq); // Propagating team reward
        
         do  {  // Move up the chain and update
            anode.trials = anode.trials + 1 ; // bump each nodes trial count

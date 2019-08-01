@@ -78,10 +78,10 @@ class robot {
          let reward = 0 ;
          let robots = this.team.robots ;
          for (let i=0; i < robots.length ; i++) {
-              let rb = this.robots[i] ;
+              let rb = robots[i] ;
               if (rb.id != this.id){
                    let js = rb.pdf.choose();
-                   if (js.seq != "none") {
+                   if (js != []) {
                           reward = reward + getReward(rb, js.seq[j] ) ; // note no probability multiplier
                    }}
           } // end all other robots
@@ -93,7 +93,7 @@ class robot {
 
    DiffTeamReward (seq) { // Total Reward differential with my Action - my InAction
        // In our case it is just depends only on my action (Very simplistic Team Reward as above)
-       return (getReward(this, seq) ;
+       return (getReward(this, seq)) ;
    }
 
 

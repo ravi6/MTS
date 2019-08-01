@@ -54,7 +54,7 @@
     <script src="team.js"></script>
     <script src="util.js"></script>
     <script src="dcmts.js"></script>
-    <script src="newtest.js"></script>
+    <script src="test.js"></script>
 
     <script>
 
@@ -117,17 +117,7 @@
                  <button type="button" class="btn btn-primary btn-lg" 
                           onclick = "Test();" >SIMULATE</button>
             </div>            
-            <div class="col">
-                  <p> Select PDF Sampling Strategy </p>
-                      <div class="radio">
-                      <label><input type="radio" name="pdfSelect" value = 0 >Random</label></div>
-                      <div class="radio">
-                      <label><input type="radio" name="pdfSelect" value = 1
-                                data-toggle="tooltip" title = "Sample selection with highest q value">Qmax</label></div>
-                      <div class="radio">
-                      <label><input type="radio" name="pdfSelect" checked value = 2
-                               data-toggle="tooltip" title = "Proper Sampling Method">Sample</label></div> 
-           </div>
+           
            <div class="col">
                   <label for="MaxIter">Max Iter:</label>
                       <input type="number" class="form-control" id="MaxIter" min=0 max=10000 value=1000

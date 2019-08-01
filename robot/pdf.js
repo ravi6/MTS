@@ -2,7 +2,9 @@ class pdf {
           
     constructor (n) {
           this.size = n ;  // pdf table size 
-          this.table = [] ;
+          this.table = [] ;          
+          for (let i=0 ; i < n; i++) // fill the table
+              this.table.push({seq: [], q: (1.0/n) , reward: 0});
     }
 
     choose (){  // Choose one pdf element from the table
@@ -18,48 +20,46 @@ class pdf {
        let rnum = Math.random() ; // get a random val 0 to 1
 
        // Choose seq corresponding to CumValue just below it
-       k = 0;
+       let k = 0;
        while (rnum > cumQ[k] && k < this.size-1) {
 	   k = k + 1 ;
        }
 					       
-       return (this.table[k]) ;
+       return (this.table[k].seq) ;
 
     } // end choose
 
-    push (seq, reward) { // add an entry to pdf table grow it to size and replace entry if required
+     tryPush (seq, reward) { // update entry if it is better than existing 
+                            // return true if table is modified
 
-        let entry = {seq: seq, q: 0.2, reward: reward}) ;
+        let entry = {seq: seq, q: 0.2, reward: reward} ;  // q value is arbitray it will be overwritten
+       
+        if ( reward <= this.table[0].reward ) return (false) ; // nothing to add (less than min)
+        
+        if ( reward > this.table[this.table.length-1].reward ) { 
+	       // replace the last entry  higher than max
+          this.table.pop();
+          this.table.push (entry) ;
+          this.resetTable() ;
+	      return (true) ;
+        }
 
-        if (this.table.length < this.size) {
-            // do this until we grow the pdf table to its size
-              this.table.push (entry);
-              this.resetTable() ;
-	      return ;
-        } 
-        else {
-            if ( reward <= this.table[0].reward ) return ; // nothing to add (less than min)
-            if ( reward > this.table[this.table.length-1].reward ) { 
-	                // replace the last entry  higher than max
-                this.table.pop();
-                this.table.push (entry) ;
-	        return ;
-            }
-
-         let k = 1 ;
-         while (reward > this.table[i].reward ) {  // we are in the middle of the table
+        let k = 1 ;
+        while (reward > this.table[i].reward ) {  // we are in the middle of the table
 			 k = k + 1;
          }
-             this.table = this.table.splice(k, 1, entry); // replace the middle entry with new one
-             this.resetTable() ;
+        this.table = this.table.splice(k, 1, entry); // replace the middle entry with new one
+        this.resetTable() ;
+        return (true);
 
-    } % end push
+    } // end push
 
     resetTable () { // sorting by reward in ascending reward order
-                    // also reset q values for all entries
-        this.table.sort(function (a,b){return a.reward - b.reward} ;
-        this.table.forEach (function (e) { e.reward = 1.0 / this.table.length; }).bind(this);
-    }
+                         // also reset q values for all entries
+        this.table.sort(function (a,b){return (a.reward - b.reward);}) ;
+        for (let i=0; i < table.length ; i++) 
+        	table[i].q = 1.0 / this.table.length;      
+    } // end resetTable
 
     clone () {
          let apdf = new pdf(this.size);
@@ -67,7 +67,7 @@ class pdf {
          for (var i=0 ; i < this.table.length ; i++){
              apdf.table[i] = {seq:     this.cloneSeq(this.table[i].seq),
                               q:       this.table[i].q,
-                              reward:  this.table[i].reward}) ;
+                              reward:  this.table[i].reward} ;
          }
 
          return (apdf);

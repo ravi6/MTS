@@ -1,4 +1,3 @@
-
 function Test () {
 
    var obj =  new dcmts() ;
@@ -11,13 +10,8 @@ function Test () {
    obj.params.beta.max = parseFloat($("#betaMax").val());
    obj.params.beta.anneal = parseFloat($("#anneal").val());
    obj.params.alpha = parseFloat($("#alpha").val());
-   console.log(obj.params);
+   //console.log(obj.params);
   
- // Get the sampling method choice
-   var method = parseInt($("input[name='pdfSelect']:checked"). val());  
-   console.log(method); 
-   pdf.setMethod (method);
-
-   obj.simulate() ;
+    obj.simulate() ;
 }
 
