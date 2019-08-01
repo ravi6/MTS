@@ -77,7 +77,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
         // Update pdf table entry if this simActionSeq is better than existing ones
         // We could use DiffTeamReward too ... we will do it when we move to it
       
-        let breakPoint = this.robot.pdf.tryPush (this.simActionSeq, this.robot.TeamReward (this.simActionSeq)) ;
+        let breakPoint = this.robot.pdf.update (this.simActionSeq, this.robot.TeamReward (this.simActionSeq)) ;
         
         this.Nsim = this.Nsim + 1   ;  // simulation count 
        

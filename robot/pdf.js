@@ -29,32 +29,22 @@ class pdf {
 
     } // end choose
 
-     tryPush (seq, reward) { // update entry if it is better than existing 
+     update (seq, reward) { // update entry if it is better than existing 
                             // return true if table is modified
         
         let entry = {seq: seq, q: 0.2, reward: reward} ;  // q value is arbitray it will be overwritten
        
         if ( reward <= this.table[0].reward ) {
         	  return (false) ; // nothing to add (less than min)
-        }
-        
-        if ( reward > this.table[this.table.length-1].reward ) { 
-	       // replace the last entry  higher than max
-          this.table.pop();
+        } 
+        else {  // replace smallest entry and reorder
+	  this.table.shift() ;
           this.table.push (entry) ;
           this.resetTable() ;          	
 	      return (true) ;
         }
 
-        let k = 1 ;
-        while (reward > this.table[k].reward ) {  // we are in the middle of the table
-			 k = k + 1;
-         }
-        this.table = this.table.splice(k, 1, entry); // replace the middle entry with new one
-        this.resetTable() ;
-        return (true);
-
-    } // end push
+    } // update
 
     resetTable () { // sorting by reward in ascending reward order
                          // also reset q values for all entries
