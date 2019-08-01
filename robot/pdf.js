@@ -7,7 +7,7 @@ class pdf {
               this.table.push({seq: [], q: (1.0/n) , reward: -1});
     }
 
-    choose (){  // Choose one pdf element from the table
+    choose (){  // Choose one pdf element fromt the table
 
        // Generate cumulative q table
        let cumQ = [] ;           
@@ -31,16 +31,18 @@ class pdf {
 
      tryPush (seq, reward) { // update entry if it is better than existing 
                             // return true if table is modified
-
+        
         let entry = {seq: seq, q: 0.2, reward: reward} ;  // q value is arbitray it will be overwritten
        
-        if ( reward <= this.table[0].reward ) return (false) ; // nothing to add (less than min)
+        if ( reward <= this.table[0].reward ) {
+        	  return (false) ; // nothing to add (less than min)
+        }
         
         if ( reward > this.table[this.table.length-1].reward ) { 
 	       // replace the last entry  higher than max
           this.table.pop();
           this.table.push (entry) ;
-          this.resetTable() ;
+          this.resetTable() ;          	
 	      return (true) ;
         }
 

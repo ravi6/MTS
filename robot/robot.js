@@ -80,7 +80,7 @@ class robot {
          for (let i=0; i < robots.length ; i++) {
               let rb = robots[i] ;
               if (rb.id != this.id){
-                   let js = rb.pdf.choose();
+                   let js = rb.pdf.choose();               
                    reward = reward + this.getReward(rb, js.seq ) ; // note no probability multiplier
                    }
           } // end all other robots
@@ -128,7 +128,9 @@ class robot {
          for (let i=0; i < robots.length ; i++) {
               let rb = robots[i] ;
               let js = rb.sentpdf.choose();
-                     reward = reward + this.getReward(rb, js.seq) * js.q ;
+                     if (js != undefined)
+                        reward = reward + this.getReward(rb, js.seq) * js.q ;
+                        else console.log("js undefined in ExpTeamReward");
               }
         return (reward) ; 
     } // end ExpTeamReward
@@ -153,7 +155,7 @@ class robot {
 
 
    updateQ (alpha, beta) {
-      let ExpF, CondExpF, qold, qnew
+      let ExpF, CondExpF, qold, qnew ;
 
       for (let i=0 ; i < this.pdf.table.length ; i++) {
           ExpF = this.ExpTeamReward () ;
@@ -170,6 +172,7 @@ class robot {
           
           this.pdf.table[i].q = qnew ;
           this.NormalizeQ (i, qnew) ; 
+          console.log("updatedPDF", this.pdf.table);
       }
    } // end updateQ
 
@@ -190,11 +193,11 @@ class robot {
       let sum = 0 ;
       
       for (let i=0 ; i < this.pdf.table.length ; i++) {
-          sum = sum + this.pdf.table[i].q ; 
+          sum = sum +  this.pdf.table[i].q  ; 
       }
 
       for (let i=0 ; i < this.pdf.table.length ; i++) {
-          this.pdf.table[i].q = this.pdf.table[i].q / sum  ; 
+          this.pdf.table[i].q =  this.pdf.table[i].q  / sum  ; 
       }
 
   } // End Noramalize q distribution
