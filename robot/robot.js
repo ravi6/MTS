@@ -81,13 +81,12 @@ class robot {
               let rb = robots[i] ;
               if (rb.id != this.id){
                    let js = rb.pdf.choose();
-                   if (js != []) {
-                          reward = reward + getReward(rb, js.seq[j] ) ; // note no probability multiplier
-                   }}
+                   reward = reward + this.getReward(rb, js.seq ) ; // note no probability multiplier
+                   }
           } // end all other robots
               
-          // Add this robots contribution           
-          reward = reward + getReward(this, seq) ; 
+          // Add this robots contribution                
+          reward = reward + this.getReward(this, seq) ; 
           return (reward) ; 
    } // end TeamReward
 
@@ -107,15 +106,14 @@ class robot {
          for (let i=0; i < robots.length ; i++) { // consider other robots ony
               let rb = robots[i] ;
               if (rb.id != this.id){
-                   let js = rb.sentpdf.choose();
-                   if (js.seq != "none") {                        
-                       reward = reward + this.getReward(rb, js.seq) * js.q ;
-                   }
+                   let js = rb.sentpdf.choose();                    
+                   reward = reward + this.getReward(rb, js.seq) * js.q ;
                }
           } // end all other robots
 
-          //  add this robots seq reward                          
-          reward = reward + this.getReward(this, seq) ;                     
+          //  add this robots seq reward                    
+                reward = reward + this.getReward(this, seq) ; 
+                  
           return (reward) ; 
           
     } // end CondExpTeamReward
@@ -130,16 +128,17 @@ class robot {
          for (let i=0; i < robots.length ; i++) {
               let rb = robots[i] ;
               let js = rb.sentpdf.choose();
-              if (js.seq != "none") {
                      reward = reward + this.getReward(rb, js.seq) * js.q ;
-              }}
+              }
         return (reward) ; 
     } // end ExpTeamReward
 
 
 
     getReward (rb, seq) {// Calculate reward from a robots sequence of actions
-       
+        
+        if (seq == undefined || seq.length == 0) return (0);
+
        let sum = 0 ;
        for (let i=0 ; i < seq.length ; i++) {      
             sum = sum + this.team.tres.collect(seq[i]) ;

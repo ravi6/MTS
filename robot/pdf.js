@@ -4,7 +4,7 @@ class pdf {
           this.size = n ;  // pdf table size 
           this.table = [] ;          
           for (let i=0 ; i < n; i++) // fill the table
-              this.table.push({seq: [], q: (1.0/n) , reward: 0});
+              this.table.push({seq: [], q: (1.0/n) , reward: -1});
     }
 
     choose (){  // Choose one pdf element from the table
@@ -14,7 +14,7 @@ class pdf {
        cumQ.push(this.table[0].q);
 
        for (let i=1 ; i < this.size ; i++) {
-	   cumQ.push(cumQ[cumQ.length-1] + this.table[i].q);
+	        cumQ.push(cumQ[cumQ.length-1] + this.table[i].q);
        }
 	  
        let rnum = Math.random() ; // get a random val 0 to 1
@@ -25,7 +25,7 @@ class pdf {
 	   k = k + 1 ;
        }
 					       
-       return (this.table[k].seq) ;
+       return ({seq: this.table[k].seq, q: this.table[k].q}) ; // this way we send by values 
 
     } // end choose
 
@@ -45,7 +45,7 @@ class pdf {
         }
 
         let k = 1 ;
-        while (reward > this.table[i].reward ) {  // we are in the middle of the table
+        while (reward > this.table[k].reward ) {  // we are in the middle of the table
 			 k = k + 1;
          }
         this.table = this.table.splice(k, 1, entry); // replace the middle entry with new one
@@ -57,8 +57,8 @@ class pdf {
     resetTable () { // sorting by reward in ascending reward order
                          // also reset q values for all entries
         this.table.sort(function (a,b){return (a.reward - b.reward);}) ;
-        for (let i=0; i < table.length ; i++) 
-        	table[i].q = 1.0 / this.table.length;      
+        for (let i=0; i < this.table.length ; i++) 
+        	this.table[i].q = 1.0 / this.table.length;      
     } // end resetTable
 
     clone () {
