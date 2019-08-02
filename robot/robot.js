@@ -172,7 +172,6 @@ class robot {
           
           this.pdf.table[i].q = qnew ;
           this.NormalizeQ (i, qnew) ; 
-          console.log("updatedPDF", this.pdf.table);
       }
    } // end updateQ
 

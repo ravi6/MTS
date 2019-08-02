@@ -52,8 +52,8 @@ class dcmts {
         if ( this.count > this.params.maxCount-1 ) { // Done with computations
              clearInterval(this.mctsTimer);
              console.log("Finished", this.count);
-             this.betaPlot() ;
              // We plot paths for the last iteration 
+             this.betaPlot() ;
              this.pathPlot.start();
           }
           
@@ -161,10 +161,13 @@ class dcmts {
        for (let i=0 ; i < this.params.maxCount ; i ++) 
              betaTrend.push([i, this.getBeta(i)]);
 
-       $.plot("#betaPlot", [{ data: betaTrend,
-                             lines: {lineWidth: 7, 
-                         fillColor: "rgb(255, 0, 255, 0.4)" }
-                          }], options);                                                                
+       activeTab("#plotsTab"); // We need to move to tab for flot is not happy
+       setTimeout( (function () {
+                                 $.plot("#betaPlot", [{ data: betaTrend,
+                                        lines: {lineWidth: 7, 
+                                        fillColor: "rgb(255, 0, 255, 0.4)" }
+                                        }], options);
+                                }), 150);
     } // end betaPlot
 
     getBeta (count) {
@@ -201,6 +204,7 @@ class pathPlot {
 
        if (this.count > this.maxCount-1) {  // No more to plot
            clearInterval(this.timer);
+           $("#simBtn").prop("disabled", false) ; // Ready for next simulation
            return; 
        }
 
@@ -245,7 +249,8 @@ class pdfPlot {
       
       activeTab("#plotsTab"); // We need to move to tab for flot is not happy
        // Make sure the tab is displayed before plotting
-       setTimeout((function() {$.plot(this.id, this.series, this.options);}).bind(this), 150);
+       setTimeout((function() {
+           $.plot(this.id, this.series, this.options);}).bind(this), 150);
    } // end update
 
    addInfo(px, py, str) {
