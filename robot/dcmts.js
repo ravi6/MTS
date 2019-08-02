@@ -223,10 +223,10 @@ class pdfPlot {
         this.options = {  // flot plot default options
                 series: { lines: { show: true },
                          points: { show: false } }, 
-                          xaxes: { position: 'bottom', axisLabel: 'Sequence Number', 
-			          showTickLabels: 'none' },
-                          yaxes: { position: 'left', axisLabel: 'q', 
-  			          showTickLabels: 'none' },    
+                          xaxis: { position: 'bottom', axisLabel: 'Sequence Number', 
+			                      showTickLabels: 'none' },
+                          yaxis: { position: 'left', axisLabel: 'q', min: 0, max:1, 
+  			                      showTickLabels: 'none' },    
                         } ;
         } // end constuctor
 
