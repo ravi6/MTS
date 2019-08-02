@@ -94,5 +94,8 @@ score is a natural choice for back propogation.
  
 
 
-
+## 2st June 2019
+Completed implementing above changes. Need more exploratory runs. Chaning initial conditions,
+obstacles etc. Also, explore different MTScycle strategies. Right now we rollout once for each
+cycle. I think it is more appropriate to make several rollouts before moving on to next cycle. 
 
