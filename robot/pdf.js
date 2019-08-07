@@ -38,7 +38,7 @@ class pdf {
         	  return (false) ; // nothing to add (less than min)
         } 
         else {  // replace smallest entry and reorder
-	  this.table.shift() ;
+	      this.table.shift() ;
           this.table.push (entry) ;
           this.resetTable() ;          	
 	      return (true) ;

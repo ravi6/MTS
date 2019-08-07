@@ -3,7 +3,7 @@ class robot {
     constructor (id, pos, arena, team) {
         this.id       = id       ;
         this.pos      = pos      ; 
-        this.budget   = 40       ; // This could be made different for each robot 
+        this.budget   = 40   ; // This could be made different for each robot 
         this.arena    = arena    ; // where Robot can move
         this.tree     = new tree (this) ; // Its MTCS tree
         this.pdf      = new pdf(10)   ; // Probability dist func. of this robot (size 5)
@@ -185,7 +185,7 @@ class robot {
             else
               console.log ("Negative q", i, q) ;
       }
-      return (s) ;
+      return (-s) ;
   }
 
   NormalizeQ (i, qval) { // Ensure that sum of all q_i in distribution is one

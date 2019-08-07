@@ -3,10 +3,13 @@ class dcmts {
 
     constructor () {
             this.team = new team ();
+
             this.count = 0 ;
             this.params = { alpha: 0.1, 
                              beta: {min: 0.001, max: 1, anneal: 6 },
                              maxCount: 100 }
+
+            this.team.robots.forEach (function(rob){rob.budget = 40}) ;
 
             // Timers to breakup compute tasks and animate path display
             this.mctsTimer =  undefined ;
@@ -138,7 +141,8 @@ class dcmts {
              //console.log($(tabid));
              tab.rows[i+1].cells[1].innerHTML = (Count) ;
              tab.rows[i+1].cells[2].innerHTML = revCountP ;
-             tab.rows[i+1].cells[3].innerHTML = rob.getReward(rob, rob.pdf.table[i].seq);
+             //tab.rows[i+1].cells[3].innerHTML = rob.getReward(rob, rob.pdf.table[i].seq);
+             tab.rows[i+1].cells[3].innerHTML = rob.pdf.table[i].reward;
              tab.rows[i+1].cells[4].innerHTML = rob.pdf.table[i].q.toPrecision(2);
           }
         }} // end of reportRevisits
@@ -201,21 +205,39 @@ class pathPlot {
 
   plot () {
 
-
        if (this.count > this.maxCount-1) {  // No more to plot
            clearInterval(this.timer);
            $("#simBtn").prop("disabled", false) ; // Ready for next simulation
            return; 
        }
 
-       // Update paths corresponding to the pdf entry
+       // Update paths corresponding to the pdf entry this.team.robots.length 
        for (let i=0 ; i < this.team.robots.length ; i++) {
          let vec = dcmts.getMoves(this.team.robots[i], this.count)
-         this.team.arena.myplot.series[i]=({label: this.team.robots[i].id + this.count, data: vec});
-       }
+         this.team.arena.myplot.series[i+4]=({label: this.team.robots[i].id + this.count, data: vec});
+      }
          this.team.arena.update();
          this.count = this.count + 1 ; // Ready for next path
   } // end plot
+
+
+
+replot (ibot) {  // Plotting one robot at a time 
+          
+             this.team.arena.myplot.series [4] = {} ;
+             this.team.arena.myplot.series [5] = {} ;
+
+       // Update paths corresponding to the pdf entry this.team.robots.length 
+       
+         let vec = dcmts.getMoves(this.team.robots[idx], this.count)
+         this.team.arena.myplot.series[4]=({label: this.team.robots[ibot].id + this.count, data: vec});
+ 
+         this.team.arena.update();
+         this.count = this.count + 1 ; // Ready for next path
+  } // end plot
+
+
+
 } // end pathPlotter
 
 class pdfPlot {

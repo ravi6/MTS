@@ -11,23 +11,6 @@
 
     <title>Hello, world!</title>
 
-<!-- This style kludge works well -- not too messy>
-<!-- To enable flot to deal with rendering on tabbed pages -->
-<!-- flot apparently cant draw on hidden divs .. by bootstrap -->
-<!-- not needed any more 
-<style>
-#xplotsTab {
-    width:0;
-    display:block;
-    visibility:hidden;
-    height:0;
-}
-#xplotsTab.active {
-    width:100%;
-    height:100%;
-    visibility:visible;
-}
--->
 
 </style>
   </head>
@@ -148,6 +131,14 @@
               </div>                   
           </div>
        
+        <div class=row>
+              <div class="col">
+                 <button type="button" class="btn btn-primary btn-lg" id="pltPath"
+                          onclick = "pltPath();" >SIMULATE</button>
+             </div> 
+           
+        </div>
+
     </div> <!-- end of arenaTab -->
 
   
