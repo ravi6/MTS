@@ -197,6 +197,7 @@ class pathPlot {
 
         for (let i=0 ; i < team.robots.length ; i++)
              team.arena.myplot.series.push({});
+        this.ibot = 0 ;
   } // end constructor
 
   start () {
@@ -208,6 +209,7 @@ class pathPlot {
        if (this.count > this.maxCount-1) {  // No more to plot
            clearInterval(this.timer);
            $("#simBtn").prop("disabled", false) ; // Ready for next simulation
+           this.count = 0 ;
            return; 
        }
 
@@ -222,19 +224,31 @@ class pathPlot {
 
 
 
-replot (ibot) {  // Plotting one robot at a time 
+replot () {
+       this.timer = setInterval(this.plotOne.bind(this), this.intval)  ;
+}
+
+plotOne () {  // Plotting one robot at a time alternately
+             
+             if (this.count > this.maxCount-1) {
+                 clearInterval(this.timer);
+                 if (this.ibot == 0) this.ibot = 1 ;
+                 else this.ibot = 0 ;
+                 this.count = 0 ;
+                 return;
+             }
           
              this.team.arena.myplot.series [4] = {} ;
              this.team.arena.myplot.series [5] = {} ;
 
        // Update paths corresponding to the pdf entry this.team.robots.length 
        
-         let vec = dcmts.getMoves(this.team.robots[idx], this.count)
-         this.team.arena.myplot.series[4]=({label: this.team.robots[ibot].id + this.count, data: vec});
+         let vec = dcmts.getMoves(this.team.robots[this.ibot], this.count)
+         this.team.arena.myplot.series[4]=({label: this.team.robots[this.ibot].id + this.count, data: vec});
  
          this.team.arena.update();
          this.count = this.count + 1 ; // Ready for next path
-  } // end plot
+  } // end plotOne
 
 
 

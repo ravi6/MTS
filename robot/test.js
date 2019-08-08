@@ -1,6 +1,8 @@
+var obj ;
+
 function Test () {
 
-   var obj =  new dcmts() ;
+ obj = new dcmts() ;
 
   // Read in parameters from Main Tab
  

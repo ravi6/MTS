@@ -130,13 +130,14 @@
                                    data-toggle="tooltip"  title = "Newton step update relaxation factor">
               </div>                   
           </div>
-       
-        <div class=row>
-              <div class="col">
+ 
+        <div class="row mt-5">   <!-- mt stands for top margin -->
+ 
                  <button type="button" class="btn btn-primary btn-lg" id="pltPath"
-                          onclick = "pltPath();" >SIMULATE</button>
-             </div> 
-           
+                          title = "Plot Paths of one robot in pdf table, Each click toggles the robot"
+                          data-toggle="tooltip"
+                          onclick = "obj.pathPlot.replot();" >REPLOT</button>
+               
         </div>
 
     </div> <!-- end of arenaTab -->
