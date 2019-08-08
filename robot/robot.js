@@ -107,7 +107,7 @@ class robot {
               let rb = robots[i] ;
               if (rb.id != this.id){
                    let js = rb.sentpdf.choose();                    
-                   reward = reward + this.getReward(rb, js.seq) * js.q ;
+                   reward = reward + this.getReward(rb, js.seq) ; // * js.q ;
                }
           } // end all other robots
 
@@ -129,7 +129,7 @@ class robot {
               let rb = robots[i] ;
               let js = rb.sentpdf.choose();
                      if (js != undefined)
-                        reward = reward + this.getReward(rb, js.seq) * js.q ;
+                        reward = reward + this.getReward(rb, js.seq) ; //* js.q ;
                         else console.log("js undefined in ExpTeamReward");
               }
         return (reward) ; 

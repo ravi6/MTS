@@ -141,8 +141,10 @@ class dcmts {
              //console.log($(tabid));
              tab.rows[i+1].cells[1].innerHTML = (Count) ;
              tab.rows[i+1].cells[2].innerHTML = revCountP ;
-             //tab.rows[i+1].cells[3].innerHTML = rob.getReward(rob, rob.pdf.table[i].seq);
+            // tab.rows[i+1].cells[3].innerHTML = rob.getReward(rob, rob.pdf.table[i].seq);
              tab.rows[i+1].cells[3].innerHTML = rob.pdf.table[i].reward;
+            // tab.rows[i+1].cells[3].innerHTML = rob.CondExpTeamReward(rob, rob.pdf.table[i].seq);
+
              tab.rows[i+1].cells[4].innerHTML = rob.pdf.table[i].q.toPrecision(2);
           }
         }} // end of reportRevisits
