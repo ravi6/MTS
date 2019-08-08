@@ -99,3 +99,11 @@ Completed implementing above changes. Need more exploratory runs. Chaning initia
 obstacles etc. Also, explore different MTScycle strategies. Right now we rollout once for each
 cycle. I think it is more appropriate to make several rollouts before moving on to next cycle. 
 
+## 8th Aug 2019
+Fixed bug in Entorpy calculation (negative sign omitted). But results still have
+not changed substantially. PDF table after many iterations shows peaks on few rollout sequences despite the
+fact that all of the combined score(of robots) appear to be quite close to maximum value. Also, the
+move sequences are quite identical covering most of the reward points, but varying
+only at tail end. Is this the artifact of flat region, where multiple paths produce
+same score??
+
