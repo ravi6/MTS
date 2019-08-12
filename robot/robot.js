@@ -80,7 +80,7 @@ class robot {
          for (let i=0; i < robots.length ; i++) {
               let rb = robots[i] ;
               if (rb.id != this.id){
-                   let js = rb.pdf.choose();               
+                   let js = rb.pdf.sample();               
                    reward = reward + this.getReward(rb, js.seq ) ; // note no probability multiplier
                    }
           } // end all other robots
@@ -100,14 +100,15 @@ class robot {
            // Calculates global Reward based on all other Robots action sets
           //  given  action seq of this robot
          //     Sum (G(X|x_k)*p(i!=k)   i=1..N
+        //     The above is implicitly realised when samples are generated from pdf table
          let reward = 0 ;
          let robots = this.team.robots ;
 
          for (let i=0; i < robots.length ; i++) { // consider other robots ony
               let rb = robots[i] ;
               if (rb.id != this.id){
-                   let js = rb.sentpdf.choose();                    
-                   reward = reward + this.getReward(rb, js.seq) ; // * js.q ;
+                   let js = rb.sentpdf.sample();                    
+                   reward = reward + this.getReward(rb, js.seq) ;
                }
           } // end all other robots
 
@@ -122,14 +123,15 @@ class robot {
     ExpTeamReward () {
            // Calculates Expected global Reward based on all Robots action sets
           //     Sum (G(X)*q(i))   i=1..N
+        //     The above is implicitly realised when samples are generated from pdf table
           
          let reward = 0 ;
          let robots = this.team.robots ;
          for (let i=0; i < robots.length ; i++) {
               let rb = robots[i] ;
-              let js = rb.sentpdf.choose();
+              let js = rb.sentpdf.sample();
                      if (js != undefined)
-                        reward = reward + this.getReward(rb, js.seq) ; //* js.q ;
+                        reward = reward + this.getReward(rb, js.seq) ; 
                         else console.log("js undefined in ExpTeamReward");
               }
         return (reward) ; 

@@ -7,7 +7,7 @@ class pdf {
               this.table.push({seq: [], q: (1.0/n) , reward: -1});
     }
 
-    choose (){  // Choose one pdf element fromt the table
+    sample(){  // Sample from known distribution data
 
        // Generate cumulative q table
        let cumQ = [] ;           
@@ -27,7 +27,7 @@ class pdf {
 					       
        return ({seq: this.table[k].seq, q: this.table[k].q}) ; // this way we send by values 
 
-    } // end choose
+    } // end sample
 
      update (seq, reward) { // update entry if it is better than existing 
                             // return true if table is modified
