@@ -45,22 +45,17 @@ class dcmts {
            for(let i=0 ; i < robots[k].pdf.size ; i++) 
                      robots[k].mtsCycle(); 
             
-        
            robots[k].updateQ(this.params.alpha, this.getBeta(this.count));  
-                  
            robots[k].sendPDF();
         }
          
          this.reportRevisits(robots);
 
-          // Start plotting paths once all iterations are over
         if ( this.count >= this.params.maxCount-1 ) { // Done with computations
              clearInterval(this.mctsTimer);
              console.log("Finished", this.count);
              $("#simBtn").prop("disabled", false) ; // Ready for next simulation
-             // We plot paths for the last iteration 
              this.betaPlot() ;
-             //this.pathPlot.start();
           }
           
            if (((this.count+1)% (this.params.maxCount/this.pdfTraces)) == 0) {
@@ -188,7 +183,8 @@ class dcmts {
 } // end of dmts class
 
 class pathPlot {
-    // Plotting paths taken by robots in the Arena with walls
+    // Plotting paths taken by robot in the Arena with walls
+    // Cycles through all the paths in the pdf table
 
   constructor (team, intval) {
         this.timer = undefined ;
@@ -196,63 +192,42 @@ class pathPlot {
         this.count  = 0        ; // path counter
         this.maxCount = team.robots[0].pdf.size ;
         this.team = team ;
-
-        for (let i=0 ; i < team.robots.length ; i++)
-             team.arena.myplot.series.push({});
+        this.team.arena.myplot.series.push({}); // Path serires
+        this.robot = this.team.robots[0] ;
         this.ibot = 0 ;
+        this.running = false ;
   } // end constructor
 
   start () {
-        this.timer = setInterval(this.plot.bind(this), this.intval) ;
+             if (!this.running) {  // prevent triggering start while running
+                 this.timer = setInterval(this.plot.bind(this), this.intval) ;
+                 this.running = true ;
+             }
   } // end start
 
   plot () {
 
-       if (this.count > this.maxCount-1) {  // No more to plot
-           clearInterval(this.timer);
-           $("#simBtn").prop("disabled", false) ; // Ready for next simulation
-           this.count = 0 ;
-           return; 
-       }
-
        // Update paths corresponding to the pdf entry this.team.robots.length 
-       for (let i=0 ; i < this.team.robots.length ; i++) {
-         let vec = dcmts.getMoves(this.team.robots[i], this.count)
-         this.team.arena.myplot.series[i+4]=({label: this.team.robots[i].id + this.count, data: vec});
-      }
+         let vec = dcmts.getMoves(this.robot, this.count)
+         this.team.arena.myplot.series[4]=({label: this.robot.id + this.count, data: vec});
          this.team.arena.update();
          this.count = this.count + 1 ; // Ready for next path
+
+          if (this.count > this.maxCount-1) {  // Done one Robot
+               this.ibot = this.ibot + 1 ;  // ready for next 
+               if (this.ibot > this.team.robots.length-1) { // We are done
+                   clearInterval(this.timer);
+                   this.count = 0 ;
+                   this.ibot = 0  ;
+                   this.robot = this.team.robots[0];
+                   this.running = false ;
+                   return; 
+                }         
+               this.robot = this.team.robots[this.ibot]; 
+               this.count = 0 ;                     
+          }
+
   } // end plot
-
-
-
-replot () {
-       this.timer = setInterval(this.plotOne.bind(this), this.intval)  ;
-}
-
-plotOne () {  // Plotting one robot at a time alternately
-             
-             if (this.count > this.maxCount-1) {
-                 clearInterval(this.timer);
-                 if (this.ibot == 0) this.ibot = 1 ;
-                 else this.ibot = 0 ;
-                 this.count = 0 ;
-                 return;
-             }
-          
-             this.team.arena.myplot.series [4] = {} ;
-             this.team.arena.myplot.series [5] = {} ;
-
-       // Update paths corresponding to the pdf entry this.team.robots.length 
-       
-         let vec = dcmts.getMoves(this.team.robots[this.ibot], this.count)
-         this.team.arena.myplot.series[4]=({label: this.team.robots[this.ibot].id + this.count, data: vec});
- 
-         this.team.arena.update();
-         this.count = this.count + 1 ; // Ready for next path
-  } // end plotOne
-
-
 
 } // end pathPlotter
 
