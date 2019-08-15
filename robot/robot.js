@@ -81,7 +81,7 @@ class robot {
               let rb = robots[i] ;
               if (rb.id != this.id){
                    let js = rb.pdf.sample();               
-                   reward = reward + this.getReward(rb, js.seq ) ; // note no probability multiplier
+                   reward = reward + this.getReward(rb, js.seq ) ; 
                    }
           } // end all other robots
               
@@ -163,15 +163,16 @@ class robot {
           ExpF = this.ExpTeamReward () ;
           CondExpF = this.CondExpTeamReward (this.pdf.table[i].seq) ;
           qold = this.pdf.table[i].q ;
-
+          
           // Here (1/beta  corresponds to  -T in my Lagrangian in write_up)
           // Consequently positive beta values give maxima
           
           qnew = qold - alpha * qold * ( ( ExpF - CondExpF ) / beta
                                              + this.Entropy() + Math.log (qold) ) ;
+
           if (qnew < 0) qnew = qold ; // Don't let the newton step move to infeasible region
                                       // One can not have negative probability
-          
+ 
           this.pdf.table[i].q = qnew ;
           this.NormalizeQ (i, qnew) ; 
       }

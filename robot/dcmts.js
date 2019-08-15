@@ -45,19 +45,22 @@ class dcmts {
            for(let i=0 ; i < robots[k].pdf.size ; i++) 
                      robots[k].mtsCycle(); 
             
-           robots[k].updateQ(this.params.alpha, this.getBeta(this.count));         
+        
+           robots[k].updateQ(this.params.alpha, this.getBeta(this.count));  
+                  
            robots[k].sendPDF();
         }
          
          this.reportRevisits(robots);
 
           // Start plotting paths once all iterations are over
-        if ( this.count > this.params.maxCount-1 ) { // Done with computations
+        if ( this.count >= this.params.maxCount-1 ) { // Done with computations
              clearInterval(this.mctsTimer);
              console.log("Finished", this.count);
+             $("#simBtn").prop("disabled", false) ; // Ready for next simulation
              // We plot paths for the last iteration 
              this.betaPlot() ;
-             this.pathPlot.start();
+             //this.pathPlot.start();
           }
           
            if (((this.count+1)% (this.params.maxCount/this.pdfTraces)) == 0) {
@@ -141,10 +144,7 @@ class dcmts {
              //console.log($(tabid));
              tab.rows[i+1].cells[1].innerHTML = (Count) ;
              tab.rows[i+1].cells[2].innerHTML = revCountP ;
-            // tab.rows[i+1].cells[3].innerHTML = rob.getReward(rob, rob.pdf.table[i].seq);
              tab.rows[i+1].cells[3].innerHTML = rob.pdf.table[i].reward;
-            // tab.rows[i+1].cells[3].innerHTML = rob.CondExpTeamReward(rob, rob.pdf.table[i].seq);
-
              tab.rows[i+1].cells[4].innerHTML = rob.pdf.table[i].q.toPrecision(2);
           }
         }} // end of reportRevisits
@@ -180,8 +180,8 @@ class dcmts {
       // Map iteration count to beta value
       // We control  annealing this way
       let beta = this.params.beta ;
-      let b = beta.min + (beta.max - beta.min)
-               * sCurve(beta.anneal, count / (this.params.maxCount-1)); 
+      let f = count / (this.params.maxCount - 1) ;
+      let b = beta.min + (beta.max - beta.min) * sCurve(beta.anneal,f); 
       return(b);
      }
 
