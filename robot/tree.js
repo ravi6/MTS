@@ -77,7 +77,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
         // Update pdf table entry if this simActionSeq is better than existing ones
         // We could use DiffTeamReward too ... we will do it when we move to it
       
-        let breakPoint = this.robot.pdf.update (this.simActionSeq, this.robot.TeamReward (this.simActionSeq)) ;
+        let breakPoint = this.robot.pdf.update (this.simActionSeq, this.robot.CondExpTeamReward (this.simActionSeq)) ;
         
         this.Nsim = this.Nsim + 1   ;  // simulation count 
        
@@ -91,7 +91,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
        var anode = this.simNode ;
        
        // We could use DiffTeamReward too ... we will do it when we move to it
-       let addGain = this.robot.TeamReward(this.simActionSeq); // Propagating team reward
+       let addGain = this.robot.CondExpTeamReward(this.simActionSeq); // Propagating team reward
        
         do  {  // Move up the chain and update
            anode.trials = anode.trials + 1 ; // bump each nodes trial count

@@ -73,23 +73,6 @@ class robot {
 // We can make the following functions as complex as we wish
     // for now we keep it very simple
 
-   TeamReward (seq) {
-        // This is unweighted Rollout reward, given a robot and rollout seq.
-         let reward = 0 ;
-         let robots = this.team.robots ;
-         for (let i=0; i < robots.length ; i++) {
-              let rb = robots[i] ;
-              if (rb.id != this.id){
-                   let js = rb.pdf.sample();               
-                   reward = reward + this.getReward(rb, js.seq ) ; 
-                   }
-          } // end all other robots
-              
-          // Add this robots contribution                
-          reward = reward + this.getReward(this, seq) ; 
-          return (reward) ; 
-   } // end TeamReward
-
    DiffTeamReward (seq) { // Total Reward differential with my Action - my InAction
        // In our case it is just depends only on my action (Very simplistic Team Reward as above)
        return (getReward(this, seq)) ;
@@ -170,9 +153,15 @@ class robot {
           qnew = qold - alpha * qold * ( ( ExpF - CondExpF ) / beta
                                              + this.Entropy() + Math.log (qold) ) ;
 
-          if (qnew < 0) qnew = qold ; // Don't let the newton step move to infeasible region
-                                      // One can not have negative probability
- 
+          // Don't let the newton step move to infeasible region
+          // One can not have negative probability
+          // Approximate q zero to small value to avoid log(0)
+         
+          if (qnew <= 0) 
+              qnew = 1e-10 ; 
+          else if (qnew > 1) 
+              qnew = 1.0 ;
+                                               
           this.pdf.table[i].q = qnew ;
           this.NormalizeQ (i, qnew) ; 
       }
@@ -186,7 +175,7 @@ class robot {
             if (q > 0)
               s = s + q * Math.log (q) ;
             else
-              console.log ("Negative q", i, q) ;
+              console.log ("q<=0", i, q) ;
       }
       return (-s) ;
   }

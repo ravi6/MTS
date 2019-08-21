@@ -38,6 +38,7 @@ class pdf {
         	  return (false) ; // nothing to add (less than min)
         } 
         else {  // replace smallest entry and reorder
+          entry.q = this.table[0].q ;  // The new seq. will inherit q of seq it replaces
 	      this.table.shift() ;
           this.table.push (entry) ;
           this.resetTable() ;          	
@@ -49,8 +50,8 @@ class pdf {
     resetTable () { // sorting by reward in ascending reward order
                          // also reset q values for all entries
         this.table.sort(function (a,b){return (a.reward - b.reward);}) ;
-        for (let i=0; i < this.table.length ; i++) 
-        	this.table[i].q = 1.0 / this.table.length;      
+       // for (let i=0; i < this.table.length ; i++) 
+        //	this.table[i].q = 1.0 / this.table.length;      
     } // end resetTable
 
     clone () {
