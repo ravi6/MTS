@@ -9,7 +9,10 @@ class dcmts {
                              beta: {min: 0.001, max: 1, anneal: 6 },
                              maxCount: 100 }
 
-            this.team.robots.forEach (function(rob){rob.budget = 40}) ;
+            this.team.robots.forEach (function(rob){
+                                           rob.budget = 40;
+                                           rob.tree.UCTF = 1.414;
+                                           rob.tree.Gamma = 0.5; }) ;
 
             // Timers to breakup compute tasks and animate path display
             this.mctsTimer =  undefined ;

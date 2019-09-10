@@ -88,12 +88,12 @@ class node {  // A genertic node for Montecarlo Tree Search
       return ( Math.sqrt (x) ) ;
     } 
 
-    bestChild (fUTC) { // based on some measure return best child node 
+    bestChild (fUCT) { // based on some measure return best child node 
 
           let measure = [] ;
 
           this.children.forEach ( function (e) {
-                                  let x = e.gGainMean () + fUTC * e.wexp () ;
+                                  let x = e.gGainMean () + fUCT * e.wexp () ;
 			                      measure.push (x) ;
                                     });
           let i = measure.indexOf (Math.max(...measure)) ;

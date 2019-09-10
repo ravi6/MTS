@@ -7,10 +7,10 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
          this.simNode     = undefined   ;  // New node from which simulation occurs
          
          this.Nsim      = 0      ;        // Total number of simulations
-         this.NodeSet   = []     ;   // All discovered nodes of the tree
-	     this.UTCF      = 1.414  ; // Normally 1.414
-        
-         this.robot =  parent       ;
+         this.NodeSet   = []     ;       // All discovered nodes of the tree
+         this.UCTF      = 1.414  ;      // Upper Confidence Bound factor Normally 1.414
+         this.Gamma     = 1.0    ;      // UCB discount factor
+         this.robot =  parent    ;
 
 	 // Root Node creation and initialization        
          this.root        = new node(parent.pos, undefined)  ; // root node has no move
@@ -31,7 +31,7 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
        while (anode.isExpanded () && !anode.isTerminal()) { // It has all of the potential children         
                                                             //travel down the tree until you hit a node
                                                            // with unexplored moves 
-          anode = anode.bestChild (this.UTCF) ;  // Latch on to the best and repeat
+          anode = anode.bestChild (this.UCTF) ;  // Latch on to the best and repeat
        }
           this.selNode = anode ;         
     } // end select
@@ -94,10 +94,10 @@ class tree {    // The Game Tree (MonteCarlo Tree Search)
        let addGain = this.robot.CondExpTeamReward(this.simActionSeq); // Propagating team reward
        
         do  {  // Move up the chain and update
-           anode.trials = anode.trials + 1 ; // bump each nodes trial count
+           anode.trials = anode.trials * this.Gamma + 1 ; // bump each nodes trial count
            
            // propagate Reward (based on collective actions)
-           anode.gGain = anode.gGain  + addGain ;
+           anode.gGain = anode.gGain * this.Gamma  + addGain  ; // Note discounting the gain over time
               
            anode = anode.parent ; // move up the chain                   
 
