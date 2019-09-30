@@ -107,3 +107,6 @@ move sequences are quite identical covering most of the reward points, but varyi
 only at tail end. Is this the artifact of flat region, where multiple paths produce
 same score??
 
+## 20th Sep 2019
+Created online branch and pruned all other stuff except robot. The idea is not merge this ever with master. 
+It will be standalone implementaion of DMCTS with parallel threads and online planning feature.
