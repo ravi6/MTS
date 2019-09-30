@@ -91,8 +91,6 @@ them as they were. Also, instead of using global collective score a relative glo
 score is a natural choice for back propogation.
 
 * The above changes will be implemented in the following commits
- 
-
 
 ## 2st June 2019
 Completed implementing above changes. Need more exploratory runs. Chaning initial conditions,
@@ -107,3 +105,8 @@ move sequences are quite identical covering most of the reward points, but varyi
 only at tail end. Is this the artifact of flat region, where multiple paths produce
 same score??
 
+## 10th Sep 2019
+Completed discounted UCT implementation. 
+
+## 30th Sep 2019
+Commencing implementation of online planning with webworkers. New "online" branch is created.
