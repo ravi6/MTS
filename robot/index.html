@@ -39,41 +39,6 @@
     <script src="dcmts.js"></script>
     <script src="test.js"></script>
 
-    <script>
-
-       function addTable(id) { // Insert Rows/Cols in table given ID
-           let cols = ["#", "Moves", "%Revisits", "SeqReward", "q (PDF)"];
-           let rows = 10 ;           let str = "" ;
-           str = str + ("<thead><tr>");
-           cols.forEach (function (col) {
-                str = str + ("<th scope='col'>" + col + "</th>"); });
-
-           str = str + ("</tr></thead><tbody>"); 
-           for (let i = 0 ; i < rows ; i++){
-             str = str + ("<tr><th scope='row'>" + i + "</th>")
-             for (let k=0 ; k < cols.length ; k++) {
-               str = str + ("<td></td>");
-             }
-               str = str + ("</tr>");
-           }
-           str = str + ("</tbody>"); 
-           $(id).append(str);  
-        } // end addTable      
-
-        function activeTab(tab){
-                 $('.nav-tabs a[href="' + tab + '"]').tab('show');                
-         };
-
-        $(document).ready(function() {
-                         addTable("#CatTable");
-                         addTable("#DogTable");
-                          $('.nav-tabs a:first').tab('show');
-                          $('[data-toggle="tooltip"]').tooltip(); 
-        });
-
-         
-      
-    </script>
 
 
 <div class="container">
@@ -82,95 +47,14 @@
 <ul class="nav nav-tabs" id="mytabs">
   <li class='nav-item'>
     <a class='nav-link' data-toggle='tab' href="#arenaTab">Arena</a></li>
-  <li class='nav-item'>
-    <a class='nav-link ' data-toggle='tab'  href="#tablesTab">PDF Tables</a></li>
-  <li class='nav-item'>
-    <a class='nav-link ' data-toggle='tab' href="#plotsTab">PDF Plots</a></li>
 </ul>
 
 <div class="tab-content">
     <!-- Shows Moves of Robots -->
   <div id="arenaTab" class="tab-pane fade active in ">
-        
         <div id="plotarea" class="card cardbody bg-light" style="height: 400px"></div>
-        <p><br><br></p>
-       
-          <div class="row">
-            <div class="col">
-                 <button type="button" class="btn btn-primary btn-lg" id="simBtn"
-                          onclick = "Test(); this.disabled =true;" >SIMULATE</button>
-            </div>            
-           
-           <div class="col">
-                  <label for="MaxIter">Max Iter:</label>
-                      <input type="number" class="form-control" id="MaxIter" min=0 max=10000 value=1000
-                                            data-toggle="tooltip"  title = "Simulation Iterations">
-                  <label for="pdfTraces">PlotSamples:</label>
-                     <input type="number" class="form-control" id="pdfTraces" min=2 max=10 value=10
-                                   data-toggle="tooltip"  title = "Number of PDF plot traces over simulation">     
-           </div>
-          </div> <!-- End Row -->
-
-          <div class=row>
-              <div class="col">
-                      <label for="betaMin">&beta;<sub>min</sub></label>
-                      <input type="number" class="form-control" id="betaMin" min=0.0001 max=1 value=0.001
-                                            data-toggle="tooltip"  title = "Minimum Value of Beta">
-                  <label for="betaMax">&beta;<sub>max</sub></label>
-                     <input type="number" class="form-control" id="betaMax" min=0.1 max=100 value=1
-                                   data-toggle="tooltip"  title = "Maximum Value of Beta"> 
-              </div> 
-              <div class="col">
-                  <label for="anneal">Anneal</label>
-                     <input type="number" class="form-control" id="anneal" min=0 max=25 value=6
-                                   data-toggle="tooltip"  title = "Annealing parameter that determines how beta varies with iteration">  
-
-                  <label for="alpha">&alpha;</label>
-                     <input type="number" class="form-control" id="alpha" min=0 max=1 value=0.1
-                                   data-toggle="tooltip"  title = "Newton step update relaxation factor">
-              </div>                   
-          </div>
- 
-        <div class="row mt-5">   <!-- mt stands for top margin -->
- 
-                 <button type="button" class="btn btn-primary btn-lg" id="pltPath"
-                          title = "Plot Paths of one robot in pdf table, Each click toggles the robot"
-                          data-toggle="tooltip"
-                          onclick = "obj.pathPlot.start(); console.log(obj);" >PlotPath</button>
-               
-        </div>
-
-    </div> <!-- end of arenaTab -->
-
-  
-
-    <!-- Shows PDF Tables -->
-    <div id="tablesTab" class="tab-pane fade">
-        <p id="counter"></p>
-        <h2>Cat Statistics</h2>
-         <table class="table table-striped" id=CatTable> 
-         </table>
-
-        <h2>Dog Statistics</h2>
-         <table class="table table-striped" id=DogTable>       
-         </table>
-    </div> 
-
-    <!-- Shows PDF Plots -->
-    <div id="plotsTab" class="tab-pane fade">
-        <h2>Cat PDF </h2>
-        <div id="pdfCat" class="card card-body bg-light" style="height: 400px" ></div>
-
-        <h2>Dog PDF </h2>
-        <div id="pdfDog" class="card card-body bg-light"  style="height: 400px"></div>
-
-        <h2>Annealing Beta Trend </h2>
-        <div id="betaPlot" class="card card-body bg-light"  style="height: 400px"></div>
-    </div>
-
+  </div> <!-- end of arenaTab -->
 </div> <!-- end Tabs content -->
-
-
 </div> <!-- End Container -->
 </body>
 </html>
