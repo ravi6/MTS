@@ -4,14 +4,21 @@ var ids = ["Cat", "Dog"] ;
 
 for (let i=0 ; i < ids.length ; i++) {
     let w = new Worker ("wrobot.js");
-    w.onmessage = function (e) { responder(e) ; } ;
+    w.onmessage = function (e) { robListener (e) ; } ;
     wrobots.push (w);
     w.postMessage ({cmd: "init", 
-                    msg: {id: ids[i], pos: (new point (0,0)) } }) ;                  
+                     id: ids[i], pos: (new point (0,0)) } ) ;                  
 }
 
 
- function responder (e) {
+wrobots[0].postMessage({cmd: "move", pos: new point(10,10)}) ; 
+setTimeout( function () {
+          wrobots[0].postMessage({cmd: "check"});
+          wrobots[1].postMessage({cmd: "check"}); } , 1000);
+
+
+
+ function robListener (e) {
  // Message handler for all robot workers
      let msg = e.data ;   
 
@@ -20,9 +27,11 @@ for (let i=0 ; i < ids.length ; i++) {
     switch(msg.cmd) {
      // Actions
        case "newMember":
-         rob.pos = msg.pos ;
+         wrobots.forEach (function (w) { //Broadcast all
+                               w.postMessage({cmd: "newMember", rob: msg.rob}) ;
+                           }) ;
          break;
 
        default:
-         console.log ("Unknown cmd", e.data);
+         console.log ("robListner Unknown cmd", e.data);
      } };   // end message handling       

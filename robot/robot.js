@@ -5,7 +5,8 @@ class robot {
         this.pos      = pos      ; 
         this.budget   = 40   ; // This could be made different for each robot 
         this.arena    = new board()    ; // where Robot can move (own copy)
-        this.tres     = new treasure() ; // its own notion of treasure state
+        this.tres     = new treasure ; // its own notion of treasure state
+
         this.tree     = new tree (this) ; // Its MTCS tree
         this.pdf      = new pdf(10)   ; // Probability dist func. of this robot (size 5)
         this.sentpdf  = new pdf(10) ;   // Holds pdf last transmitted
