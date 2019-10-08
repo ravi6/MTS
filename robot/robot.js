@@ -1,13 +1,13 @@
 class robot {
 // This the robot
-    constructor (id, pos, arena, team) {
+    constructor (id, pos) {
         this.id       = id       ;
         this.pos      = pos      ; 
         this.budget   = 40   ; // This could be made different for each robot 
-        this.arena    = arena    ; // where Robot can move
+        this.arena    = new board()    ; // where Robot can move (own copy)
+        this.tres     = new treasure() ; // its own notion of treasure state
         this.tree     = new tree (this) ; // Its MTCS tree
         this.pdf      = new pdf(10)   ; // Probability dist func. of this robot (size 5)
-        this.team     = team         ; // The team this robot belongs to
         this.sentpdf  = new pdf(10) ;   // Holds pdf last transmitted
     } // end constructor
 
@@ -26,6 +26,7 @@ class robot {
         const MOVES = [[0,1], [0,-1], [1,0], [-1,0]] ;
 
         // Dermine possible moves (actions) by the robot at current pos
+        this.team     = team         ; // The team this robot belongs to
         let moves = []   ;
 
         for (let i=0 ; i<MOVES.length ; i++) {  
@@ -128,7 +129,7 @@ class robot {
 
        let sum = 0 ;
        for (let i=0 ; i < seq.length ; i++) {      
-            sum = sum + this.team.tres.collect(seq[i]) ;
+            sum = sum + this.tres.collect(seq[i]) ;
        }
 
        // Restore the state of the treasure to original
