@@ -26,7 +26,6 @@ class robot {
         const MOVES = [[0,1], [0,-1], [1,0], [-1,0]] ;
 
         // Dermine possible moves (actions) by the robot at current pos
-        this.team     = team         ; // The team this robot belongs to
         let moves = []   ;
 
         for (let i=0 ; i<MOVES.length ; i++) {  
