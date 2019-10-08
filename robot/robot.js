@@ -9,6 +9,7 @@ class robot {
         this.tree     = new tree (this) ; // Its MTCS tree
         this.pdf      = new pdf(10)   ; // Probability dist func. of this robot (size 5)
         this.sentpdf  = new pdf(10) ;   // Holds pdf last transmitted
+        this.robots   = []          ;   // Holds all robots in team
     } // end constructor
 
     mtsCycle() { // MonteCarlo Tree SEP 
@@ -85,10 +86,9 @@ class robot {
          //     Sum (G(X|x_k)*p(i!=k)   i=1..N
         //     The above is implicitly realised when samples are generated from pdf table
          let reward = 0 ;
-         let robots = this.team.robots ;
 
-         for (let i=0; i < robots.length ; i++) { // consider other robots ony
-              let rb = robots[i] ;
+         for (let i=0; i < this.robots.length ; i++) { // consider other robots ony
+              let rb = this.robots[i] ;
               if (rb.id != this.id){
                    let js = rb.sentpdf.sample();                    
                    reward = reward + this.getReward(rb, js.seq) ;
@@ -109,9 +109,9 @@ class robot {
         //     The above is implicitly realised when samples are generated from pdf table
           
          let reward = 0 ;
-         let robots = this.team.robots ;
-         for (let i=0; i < robots.length ; i++) {
-              let rb = robots[i] ;
+
+         for (let i=0; i < this.robots.length ; i++) {
+              let rb = this.robots[i] ;
               let js = rb.sentpdf.sample();
                      if (js != undefined)
                         reward = reward + this.getReward(rb, js.seq) ; 
