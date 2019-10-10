@@ -110,3 +110,32 @@ same score??
 ## 20th Sep 2019
 Created online branch and pruned all other stuff except robot. The idea is not merge this ever with master. 
 It will be standalone implementaion of DMCTS with parallel threads and online planning feature.
+
+## 10th Oct 2019
+Online planning code development is progressing. Created a new branch
+"online". Utilizing webworkers to give parallell processing of multiple robots.
+Inter-communication of robots is through master. That should suffice
+for our demo purposes. 
+
+Modified robot class, to eliminate calculation of benefit of other robots
+using their own methods. Since each robot already shares pdf table, it already
+has benefit calculation associated with that sequence. Again for our 
+objective function that is not very complex, there is no need to request
+other robots to calculate costs of their moves again.
+Also, now the tresure is centralized. No more individual treasure chests for
+each robot. However,  for playout purposes they have a local copy. 
+
+When true moves happen master treasure info ... probably will now sit with
+Board will be updated.
+
+In crux major changes are in robot.js. We will jettison
+team.js and decmcts.js.
+
+Skeletal messaging protocal is taking good shape. Now Robots collection
+is a Map rather than a vector. This enables us to elegantly handle 
+messages from other robots to update tables without too many if statements.
+Each robot keeps an incomplete cloned copy of others in robots vector.
+robots vector in each robot is no longer dyanamic. Each robot will transmit
+its state changes at its own pace. And others, will listen in and get the 
+changes as required. 
+

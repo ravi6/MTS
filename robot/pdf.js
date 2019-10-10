@@ -25,7 +25,7 @@ class pdf {
 	   k = k + 1 ;
        }
 					       
-       return ({seq: this.table[k].seq, q: this.table[k].q}) ; // this way we send by values 
+       return ({seq: this.table[k].seq, q: this.table[k].q, reward: this.table[k].reward}) ; // this way we send by values 
 
     } // end sample
 

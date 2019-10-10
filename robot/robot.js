@@ -8,9 +8,9 @@ class robot {
         this.tres     = new treasure ; // its own notion of treasure state
 
         this.tree     = new tree (this) ; // Its MTCS tree
-        this.pdf      = new pdf(10)   ; // Probability dist func. of this robot (size 5)
+        this.pdf      = new pdf(10)   ; // Probability dist func. of this robot (size 10)
         this.sentpdf  = new pdf(10) ;   // Holds pdf last transmitted
-        this.robots   = []          ;   // Holds all robots in team
+        this.robots   = new Map()          ;   // Holds all (but self) robots in team
     } // end constructor
 
     mtsCycle() { // MonteCarlo Tree SEP 
@@ -18,7 +18,7 @@ class robot {
          this.tree.expand() ;       
          this.tree.simulate() ;   
          this.tree.propagate() ;   
-    } // end mtsCycle
+    } // end mtsCycle // Message handler for all robot workers
 
    getMoves (pt, cost) {
 
@@ -49,11 +49,11 @@ class robot {
                    let ipt = intsect(lm, wall); // get intersection pt
                    
                    if ( !(ipt == undefined) || onLine (npt, wall)) {
-                       hitsWall = true ;
+                       hitsWall = true ;rb
                     //   console.log("Hit wall ", k, "at", ipt,
                     //               "while moving from", pt, "to", npt);
                        break ;  // No need to check remaining walls
-                   }
+                   } // Message handler for all robot workers
                 } // wall loop
             } // offBoard
 
@@ -77,7 +77,7 @@ class robot {
 
    DiffTeamReward (seq) { // Total Reward differential with my Action - my InAction
        // In our case it is just depends only on my action (Very simplistic Team Reward as above)
-       return (getReward(this, seq)) ;
+       return (getReward(seq)) ;
    }
 
 
@@ -86,45 +86,47 @@ class robot {
           //  given  action seq of this robot
          //     Sum (G(X|x_k)*p(i!=k)   i=1..N
         //     The above is implicitly realised when samples are generated from pdf table
+         
          let reward = 0 ;
-
-         for (let i=0; i < this.robots.length ; i++) { // consider other robots ony
-              let rb = this.robots[i] ;
-              if (rb.id != this.id){
-                   let js = rb.sentpdf.sample();                    
-                   reward = reward + this.getReward(rb, js.seq) ;
-               }
-          } // end all other robots
-
+                                                          
+         robots.forEach (function (rb, key, map) { // consider other robots ony
+                            let js = rb.sentpdf.sample();                    
+                            reward = reward + js.reward ; });
+  
           //  add this robots seq reward                    
-                reward = reward + this.getReward(this, seq) ; 
+         reward = reward + this.getReward(seq) ; 
                   
-          return (reward) ; 
-          
+          return (reward) ;          
     } // end CondExpTeamReward
 
 
     ExpTeamReward () {
            // Calculates Expected global Reward based on all Robots action sets
-          //     Sum (G(X)*q(i))   i=1..N
+          //     Sum (G( X)*q(i))   i=1..N
         //     The above is implicitly realised when samples are generated from pdf table
           
          let reward = 0 ;
 
-         for (let i=0; i < this.robots.length ; i++) {
-              let rb = this.robots[i] ;
-              let js = rb.sentpdf.sample();
-                     if (js != undefined)
-                        reward = reward + this.getReward(rb, js.seq) ; 
-                        else console.log("js undefined in ExpTeamReward");
-              }
+          robots.forEach (function (rb, key, map) { // all but me
+                  let js = rb.sentpdf.sample();
+                   if (js != undefined)
+                      reward = reward + js.reward ; 
+                   else 
+                      console.log("js undefined in ExpTeamReward"); 
+          });
+
+          //  Add myown reward
+                   js = this.sentpdf.sample();
+                   if (js != undefined)
+                      reward = reward + js.reward; 
+                   else 
+                      console.log("js undefined in ExpTeamReward"); 
+
         return (reward) ; 
     } // end ExpTeamReward
 
-
-
-    getReward (rb, seq) {// Calculate reward from a robots sequence of actions
-        
+         
+    getReward (seq) {// Calculate reward
         if (seq == undefined || seq.length == 0) return (0);
 
        let sum = 0 ;
@@ -134,7 +136,7 @@ class robot {
 
        // Restore the state of the treasure to original
        //  so that subsequent calcs with other seq. are done correctly
-       this.team.tres.restore();
+       this.tres.restore();
         // console.log("Reward Value of a Seq =" , rb.id, sum);
        return (sum) ;
     } // end getReward
@@ -175,7 +177,7 @@ class robot {
             let q = this.pdf.table[i].q ;
             if (q > 0)
               s = s + q * Math.log (q) ;
-            else
+            else       
               console.log ("q<=0", i, q) ;
       }
       return (-s) ;
