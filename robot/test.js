@@ -1,5 +1,7 @@
 //Spawns off many robot workers
 //    With each having same Message Listening Interface
+//   This is our Board Worker
+
 
 var wrobots = new Map ;
 var ids = ["Cat", "Dog"] ;
@@ -18,7 +20,10 @@ function MsgListener (e) {   // Message handler for all robot workers
 
      let msg = e.data ;   
 
-   // Marshall all received messages here
+   // Marshall all received messages here  case "move":
+         rob.pos = msg.pos ;
+         break;
+
 
     switch(msg.cmd) {
         
@@ -37,7 +42,11 @@ function MsgListener (e) {   // Message handler for all robot workers
                                     console.log ("Update Request sent to ", key, " obj:", msg.rob);
                                }});
           
-        break ;           
+        break ;     
+
+         case "move":
+               /// Tell board that you moved and send treasure to all 
+         break;      
        
        default:
          console.log ("Master: MsgListener Unknown cmd", e.data);

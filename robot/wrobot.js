@@ -23,9 +23,7 @@ function MsgListener(e) {  // Messages Listener
     switch(msg.cmd) {
 
      // Actions
-       case "move":
-         rob.pos = msg.pos ;
-         break;
+ 
 
        case "init":   // creates a robot
          rob = new robot (msg.id, msg.pos);
@@ -44,6 +42,8 @@ function MsgListener(e) {  // Messages Listener
              console.log("Robot ", rob.id, " Updating ", msg.rob.id, "obj: ",  msg.rob);
              rob.robots.set (msg.rob.id, msg.rob) ; // local robot that is to be updated                        
        break;
+
+       case  "updateTreasure":
 
         case "check":
            console.log (rob.id, rob.pos.x, rob.robots[0].pos.x, rob.robots[1].pos.x) ;

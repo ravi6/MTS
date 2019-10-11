@@ -1,0 +1,12 @@
+<html>
+    <script>
+        function generic (msg) {
+            console.log (msg.data.amap.get("rami").color) ;
+        }
+            var w1  = new Worker("w1.js");
+            var w2  = new Worker("w2.js");
+            w1.onmessage = generic ;
+            w2.onmessage = generic;
+    </script>
+    <h> Web Workers Test </h>
+</html>
