@@ -31,7 +31,12 @@ function MsgListener (e) {   // Message handler for all robot workers
        
         case "update": //Received  {cmd: update, rob: calling_robot}
           console.log("Master: Received update request from ", msg.rob.id);
-          wrobots.get(msg.rob.id).postMessage({cmd: "update", rob: msg.rob}) ; // Pass on message to that robot
+          wrobots.forEach( function (w, key, map) {  //broadcast to other robots
+                               if (key != msg.rob.id) {
+                                    w.postMessage({cmd: "update", rob: msg.rob}) ;
+                                    console.log ("Update Request sent to ", key, " obj:", msg.rob);
+                               }});
+          
         break ;           
        
        default:

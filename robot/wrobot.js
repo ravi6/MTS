@@ -11,8 +11,8 @@ self.onmessage = function (e) {MsgListener (e);} ;
 // Testing
 setTimeout (function (){
    if (rob != undefined && rob.robots.size == 1) {
-     if (rob.id != "Cat")
-         postMessage ({cmd:"update", rob: rob.robots.get("Cat")}) ;
+     if (rob.id == "Cat")
+         postMessage ({cmd:"update", rob: rob}) ;
    }}, 1500) ;
 
 function MsgListener(e) {  // Messages Listener
@@ -41,8 +41,8 @@ function MsgListener(e) {  // Messages Listener
          break;
 
        case  "update": // When a robot changes its state (eg. pos or pdf ..)
-             console.log("Robot Updating ", msg.rob.name);
-             rob.robots.set(msg.rob.name) = msg.rob ; // local robot that is to be updated                        
+             console.log("Robot ", rob.id, " Updating ", msg.rob.id, "obj: ",  msg.rob);
+             rob.robots.set (msg.rob.id, msg.rob) ; // local robot that is to be updated                        
        break;
 
         case "check":
