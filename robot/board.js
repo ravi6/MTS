@@ -9,6 +9,9 @@ class  board {
             
             this.tps = [ [2,1], [4,1], [5,3], [9,4], [3,4],
                         [2,6], [7,6], [4,8], [6,8], [8,9]] ; // Treasure points
+
+            this.tres = new treasure();
+            this.robots = new Map() ;   // holds robots paths and cumulative reward
     
         this.myplot = {
 			id: "#plotarea",
@@ -36,9 +39,7 @@ class  board {
                                });                  
       }
 
-
                                      
-
      this.myplot.series.push ({data: this.tps, label: "Reward",
                                lines: {show: false},
                                points: { show: true, 
@@ -55,5 +56,19 @@ class  board {
 	          ctx.arc (x, y, radius * 4, 0,
 			            shadow ? Math.PI : Math.PI * 2, false);
 	} // end tpSymbol
+
+
+
+    getReward (seq) {// Calculate reward of a move sequence
+                      
+        if (seq == undefined || seq.length == 0) return (0);
+
+       let sum = 0 ;
+       for (let i=0 ; i < seq.length ; i++) {      
+            sum = sum + this.tres.collect(seq[i]) ;
+       }
+       return (sum) ;
+    } // end getReward
+
 
 } // End of board

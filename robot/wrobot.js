@@ -24,7 +24,6 @@ function MsgListener(e) {  // Messages Listener
 
      // Actions
  
-
        case "init":   // creates a robot
          rob = new robot (msg.id, msg.pos);
          console.log (rob.id + ": is initialized"); 
@@ -38,16 +37,10 @@ function MsgListener(e) {  // Messages Listener
          }
          break;
 
-       case  "update": // When a robot changes its state (eg. pos or pdf ..)
+       case  "updateRobot": // When a robot changes its state (eg. pos or pdf ..)
              console.log("Robot ", rob.id, " Updating ", msg.rob.id, "obj: ",  msg.rob);
              rob.robots.set (msg.rob.id, msg.rob) ; // local robot that is to be updated                        
-       break;
-
-       case  "updateTreasure":
-
-        case "check":
-           console.log (rob.id, rob.pos.x, rob.robots[0].pos.x, rob.robots[1].pos.x) ;
-           break ;
+         break;
 
        default:
          console.log ("Unkown Robot MsgListener cmd: ", msg.cmd, "from", rob.ID, e.data);
