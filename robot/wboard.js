@@ -49,12 +49,11 @@ function MsgListener (e) {   // Message handler for all robot workers
              path.push.apply(path, msg.path);   // Append move sequence to existing robPath 
 
              // Although We could have taken reward calculation of a sequence from the originating robot 
-             //  it is deemed better to get the board to make this calculation again, because it has the
-             //  real state of the treasure, were as robot has only notional view of treasure state.
-             //  Ofcourse board has only notional view of the robots position, since it relies on robots
+             //  it is deemed better to let the board  make this calculation again, because it has the
+             //  true state of the treasure, were as robot has only notional view of treasure state.
+             //  Ofcourse board has only notional view of the robot's position, since it relies on robots
              //  telling it where they are.
              let reward =  aboard.getReward (msg.path) + aboard.robots.get(msg.id).reward ;  // accumulate reward
-
               aboard.robots.set(msg.id, {path: path, reward: reward}); 
               console.log(aboard);
           break;

@@ -8,6 +8,26 @@ var rob ;
 self.onmessage = function (e) {MsgListener (e);} ; 
 
 
+function run() {  //Get me to work 
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+function Tests() {   // A stub for just testing a piece of code
 // Testing
 setTimeout (function (){
    if (rob != undefined && rob.robots.size == 1) {
@@ -17,6 +37,8 @@ setTimeout (function (){
          postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(8,8), new point(9,9)]})
      } else { postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(15,15), new point(16,16)]})}
    }}, 1500) ;
+
+}
 
 function MsgListener(e) {  // Messages Listener
 // Marshall all received messages here
