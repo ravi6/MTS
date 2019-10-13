@@ -27,9 +27,9 @@ function MsgListener (e) {   // Message handler for all robot workers
     switch(msg.cmd) {
         
      // Actions
-       case "newMember": // Recieved {cmd: newMemeber, rob: new_robot}
+       case "newRobot": // Recieved {cmd: newMemeber, rob: new_robot}
          wrobots.forEach (function (w, key, map) { //Broadcast to all
-                               w.postMessage({cmd: "newMember", rob: msg.rob}) ;
+                               w.postMessage({cmd: "newRobot", rob: msg.rob}) ;
                            }) ;
          break;
        
@@ -37,12 +37,12 @@ function MsgListener (e) {   // Message handler for all robot workers
           console.log("Master: Received update request from ", msg.rob.id);
           wrobots.forEach( function (w, key, map) {  //broadcast to other robots
                                if (key != msg.rob.id) {
-                                    w.postMessage({cmd: "update", rob: msg.rob}) ;
+                                    w.postMessage({cmd: "updateRobot", rob: msg.rob}) ;
                                     console.log ("Update Request sent to ", key, " obj:", msg.rob);
                                }});        
           break ; 
 
-         case "robMoved": // Received {cmd: moved, id: robid, path: moveseq} 
+         case "RobotMoved": // Received {cmd: Robotmoved, id: robid, path: moveseq} 
             
             // update boards view of robots motion and rewards
              let path = aboard.robots.get(msg.id).path ;         
@@ -55,7 +55,8 @@ function MsgListener (e) {   // Message handler for all robot workers
              //  telling it where they are.
              let reward =  aboard.getReward (msg.path) + aboard.robots.get(msg.id).reward ;  // accumulate reward
 
-              aboard.robtos.set(rob.id, {path: path, reward: reward}); 
+              aboard.robots.set(msg.id, {path: path, reward: reward}); 
+              console.log(aboard);
           break;
           
        default:

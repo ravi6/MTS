@@ -11,8 +11,11 @@ self.onmessage = function (e) {MsgListener (e);} ;
 // Testing
 setTimeout (function (){
    if (rob != undefined && rob.robots.size == 1) {
-     if (rob.id == "Cat")
-         postMessage ({cmd:"update", rob: rob}) ;
+     if (rob.id == "Cat") {
+         postMessage ({cmd: "updateRobot", rob: rob}) ;
+         postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(5,5), new point(6,6)]})
+         postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(8,8), new point(9,9)]})
+     } else { postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(15,15), new point(16,16)]})}
    }}, 1500) ;
 
 function MsgListener(e) {  // Messages Listener
@@ -27,10 +30,10 @@ function MsgListener(e) {  // Messages Listener
        case "init":   // creates a robot
          rob = new robot (msg.id, msg.pos);
          console.log (rob.id + ": is initialized"); 
-         postMessage ({cmd: "newMember", rob: rob}) ; 
+         postMessage ({cmd: "newRobot", rob: rob}) ; 
          break;
 
-       case "newMember": // When a new one other than take a copy of it
+       case "newRobot": // When a new one other than take a copy of it
          if (msg.rob.id != rob.id) {
                  rob.robots.set (msg.rob.id, msg.rob) ; // use id as key to map
                  console.log("From Robot:", rob.id, " robots count:", rob.robots.size, rob.robots);
