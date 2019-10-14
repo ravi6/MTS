@@ -8,37 +8,77 @@ var rob ;
 self.onmessage = function (e) {MsgListener (e);} ; 
 
 
-function run() {  //Get me to work 
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
+Tests();
 
 
 
 function Tests() {   // A stub for just testing a piece of code
+
 // Testing
 setTimeout (function (){
+ 
    if (rob != undefined && rob.robots.size == 1) {
+
      if (rob.id == "Cat") {
-         postMessage ({cmd: "updateRobot", rob: rob}) ;
-         postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(5,5), new point(6,6)]})
-         postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(8,8), new point(9,9)]})
-     } else { postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(15,15), new point(16,16)]})}
-   }}, 1500) ;
+        // postMessage ({cmd: "updateRobot", rob: rob}) ;
+       //  postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(5,5), new point(6,6)]})
+        // postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(8,8), new point(9,9)]})
+        // Try planning asynchornously and see the results
+        var planner = new Planner() ;
+        planner.promise().then(function (result) {console.log(result)})
+                  .catch (function (error) {console.log(error);})
+
+
+     } else { }// postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(15,15), new point(16,16)]})}
+   }
+
+   
+   }, 1500) ;
+
+
+
 
 }
+
+
+class Planner {   // this class uses global variable rb ...yuk
+
+    constructor () {
+        this.MaxCount = 1 ;
+        this.intval = 100 ; //milli seconds
+        this.count = 0 ;
+        this.done = false ;     // planning done flag  
+        this.timer = setInterval (this.plan, this.intval);  
+      //  this.rob =   rob ;    
+    }
+
+    plan() {  //Get me to plan my next move       
+       for (let i= 0 ; i < rob.pdf.size ; i++) {
+           rob.mtsCycle() ; // Execute one cycle of MTS
+       }
+        postMessage ({cmd: "updateRobot", rob: rob}) ; // this allows pdf transmission
+        rob.sentPDF = rob.pdf.clone();  // We may not use it at all (useful debug??)
+        this.count = this.count + 1 ;
+        console.log(this.count);
+        if (this.count == this.MaxCount) this.stop();
+      } // end plan
+  
+    promise() {
+        return new Promise (function (resolve, reject) {                       
+                                        if (this.done) resolve("done");
+                                        else reject("failed");       }.bind(this)); 
+    } // end promise
+
+    stop() {
+        clearInterval(this.timer);
+        this.timer=0;
+        this.done = true ;
+        console.log("Stopped Planning");
+    }
+
+} // end planner 
+
+
 
 function MsgListener(e) {  // Messages Listener
 // Marshall all received messages here
@@ -53,6 +93,7 @@ function MsgListener(e) {  // Messages Listener
          rob = new robot (msg.id, msg.pos);
          console.log (rob.id + ": is initialized"); 
          postMessage ({cmd: "newRobot", rob: rob}) ; 
+
          break;
 
        case "newRobot": // When a new one other than take a copy of it

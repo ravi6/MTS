@@ -11,6 +11,9 @@ class robot {
         this.pdf      = new pdf(10)   ; // Probability dist func. of this robot (size 10)
         this.sentpdf  = new pdf(10) ;   // Holds pdf last transmitted
         this.robots   = new Map()          ;   // Holds all (but self) robots in team
+                                               // These are not true robot objects, but stripped objects devoid of methods
+                                               // Good enough for what we want to do with other robots
+                                               // Will have to duplicate selection method of pdf to evaluate expected values
     } // end constructor
 
     mtsCycle() { // MonteCarlo Tree SEP 
@@ -49,7 +52,7 @@ class robot {
                    let ipt = intsect(lm, wall); // get intersection pt
                    
                    if ( !(ipt == undefined) || onLine (npt, wall)) {
-                       hitsWall = true ;rb
+                       hitsWall = true ;
                     //   console.log("Hit wall ", k, "at", ipt,
                     //               "while moving from", pt, "to", npt);
                        break ;  // No need to check remaining walls
@@ -89,8 +92,8 @@ class robot {
          
          let reward = 0 ;
                                                           
-         robots.forEach (function (rb, key, map) { // consider other robots ony
-                            let js = rb.sentpdf.sample();                    
+         this.robots.forEach (function (rb, key, map) { // consider other robots ony
+                            let js = this.samplePDF (rb.pdf);           // note rb.pdf here is stripped object table          
                             reward = reward + js.reward ; });
   
           //  add this robots seq reward                    
@@ -107,8 +110,8 @@ class robot {
           
          let reward = 0 ;
 
-          robots.forEach (function (rb, key, map) { // all but me
-                  let js = rb.sentpdf.sample();
+          this.robots.forEach (function (rb, key, map) { // all but me
+                  let js = this.sapmplePDF (rb.pdf);           // note rb.pdf here is stripped object table
                    if (js != undefined)
                       reward = reward + js.reward ; 
                    else 
@@ -199,4 +202,27 @@ class robot {
   sendPDF () {
          this.sentpdf = this.pdf.clone() ; // Assuming perfect reception by others
   }
+
+
+  samplePDF(table){  // Sample from known distribution data
+
+       // Generate cumulative q table
+       let cumQ = [] ;           
+       cumQ.push(table[0].q);
+
+       for (let i=1 ; i < table.size ; i++) {
+	        cumQ.push(cumQ[cumQ.length-1] + table[i].q);
+       }
+	  
+       let rnum = Math.random() ; // get a random val 0 to 1
+
+       // Choose seq corresponding to CumValue just below it
+       let k = 0;
+       while (rnum > cumQ[k] && k < table.size-1) {
+	   k = k + 1 ;
+       }
+					       
+       return ({seq: table[k].seq, q: table[k].q, reward: table[k].reward}) ; // this way we send by values 
+
+    } // end sample
 } // end robot
