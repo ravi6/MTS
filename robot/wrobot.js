@@ -25,31 +25,25 @@ setTimeout (function (){
         // postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(8,8), new point(9,9)]})
         // Try planning asynchornously and see the results
         var planner = new Planner() ;
+        planner.timer = setTimeout(planner.plan, 100);       
         planner.promise().then(function (result) {console.log(result)})
                   .catch (function (error) {console.log(error); })
 
 
     // } else { }// postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(15,15), new point(16,16)]})}
-   }
-
-   
+   } 
    }, 1500) ;
-
-
-
-
-}
+} // end Tests
 
 
 class Planner {   // this class uses global variable rb ...yuk
 
     constructor () {
-        this.MaxCount = 1 ;
+        this.MaxCount = 3 ;
         this.intval = 1000 ; //milli seconds
         this.count = 0 ;
-        this.done = false ;     // planning done flag  
-        this.timer = setInterval (this.plan, this.intval);  
-      //  this.rob =   rob ;    
+        this.done = false ;     // planning done flag         
+        this.timer ;
     }
 
     plan() {  //Get me to plan my next move       
@@ -63,7 +57,10 @@ class Planner {   // this class uses global variable rb ...yuk
         if (this.count == this.MaxCount) this.stop();
       } // end plan
   
-    promise() {
+
+    stop() {
+        clearInterval(this.timer);
+        this.timer=0;    promise() {
         return new Promise (function (resolve, reject) {                       
                                         if (this.done) resolve("done");
                                         else { 
@@ -72,9 +69,6 @@ class Planner {   // this class uses global variable rb ...yuk
                                           }}.bind(this));
     } // end promise
 
-    stop() {
-        clearInterval(this.timer);
-        this.timer=0;
         this.done = true ;
         console.log("Stopped Planning");
     }
@@ -115,3 +109,15 @@ function MsgListener(e) {  // Messages Listener
          console.log ("Unkown Robot MsgListener cmd: ", msg.cmd, "from", rob.ID, e.data);
 
      } };   // end message handling       
+
+
+ /*
+    promise() {
+        return new Promise (function (resolve, reject) {                       
+                                        if (this.done) resolve("done");
+                                        else { 
+                                          reject("failed"); 
+                                          self.terminate();
+                                          }}.bind(this));
+    } // end promise
+*/
