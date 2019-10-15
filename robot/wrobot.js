@@ -6,71 +6,44 @@ importScripts("geometry.js", "board.js", "treasure.js", "node.js",
 var rob ;
 
 self.onmessage = function (e) {MsgListener (e);} ; 
-Tests();
 
-
-
-function Tests() {   // A stub for just testing a piece of code
-
-// Testing
 
 // A promise that I will wait for robots to be ready
-var ready = new Promise (function (resolve, reject) {
+var promReady = new Promise (function (resolve, reject) {
                             (function waitForReady () {
-                                if (rob != undefined && rob.robots.size == 1)
-                                return(resolve());
+                                if (rob != undefined && rob.robots.size == 1)                                     
+                                     return(resolve(rob.id + " ready"));                                
                                 setTimeout(waitForReady, 100); })();
                             });
-                        
-ready.then(function (result){console.log(result);});
+
+// This is how we ensure that planning task is executed only after ready task is completed
+// note both tasks are run asynchornously. The first then not only returns the msg from 
+// completion of ready task, but makes a new promise to execute and complete planning task                   
+promReady.then(function (result){console.log(result); 
+                                 return(promPlan());})
+         .then(function (result){console.log(result)});
+
  // A promise that I will start planning and wait until it is done 
+                   
 
-var planned = new Promise (function (resolve, reject) {
-                                var planner = new Planner() ;                                       
+function promPlan() { // Execute planning cycle, while yielding to other tasks & notify when done
+                                                     
+      return new Promise (function (resolve, reject) {
+                                let count = 0, MaxCount = 6  ;                                             
                                 (function waitForDone () {
-                                    if (planner.done) return(resolve("done"));
-                                    setTimeout(waitForDone, 10); })();                                                                                                                                                         
-                                 });                                        
-planned.then(function (result) {console.log(result)})
-                  .catch (function (error) {console.log(error); });
-
-  } // end Tests
-
-
-class Planner {  
-
-    constructor () {
-        this.MaxCount = 10 ;
-        this.intval = 1000 ; //milli seconds
-        this.count = 0 ;
-        this.done = false ;     // planning done flag         
-        this.timer = setInterval(function(){this.plan()}.bind(this), this.intval);
-    }
-
-    plan() {  //Get me to plan my next move       
-       for (let i= 0 ; i < rob.pdf.size ; i++) {
-           rob.mtsCycle() ; // Execute one cycle of MTS
-       }
-        postMessage ({cmd: "updateRobot", rob: rob}) ; // this allows pdf transmission
-        rob.sentPDF = rob.pdf.clone();  // We may not use it at all (useful debug??)
-        this.count = this.count + 1 ;
-        console.log(this.count);
-        if (this.count == this.MaxCount) this.stop();
-      } // end plan
-  
-
-    stop() {
-        clearInterval(this.timer);
-        this.done = true ;
-        console.log("Finished Planning");
-    }
-
-} // end planner 
-
-
+                                    count = count + 1 ;
+                                    console.log(rob.id, "> Planning Count:", count);
+                                    if (count == MaxCount) return(resolve(rob.id + "> Planning done"));
+                                    for (let i= 0 ; i < rob.pdf.size ; i++) 
+                                             rob.mtsCycle() ; // Execute one cycle of MTS                                        
+                                    postMessage ({cmd: "updateRobot", rob: rob}) ; // this allows pdf transmission
+                                    rob.sentPDF = rob.pdf.clone();  // We may not use it at all (useful debug??)
+                                    setTimeout(waitForDone, 100); })();                                                                                                                                                         
+                                 });  
+} // Planning Promise
 
 function MsgListener(e) {  // Messages Listener
-// Marshall all received messages here
+// Marshall all receive{d messages here
 
     let msg = e.data ;
 
@@ -123,7 +96,15 @@ function MsgListener(e) {  // Messages Listener
       recursive calls until some desired state is detected. Then it resolves
       the promise.
       
+     - The above remarks were made when I tried using Planner class. It workded well
+     - as long as I waited for Planner class to be instantiated outside the promise.
+     - Why Planner class does not get instantiated in web worker immediately is not clear
 
+
+     -The current version now implements pure function objects to implement planning.
+     -Greatly reduces code base, but less readable due to recursive function call implementation
+     - in asynch task function.
+     -Yup it all works to my satisfaction
  /*
     
      //  if (rob.id == "Cat") {
