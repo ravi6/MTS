@@ -6,8 +6,6 @@ importScripts("geometry.js", "board.js", "treasure.js", "node.js",
 var rob ;
 
 self.onmessage = function (e) {MsgListener (e);} ; 
-
-
 Tests();
 
 
@@ -15,35 +13,38 @@ Tests();
 function Tests() {   // A stub for just testing a piece of code
 
 // Testing
-setTimeout (function (){
- 
-   if (rob != undefined && rob.robots.size == 1) {
 
-   //  if (rob.id == "Cat") {
-        // postMessage ({cmd: "updateRobot", rob: rob}) ;
-       //  postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(5,5), new point(6,6)]})
-        // postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(8,8), new point(9,9)]})
-        // Try planning asynchornously and see the results
-        var planner = new Planner() ;
-        planner.timer = setTimeout(planner.plan, 100);       
-        planner.promise().then(function (result) {console.log(result)})
-                  .catch (function (error) {console.log(error); })
+// A promise that I will wait for robots to be ready
+var ready = new Promise (function (resolve, reject) {
+                            (function waitForReady () {
+                                if (rob != undefined && rob.robots.size == 1)
+                                return(resolve());
+                                setTimeout(waitForReady, 100); })();
+                            });
+                        
+ready.then(function (result){console.log(result);});
+ // A promise that I will start planning and wait until it is done 
+
+var planned = new Promise (function (resolve, reject) {
+                                var planner = new Planner() ;                                       
+                                (function waitForDone () {
+                                    if (planner.done) return(resolve("done"));
+                                    setTimeout(waitForDone, 10); })();                                                                                                                                                         
+                                 });                                        
+planned.then(function (result) {console.log(result)})
+                  .catch (function (error) {console.log(error); });
+
+  } // end Tests
 
 
-    // } else { }// postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(15,15), new point(16,16)]})}
-   } 
-   }, 1500) ;
-} // end Tests
-
-
-class Planner {   // this class uses global variable rb ...yuk
+class Planner {  
 
     constructor () {
-        this.MaxCount = 3 ;
+        this.MaxCount = 10 ;
         this.intval = 1000 ; //milli seconds
         this.count = 0 ;
         this.done = false ;     // planning done flag         
-        this.timer ;
+        this.timer = setInterval(function(){this.plan()}.bind(this), this.intval);
     }
 
     plan() {  //Get me to plan my next move       
@@ -60,17 +61,8 @@ class Planner {   // this class uses global variable rb ...yuk
 
     stop() {
         clearInterval(this.timer);
-        this.timer=0;    promise() {
-        return new Promise (function (resolve, reject) {                       
-                                        if (this.done) resolve("done");
-                                        else { 
-                                          reject("failed"); 
-                                          self.terminate();
-                                          }}.bind(this));
-    } // end promise
-
         this.done = true ;
-        console.log("Stopped Planning");
+        console.log("Finished Planning");
     }
 
 } // end planner 
@@ -111,13 +103,32 @@ function MsgListener(e) {  // Messages Listener
      } };   // end message handling       
 
 
+
+
+/* Important Notes:
+    - A javascript class will use global variable if it is not declared within.
+       Eg. Planner class is using "rob" object that is global in scope
+
+    - Planner class is designed to enable several mtsCycles to be done in a non
+      blocking way. Notice the plan method is invoked from object instanstiation
+      in a periodic fashion. Notice that plan method is not directly used as 
+      the callback function in the setInterval. Instead it is encased in function
+      that is bound to this. If you don't do this, when setInterval invokes the
+      plan method of Planner class, "this" object is not referred to Planner object
+      but to the globalScope object of the worker. 
+
+    - Notice the way Promise to complete planning task implemented with a 
+      ()() function object. (anonymous function). This function internally
+      defines a function that emulates setInterval like behaviour but with 
+      recursive calls until some desired state is detected. Then it resolves
+      the promise.
+      
+
  /*
-    promise() {
-        return new Promise (function (resolve, reject) {                       
-                                        if (this.done) resolve("done");
-                                        else { 
-                                          reject("failed"); 
-                                          self.terminate();
-                                          }}.bind(this));
-    } // end promise
+    
+     //  if (rob.id == "Cat") {
+        // postMessage ({cmd: "updateRobot", rob: rob}) ;
+       //  postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(5,5), new point(6,6)]})
+        // postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(8,8), new point(9,9)]})
+        // Try planning asynchornously and see the results
 */

@@ -139,3 +139,8 @@ robots vector in each robot is no longer dyanamic. Each robot will transmit
 its state changes at its own pace. And others, will listen in and get the 
 changes as required. 
 
+15th Oct. 2019
+ Trying to use Promises to handle asynchronous execution within each
+robot worker. Taking a while to get my head around it. The idea is to wait
+for cetain taks eg. planning , initializing etc. to be executed in a non
+blocking way while using Promise API.
