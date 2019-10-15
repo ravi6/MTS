@@ -19,17 +19,17 @@ setTimeout (function (){
  
    if (rob != undefined && rob.robots.size == 1) {
 
-     if (rob.id == "Cat") {
+   //  if (rob.id == "Cat") {
         // postMessage ({cmd: "updateRobot", rob: rob}) ;
        //  postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(5,5), new point(6,6)]})
         // postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(8,8), new point(9,9)]})
         // Try planning asynchornously and see the results
         var planner = new Planner() ;
         planner.promise().then(function (result) {console.log(result)})
-                  .catch (function (error) {console.log(error);})
+                  .catch (function (error) {console.log(error); })
 
 
-     } else { }// postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(15,15), new point(16,16)]})}
+    // } else { }// postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(15,15), new point(16,16)]})}
    }
 
    
@@ -45,7 +45,7 @@ class Planner {   // this class uses global variable rb ...yuk
 
     constructor () {
         this.MaxCount = 1 ;
-        this.intval = 100 ; //milli seconds
+        this.intval = 1000 ; //milli seconds
         this.count = 0 ;
         this.done = false ;     // planning done flag  
         this.timer = setInterval (this.plan, this.intval);  
@@ -66,7 +66,10 @@ class Planner {   // this class uses global variable rb ...yuk
     promise() {
         return new Promise (function (resolve, reject) {                       
                                         if (this.done) resolve("done");
-                                        else reject("failed");       }.bind(this)); 
+                                        else { 
+                                          reject("failed"); 
+                                          self.terminate();
+                                          }}.bind(this));
     } // end promise
 
     stop() {

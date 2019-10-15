@@ -92,9 +92,9 @@ class robot {
          
          let reward = 0 ;
                                                           
-         this.robots.forEach (function (rb, key, map) { // consider other robots ony
+         this.robots.forEach (function (rb, key, map) { // consider other robots ony                       
                             let js = this.samplePDF (rb.pdf);           // note rb.pdf here is stripped object table          
-                            reward = reward + js.reward ; });
+                            reward = reward + js.reward ; }.bind(this));
   
           //  add this robots seq reward                    
          reward = reward + this.getReward(seq) ; 
@@ -204,8 +204,10 @@ class robot {
   }
 
 
-  samplePDF(table){  // Sample from known distribution data
+  samplePDF(pdf){  // Sample from known distribution data
 
+       let table = pdf.table ;
+       
        // Generate cumulative q table
        let cumQ = [] ;           
        cumQ.push(table[0].q);
