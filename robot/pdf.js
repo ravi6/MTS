@@ -7,7 +7,7 @@ class pdf {
               this.table.push({seq: [], q: (1.0/n) , reward: -1});
     }
 
-    sample(){  // Sample from known distribution data
+    sample() {  // Sample from known distribution data
 
        // Generate cumulative q table
        let cumQ = [] ;           
@@ -33,26 +33,22 @@ class pdf {
                             // return true if table is modified
         
         let entry = {seq: seq, q: 0.2, reward: reward} ;  // q value is arbitray it will be overwritten
-       
         if ( reward <= this.table[0].reward ) {
         	  return (false) ; // nothing to add (less than min)
         } 
         else {  // replace smallest entry and reorder
           entry.q = this.table[0].q ;  // The new seq. will inherit q of seq it replaces
-	      this.table.shift() ;
+          this.table.shift() ;
           this.table.push (entry) ;
-          this.resetTable() ;          	
-	      return (true) ;
+          this.sortTable() ;          	
+          return (true) ;
         }
 
     } // update
 
-    resetTable () { // sorting by reward in ascending reward order
-                         // also reset q values for all entries
+    sortTable () { // sorting by reward in ascending reward order
         this.table.sort(function (a,b){return (a.reward - b.reward);}) ;
-       // for (let i=0; i < this.table.length ; i++) 
-        //	this.table[i].q = 1.0 / this.table.length;      
-    } // end resetTable
+    } // end sortTable
 
     clone () {
          let apdf = new pdf(this.size);

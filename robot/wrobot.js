@@ -2,19 +2,19 @@
 
 importScripts("geometry.js", "board.js", "treasure.js", "node.js",
               "tree.js", "pdf.js", "robot.js", "util.js");
-
 var rob ;
 
 self.onmessage = function (e) {MsgListener (e);} ; 
 
-
 // A promise that I will wait for robots to be ready
-var promReady = new Promise (function (resolve, reject) {
-                            (function waitForReady () {
-                                if (rob != undefined && rob.robots.size == 1)                                     
-                                     return(resolve(rob.id + " ready"));                                
-                                setTimeout(waitForReady, 100); })();
-                            });
+var promReady = 
+  new Promise (
+    function (resolve, reject) {
+      (function waitForReady () {
+         if (rob != undefined && rob.robots.size == 1)                                     
+         return(resolve(rob.id + " ready"));                                
+         setTimeout(waitForReady, 100); })();
+  });
 
 // This is how we ensure that planning task is executed only after ready task is completed
 // note both tasks are run asynchornously. The first then not only returns the msg from 
@@ -23,39 +23,36 @@ promReady.then(function (result){console.log(result);
                                  return(promPlan());})
          .then(function (result){console.log(result)});
 
- // A promise that I will start planning and wait until it is done 
-                   
+// Ok, enough learning and planning now time to make a move
 
+// A promise that I will start planning and wait until it is done 
 function promPlan() { // Execute planning cycle, while yielding to other tasks & notify when done
                                                      
-      return new Promise (function (resolve, reject) {
-                                let count = 0, MaxCount = 6  ;                                             
-                                (function waitForDone () {
-                                    count = count + 1 ;
-                                    console.log(rob.id, "> Planning Count:", count);
-                                    if (count == MaxCount) return(resolve(rob.id + "> Planning done"));
-                                    for (let i= 0 ; i < rob.pdf.size ; i++) 
-                                             rob.mtsCycle() ; // Execute one cycle of MTS                                        
-                                    postMessage ({cmd: "updateRobot", rob: rob}) ; // this allows pdf transmission
-                                    rob.sentPDF = rob.pdf.clone();  // We may not use it at all (useful debug??)
-                                    setTimeout(waitForDone, 100); })();                                                                                                                                                         
-                                 });  
+  return new Promise (
+    function (resolve, reject) {
+       let count = 0, MaxCount = 6  ;                                             
+       (function waitForDone () {
+           count = count + 1 ;
+           console.log(rob.id, "> Planning Count:", count);
+           if (count == MaxCount) return(resolve(rob.id + "> Planning done"));
+           for (let i= 0 ; i < rob.pdf.size ; i++) 
+              rob.mtsCycle() ; // Execute one cycle of MTS                                        
+           postMessage ({cmd: "updateRobot", rob: rob}) ; // this allows pdf transmission
+           rob.sentPDF = rob.pdf.clone();  // We may not use it at all (useful debug??)
+           setTimeout(waitForDone, 100); })();                                                                                                                                                         
+   });  
 } // Planning Promise
 
 function MsgListener(e) {  // Messages Listener
 // Marshall all receive{d messages here
 
     let msg = e.data ;
-
     switch(msg.cmd) {
-
      // Actions
- 
        case "init":   // creates a robot
          rob = new robot (msg.id, msg.pos);
          console.log (rob.id + ": is initialized"); 
          postMessage ({cmd: "newRobot", rob: rob}) ; 
-
          break;
 
        case "newRobot": // When a new one other than take a copy of it
@@ -74,9 +71,6 @@ function MsgListener(e) {  // Messages Listener
          console.log ("Unkown Robot MsgListener cmd: ", msg.cmd, "from", rob.ID, e.data);
 
      } };   // end message handling       
-
-
-
 
 /* Important Notes:
     - A javascript class will use global variable if it is not declared within.
@@ -105,11 +99,10 @@ function MsgListener(e) {  // Messages Listener
      -Greatly reduces code base, but less readable due to recursive function call implementation
      - in asynch task function.
      -Yup it all works to my satisfaction
- /*
-    
-     //  if (rob.id == "Cat") {
-        // postMessage ({cmd: "updateRobot", rob: rob}) ;
-       //  postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(5,5), new point(6,6)]})
-        // postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(8,8), new point(9,9)]})
-        // Try planning asynchornously and see the results
+
+      if (rob.id == "Cat") {
+         postMessage ({cmd: "updateRobot", rob: rob}) ;
+         postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(5,5), new point(6,6)]})
+         postMessage({cmd:"RobotMoved", id: rob.id, path: [new point(8,8), new point(9,9)]})
+         Try planning asynchornously and see the results
 */
