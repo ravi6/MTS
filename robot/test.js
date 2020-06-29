@@ -1,7 +1,11 @@
 var obj ;
 
 function Test () {
+           var catRewards = []  ;
+          var dogRewards = []  ;
 
+console.log("Gathering Stats");
+for (let k=0 ;  k<100 ; k++){
  obj = new dcmts() ;
 
   // Read in parameters from Main Tab
@@ -15,6 +19,13 @@ function Test () {
    //console.log(obj.params);
   
     obj.simulate() ;
+   catRewards.push(obj.team.robots[0].pdf.table[9].reward);
+  dogRewards.push(obj.team.robots[1].pdf.table[9].reward);
 }
 
-
+       let catStats = getStats(catRewards);
+       let dogStats = getStats(dogRewards);
+       console.log(catStats.mean, catStats.std, 
+                        dogStats.mean, dogStats.std);
+console.log("Done");
+}      

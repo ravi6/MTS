@@ -13,7 +13,7 @@ class dcmts {
                                            rob.budget = 40;
                                            rob.tree.UCTF = 1.414;
                                            rob.tree.Gamma = 0.5; }) ;
-
+/*
             // Timers to breakup compute tasks and animate path display
             this.mctsTimer =  undefined ;
             this.mctsIntvl =  50
@@ -27,53 +27,47 @@ class dcmts {
             for (let i=0 ; i < this.team.robots.length ; i++) 
                      this.pdfPlots.push(new pdfPlot("#pdf" + this.team.robots[i].id)) ; 
             this.pdfTraces = 5 ;
+ */
+
     } // end constructor
 
     simulate () {
-            this.mctsTimer = setInterval(this.doMCTS.bind(this), this.mctsIntvl);               
-    }
+          // this.mctsTimer = setInterval(this.doMCTS.bind(this), this.mctsIntvl);               
+           // Do 1000 simulations and get statistics on best reward
+          this.doMCTS();
+           $("#simBtn").prop("disabled", false) ;
+    } // end Simulate
 
 
     doMCTS () {  // does one cycle .. timer calls it many times
 
+      for (let m=0 ; m< this.params.maxCount ; m++) {
        // console.time("MCTS Time");
         let robots = this.team.robots ;
 
-         document.getElementById("counter").innerHTML 
-                      = "Iterations: " + this.count;
+        // document.getElementById("counter").innerHTML 
+          //            = "Iterations: " + this.count;
            
         //  Sequentially process each robot to run mtsCycle, update q, and transmit pdf
-        for (let k=0; k < robots.length ; k++) {
-   
+        for (let k=0; k < robots.length ; k++) {  
            for(let i=0 ; i < robots[k].pdf.size ; i++) 
-                     robots[k].mtsCycle(); 
-            
+                     robots[k].mtsCycle();             
            robots[k].updateQ(this.params.alpha, this.getBeta(this.count));  
-           robots[k].sendPDF();
+           robots[k].sendPDF();        
         }
          
-         this.reportRevisits(robots);
+      }
+        // this.reportRevisits(robots);
 
-        if ( this.count >= this.params.maxCount-1 ) { // Done with computations
-             clearInterval(this.mctsTimer);
-             console.log("Finished", this.count);
-             $("#simBtn").prop("disabled", false) ; // Ready for next simulation
-             this.betaPlot() ;
-          }
+       // if ( this.count >= this.params.maxCount-1 ) { // Done with computations
+           //  clearInterval(this.mctsTimer);
+             // console.log("Finished", this.count);
+           //  $("#simBtn").prop("disabled", false) ; // Ready for next simulation
+             // this.betaPlot() ;
+                 
+         // }
           
-           if (((this.count+1)% (this.params.maxCount/this.pdfTraces)) == 0) {
-                 let label = "iter: " + (this.count + 1) + " beta: " 
-                            + this.getBeta(this.count).toPrecision(1) ;
-                 for (let k=0 ; k < robots.length ; k++) {
-		   let q = [] ;
-		    for (let m=0 ; m < robots[k].pdf.table.length ; m++)
-		          q.push (robots[k].pdf.table[m].q) ;
-                    this.pdfPlots[k].addSeries(q, label); 
-                    this.pdfPlots[k].update();
-                 }
-           }
-                    
-       this.count = this.count + 1 ; // ready for next time
+      // this.count = this.count + 1 ; // ready for next time
       // console.timeEnd("MCTS Time");
 
     } //end doMCTS
@@ -128,9 +122,8 @@ class dcmts {
         for (let k=0 ; k < robs.length ; k++){
           let prevs = [] ;    //percent of revisits
           let rob = robs[k]; let counts = [] ;
-
           for (let i=0; i < rob.pdf.table.length ; i++) {
-             
+            
              let uniqCount = this.remAllDuplicates (rob.pdf.table[i].seq).length;
              let Count = rob.pdf.table[i].seq.length ;
              let revCountP = Math.round(100*(Count - uniqCount)/Count)
@@ -140,10 +133,12 @@ class dcmts {
              let tabid = rob.id + "Table" ;
              let tab = document.getElementById(tabid);
              //console.log($(tabid));
+             
              tab.rows[i+1].cells[1].innerHTML = (Count) ;
              tab.rows[i+1].cells[2].innerHTML = revCountP ;
              tab.rows[i+1].cells[3].innerHTML = rob.pdf.table[i].reward;
              tab.rows[i+1].cells[4].innerHTML = rob.pdf.table[i].q.toPrecision(2);
+             
           }
         }} // end of reportRevisits
 
